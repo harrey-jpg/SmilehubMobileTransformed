@@ -67,6 +67,17 @@ export class AppStateService {
       if (loaded.length) {
         this.products = loaded;
         this.productsLoadedFromFirestore = true;
+        // Drop cart/wishlist ids that no longer exist (e.g. admin deleted
+        // a product) so pages never render ghost items.
+        const known = new Set(loaded.map(p => p.id));
+        let pruned = false;
+        for (const id of [...this.cart.keys()]) {
+          if (!known.has(id)) { this.cart.delete(id); pruned = true; }
+        }
+        for (const id of [...this.wishlist]) {
+          if (!known.has(id)) { this.wishlist.delete(id); pruned = true; }
+        }
+        if (pruned) this.persist();
       }
     } catch (_) {
       // Offline or denied: keep the bundled fallback catalog.

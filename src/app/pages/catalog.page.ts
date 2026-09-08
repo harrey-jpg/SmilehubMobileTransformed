@@ -61,23 +61,22 @@ debounce="0">
 
 
 
-<div 
-class="category-strip"
+<div
+class="cat-pills"
 style="margin:8px 0 16px">
 
 
-<ion-chip
+<button
+class="cat-pill"
 *ngFor="let c of categories"
-[color]="category===c?'primary':undefined"
+[class.active]="category===c"
 (click)="category=c">
 
 
-<ion-label>
 {{c}}
-</ion-label>
 
 
-</ion-chip>
+</button>
 
 
 </div>
@@ -99,29 +98,58 @@ style="margin:8px 0 16px">
 
 
 <p>
-{{filtered.length}} items
+{{filtered.length}} item{{filtered.length===1?'':'s'}}
 </p>
 
 
 </div>
 
 
+<ion-select
+[(ngModel)]="sort"
+interface="popover"
+placeholder="Sort"
+class="sort-select">
+
+<ion-select-option value="featured">Featured</ion-select-option>
+<ion-select-option value="low">Price: Low to High</ion-select-option>
+<ion-select-option value="high">Price: High to Low</ion-select-option>
+<ion-select-option value="rating">Top Rated</ion-select-option>
+
+</ion-select>
+
+
 </div>
 
 
 
 
 
-<div class="product-grid">
+<div class="product-grid" *ngIf="filtered.length; else emptyTpl">
 
 
 <app-product-card
-*ngFor="let p of filtered"
+*ngFor="let p of filtered; trackBy: trackProduct"
 [product]="p">
 </app-product-card>
 
 
 </div>
+
+
+<ng-template #emptyTpl>
+
+<div class="empty">
+
+<div class="emoji">🔍</div>
+
+<h2>No products found</h2>
+
+<p class="muted">Try a different search or category.</p>
+
+</div>
+
+</ng-template>
 
 
 
@@ -142,6 +170,8 @@ return this.state.getCategories();
 category = 'All';
 
 search = '';
+
+sort: 'featured' | 'low' | 'high' | 'rating' = 'featured';
 
 
 
@@ -194,9 +224,20 @@ p.category === this.category)
 
 )
 
-);
+).sort((a, b) => {
+  if (this.sort === 'low') return a.price - b.price;
+  if (this.sort === 'high') return b.price - a.price;
+  if (this.sort === 'rating') return b.rating - a.rating;
+  return a.id - b.id;
+});
 
 
+}
+
+
+
+trackProduct(_index: number, p: Product) {
+  return p.id;
 }
 
 

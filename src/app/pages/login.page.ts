@@ -4,6 +4,7 @@ import { IonicModule, AlertController, LoadingController } from '@ionic/angular'
 import { FormsModule } from '@angular/forms';
 
 import { AuthService } from '../services/auth.service';
+import { firebaseAuth } from '../services/firebase';
 
 @Component({
   selector: 'app-login',
@@ -112,6 +113,14 @@ export class LoginPage {
     private alerts: AlertController,
     private loading: LoadingController
   ) {}
+
+
+  ionViewWillEnter() {
+    // Already signed in (restored session) — skip login.
+    if (firebaseAuth.currentUser) {
+      this.router.navigateByUrl('/home', { replaceUrl: true }).catch(() => {});
+    }
+  }
 
 
   async login() {

@@ -4,6 +4,7 @@ import { IonicModule, AlertController, LoadingController } from '@ionic/angular'
 import { FormsModule } from '@angular/forms';
 
 import { AuthService } from '../services/auth.service';
+import { firebaseAuth } from '../services/firebase';
 
 
 @Component({
@@ -192,6 +193,15 @@ constructor(
   private alerts: AlertController,
   private loading: LoadingController
 ){}
+
+
+
+ionViewWillEnter(){
+  // Already signed in (restored session) — skip signup.
+  if (firebaseAuth.currentUser) {
+    this.router.navigateByUrl('/home', { replaceUrl: true }).catch(() => {});
+  }
+}
 
 
 

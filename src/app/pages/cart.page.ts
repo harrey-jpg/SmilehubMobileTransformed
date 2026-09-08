@@ -79,9 +79,9 @@ class="list-stack"
 
 
 
-<div 
+<div
 class="app-card row"
-*ngFor="let item of items">
+*ngFor="let item of items; trackBy: trackItem">
 
 
 <div 
@@ -315,10 +315,11 @@ Proceed to Checkout
 
 
 
-<app-bottom-nav active="cart"></app-bottom-nav>
-
-
 </ion-content>
+
+<ion-footer>
+<app-bottom-nav active="cart"></app-bottom-nav>
+</ion-footer>
 
 `
 })
@@ -336,9 +337,14 @@ public state:AppStateService
 
 get items(){
 
+const known = new Set(
+this.state.products.map(p => p.id)
+);
+
 return [
 ...this.state.cart.entries()
 ]
+.filter(([id]) => known.has(id))
 .map(([id,qty])=>({
 
 product:this.state.productById(id),
@@ -347,6 +353,12 @@ qty
 
 }));
 
+}
+
+
+
+trackItem(_index:number, item:any){
+  return item?.product?.id ?? _index;
 }
 
 

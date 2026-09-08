@@ -204,10 +204,11 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 </div>
 
 
-<app-bottom-nav active="account"></app-bottom-nav>
-
-
 </ion-content>
+
+<ion-footer>
+<app-bottom-nav active="account"></app-bottom-nav>
+</ion-footer>
 
 `
 })

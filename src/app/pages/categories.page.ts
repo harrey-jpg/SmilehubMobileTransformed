@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 
-import { productCategories, smileHubProducts } from '../data/products';
+import { AppStateService } from '../services/app-state.service';
 import { BottomNavComponent } from '../shared/bottom-nav.component';
 
 
@@ -100,34 +100,42 @@ name="chevron-forward-outline">
 
 
 
+</ion-content>
+
+<ion-footer>
 <app-bottom-nav active="categories">
 </app-bottom-nav>
-
-
-</ion-content>
+</ion-footer>
 
 `
 })
-export class CategoriesPage {
+export class CategoriesPage implements OnInit {
 
 
-categories =
-productCategories.filter(
-c => c !== 'All'
-);
+get categories(): string[] {
+return this.state.getCategories().filter(c => c !== 'All');
+}
 
 
 
 constructor(
-private router: Router
+private router: Router,
+public state: AppStateService
 ){}
+
+
+
+
+ngOnInit(){
+this.state.loadProductsFromFirestore();
+}
 
 
 
 
 count(c:string){
 
-return smileHubProducts.filter(
+return this.state.products.filter(
 p => p.category === c
 ).length;
 
@@ -153,6 +161,10 @@ return ({
 'Impression':'😁',
 
 'Orthodontics':'🦷',
+
+'Rotary':'⚙️',
+
+'Cosmetic':'✨',
 
 'Equipment':'⚕️'
 

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
+import { firebaseAuth } from '../services/firebase';
 
 
 @Component({
@@ -116,6 +117,14 @@ export class OnboardingPage {
 constructor(
   public router: Router
 ){}
+
+
+ionViewWillEnter(){
+  // Restored session — skip onboarding entirely.
+  if (firebaseAuth.currentUser) {
+    this.router.navigateByUrl('/home', { replaceUrl: true }).catch(() => {});
+  }
+}
 
 
 }

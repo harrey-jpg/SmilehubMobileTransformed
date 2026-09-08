@@ -335,12 +335,12 @@ name="add-outline">
 
 
 
+</ion-content>
+
+<ion-footer>
 <app-bottom-nav active="home">
 </app-bottom-nav>
-
-
-
-</ion-content>
+</ion-footer>
 
 `
 })
@@ -358,34 +358,24 @@ get latest() {
 
 
 
-categories=[
-
-{
-label:'Oral Care',
-icon:'🪥'
-},
-
-{
-label:'Instruments',
-icon:'🛠️'
-},
-
-{
-label:'PPE',
-icon:'😷'
-},
-
-{
-label:'Equipment',
-icon:'⚕️'
-},
-
-{
-label:'Impression',
-icon:'😁'
+get categories() {
+  const icons: Record<string, string> = {
+    'Oral Care': '🪥',
+    'Instruments': '🛠️',
+    'PPE': '😷',
+    'Restorative': '🧪',
+    'Disposables': '🧻',
+    'Impression': '😁',
+    'Orthodontics': '🦷',
+    'Rotary': '⚙️',
+    'Equipment': '⚕️',
+    'Cosmetic': '✨'
+  };
+  return this.state.getCategories()
+    .filter(c => c !== 'All')
+    .slice(0, 8)
+    .map(label => ({ label, icon: icons[label] || '🦷' }));
 }
-
-];
 
 
 

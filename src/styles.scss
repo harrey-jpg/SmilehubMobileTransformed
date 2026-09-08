@@ -27,7 +27,36 @@ ion-toolbar {
 }
 ion-toolbar ion-title { font-weight: 900; letter-spacing: 0.2px; }
 ion-searchbar { --border-radius: 16px; --box-shadow: var(--sh-shadow-sm); padding: 0; }
+body.dark ion-searchbar {
+  --background: #16283d;
+  --color: #eef4f8;
+  --placeholder-color: #8fa6b6;
+  --icon-color: #5fd3e3;
+  --clear-button-color: #8fa6b6;
+}
 ion-chip { border-radius: 999px; font-weight: 700; }
+
+// Category pills (catalog filter) — readable in both themes
+.cat-pills { display: flex; gap: 10px; overflow-x: auto; padding: 4px 2px 8px; scrollbar-width: none; }
+.cat-pills::-webkit-scrollbar { display: none; }
+.cat-pill {
+  flex: 0 0 auto; border: 1px solid var(--ion-border-color);
+  background: var(--ion-card-background); color: var(--ion-text-color);
+  border-radius: 999px; padding: 10px 16px; font-size: 13px; font-weight: 700;
+  box-shadow: var(--sh-shadow-sm); cursor: pointer;
+}
+.cat-pill.active {
+  background: linear-gradient(135deg, #0f839a, #12a3bd);
+  border-color: transparent; color: #fff;
+  box-shadow: var(--sh-shadow-sm);
+}
+.sort-select {
+  --background: var(--ion-card-background);
+  border: 1px solid var(--ion-border-color); border-radius: 999px;
+  font-size: 12px; font-weight: 700;
+  --padding-start: 14px; --padding-end: 10px;
+  max-width: 168px;
+}
 ion-item { --background: var(--ion-item-background); border-radius: 14px; }
 ion-toggle { --handle-width: 22px; }
 
@@ -78,6 +107,11 @@ body.dark .section-row p { color: #94a9b8; }
 }
 .card-button { cursor: pointer; }
 .card-button:active { transform: scale(0.99); }
+// In dark mode the card surface already contrasts with the background,
+// so borders are dropped to avoid the heavy outlined look.
+body.dark .app-card, body.dark .product-card, body.dark .input-card {
+  border-color: transparent;
+}
 .primary-btn { --border-radius: 16px; --background: linear-gradient(135deg, #0f839a, #12a3bd); min-height: 52px; font-weight: 800; text-transform: none; --box-shadow: var(--sh-shadow-sm); }
 .outline-btn { --border-radius: 16px; min-height: 52px; font-weight: 800; text-transform: none; }
 .input-card { --background: var(--ion-card-background); --border-radius: 16px; --padding-start: 14px; margin: 10px 0; border: 1px solid var(--ion-border-color); border-radius: 16px; box-shadow: var(--sh-shadow-sm); }
@@ -152,26 +186,38 @@ body.dark .notice { background: #12394a; color: #bfeef6; }
 .order-status { padding: 6px 11px; border-radius: 999px; background: #fff4da; color: #9a6700; font-size: 11px; font-weight: 800; }
 body.dark .order-status { background: #3a2f10; color: #ffd479; }
 
-// Bottom nav — floating pill, works in light + dark
+// Bottom nav — lives inside <ion-footer>, works in light + dark
+ion-footer {
+  background: transparent;
+  box-shadow: none;
+}
+ion-footer::before { display: none; }
 .bottom-nav {
-  position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%);
-  width: min(calc(100% - 24px), 560px); z-index: 50;
+  width: min(calc(100% - 24px), 560px);
+  margin: 4px auto calc(10px + env(safe-area-inset-bottom));
   background: var(--ion-card-background);
   border: 1px solid var(--ion-border-color);
   border-radius: 24px; box-shadow: var(--sh-shadow-md);
-  padding: 6px; padding-bottom: calc(6px + env(safe-area-inset-bottom));
+  padding: 6px;
+  display: grid; grid-template-columns: repeat(4, 1fr);
 }
-.bottom-nav-inner, .bottom-nav { display: grid; grid-template-columns: repeat(4, 1fr); }
-.bottom-nav .nav-item, .bottom-nav a, .bottom-nav-inner a {
-  color: #64748b; text-decoration: none; display: flex; flex-direction: column;
+.bottom-nav .nav-item {
+  --color: #64748b;
+  --border-radius: 18px;
+  --padding-top: 9px; --padding-bottom: 9px;
+  margin: 0; min-height: 58px;
+  font-size: 10.5px; font-weight: 700; text-transform: none;
+}
+body.dark .bottom-nav .nav-item { --color: #8fa6b6; }
+.bottom-nav .nav-item.active {
+  --color: #0f839a; --background: #e7f7fa;
+}
+body.dark .bottom-nav .nav-item.active { --color: #7fe0ee; --background: #12394a; }
+.bottom-nav .nav-inner {
+  display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 3px;
-  font-size: 10.5px; font-weight: 700; padding: 9px 4px; border-radius: 18px; cursor: pointer;
+  position: relative;
 }
-body.dark .bottom-nav .nav-item, body.dark .bottom-nav a { color: #8fa6b6; }
-.bottom-nav .nav-item.active, .bottom-nav a.active {
-  color: #0f839a; background: #e7f7fa;
-}
-body.dark .bottom-nav .nav-item.active, body.dark .bottom-nav a.active { color: #7fe0ee; background: #12394a; }
 .nav-icon { font-size: 21px; }
 
 // Header icon buttons with red notification badges
@@ -185,9 +231,8 @@ body.dark .bottom-nav .nav-item.active, body.dark .bottom-nav a.active { color: 
   --background: #e84a5f; --color: #fff;
   box-shadow: 0 2px 8px rgba(232, 74, 95, 0.45);
 }
-.nav-badge-wrap { position: relative; }
 .nav-badge {
-  position: absolute; top: 4px; right: calc(50% - 22px);
+  position: absolute; top: -8px; left: calc(50% + 2px);
   background: #e84a5f; color: #fff;
   font-size: 10px; font-weight: 800; border-radius: 999px;
   padding: 2px 6px; min-width: 20px; text-align: center;
