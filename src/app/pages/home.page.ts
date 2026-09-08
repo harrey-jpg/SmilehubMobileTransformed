@@ -109,8 +109,7 @@ Search dental products...
 
 
 <div
-class="app-card"
-style="background:linear-gradient(135deg,#0f839a,#20c4d8);color:white;margin-top:12px">
+class="hero-banner">
 
 
 <div class="row-between">
