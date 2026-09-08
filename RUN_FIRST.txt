@@ -1,0 +1,14 @@
+SMILEHUB IONIC ANGULAR
+
+1. Open this folder in VS Code.
+2. Open Terminal in this folder.
+3. Run: npm install
+4. Run: npx ionic serve
+
+ANDROID:
+1. npm run build
+2. npx cap add android
+3. npx cap sync android
+4. npx cap open android
+
+Firebase is already configured to use the same smilehub-ecommerce project from the Flutter source.

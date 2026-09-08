@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+www/
+out-tsc/
+
+# Angular cache
+.angular/
+
+# Capacitor
+android/
+ios/
+
+# Ionic
+.ionic/
+
+# Env files (keep environment.ts since Firebase config is shared, but ignore overrides if added)
+src/environments/environment.prod.ts
+*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS / Editors
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Git
+*.orig

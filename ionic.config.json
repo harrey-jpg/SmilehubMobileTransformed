@@ -1,0 +1,5 @@
+{
+  "name": "SmileHub",
+  "integrations": {"capacitor": {}},
+  "type": "angular"
+}
