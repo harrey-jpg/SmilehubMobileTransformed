@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 
@@ -9,6 +10,7 @@ import { OrderService } from '../services/order.service';
   selector:'app-orders',
   standalone:true,
   imports:[
+    RouterModule,
     IonicModule,
     CommonModule
   ],

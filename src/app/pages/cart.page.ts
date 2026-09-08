@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -11,6 +12,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
   selector:'app-cart',
   standalone:true,
   imports:[
+    RouterModule,
     IonicModule,
     FormsModule,
     CommonModule,

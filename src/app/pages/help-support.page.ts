@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 
@@ -7,6 +8,7 @@ import { CommonModule } from '@angular/common';
   selector:'app-help-support',
   standalone:true,
   imports:[
+    RouterModule,
     IonicModule,
     CommonModule
   ],

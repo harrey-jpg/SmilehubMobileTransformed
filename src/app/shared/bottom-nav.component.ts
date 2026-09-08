@@ -1,23 +1,29 @@
 import { Component, Input } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+
+import { AppStateService } from '../services/app-state.service';
 
 
 @Component({
   selector: 'app-bottom-nav',
   standalone: true,
   imports: [
-    IonicModule
+    RouterModule,
+    IonicModule,
+    CommonModule
   ],
   template: `
 
 <div class="bottom-nav">
 
-  <div 
+  <div
     class="nav-item"
     [class.active]="active==='home'"
     routerLink="/home">
 
-    <ion-icon 
+    <ion-icon
       class="nav-icon"
       name="home-outline">
     </ion-icon>
@@ -30,7 +36,7 @@ import { IonicModule } from '@ionic/angular';
 
 
 
-  <div 
+  <div
     class="nav-item"
     [class.active]="active==='categories'"
     routerLink="/categories">
@@ -48,8 +54,8 @@ import { IonicModule } from '@ionic/angular';
 
 
 
-  <div 
-    class="nav-item"
+  <div
+    class="nav-item nav-badge-wrap"
     [class.active]="active==='cart'"
     routerLink="/cart">
 
@@ -57,6 +63,8 @@ import { IonicModule } from '@ionic/angular';
       class="nav-icon"
       name="cart-outline">
     </ion-icon>
+
+    <span class="nav-badge" *ngIf="state.cartCount > 0">{{badgeText(state.cartCount)}}</span>
 
     <span>
       Cart
@@ -67,7 +75,7 @@ import { IonicModule } from '@ionic/angular';
 
 
 
-  <div 
+  <div
     class="nav-item"
     [class.active]="active==='account'"
     routerLink="/account">
@@ -92,5 +100,11 @@ export class BottomNavComponent {
 
   @Input()
   active = '';
+
+  constructor(public state: AppStateService) {}
+
+  badgeText(n: number): string {
+    return n > 99 ? '99+' : String(n);
+  }
 
 }

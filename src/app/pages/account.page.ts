@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { IonicModule, AlertController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 
@@ -13,6 +13,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
   selector: 'app-account',
   standalone: true,
   imports: [
+    RouterModule,
     IonicModule,
     CommonModule,
     BottomNavComponent

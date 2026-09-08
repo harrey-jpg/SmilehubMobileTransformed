@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 
@@ -10,6 +10,7 @@ import { AppStateService } from '../services/app-state.service';
   selector:'app-payments',
   standalone:true,
   imports:[
+    RouterModule,
     IonicModule,
     CommonModule
   ],

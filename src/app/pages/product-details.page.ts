@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 
@@ -11,6 +11,7 @@ import { Product } from '../models/product';
   selector:'app-product-details',
   standalone:true,
   imports:[
+    RouterModule,
     IonicModule,
     CommonModule
   ],
@@ -39,11 +40,12 @@ Product Details
 
 
 
-<ion-buttons slot="end">
+<ion-buttons slot="end" class="header-actions">
 
 
 
 <ion-button
+class="icon-btn"
 (click)="state.toggleWishlist(product.id)">
 
 
@@ -60,14 +62,14 @@ Product Details
 
 
 
-<ion-button routerLink="/cart">
+<ion-button routerLink="/cart" class="icon-btn">
 
 
 <ion-icon name="cart-outline">
 </ion-icon>
 
 
-{{state.cartCount}}
+<ion-badge color="danger" class="header-badge" *ngIf="state.cartCount > 0">{{ state.cartCount }}</ion-badge>
 
 
 </ion-button>

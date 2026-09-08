@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { IonicModule, AlertController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 
@@ -12,6 +12,7 @@ import { ShippingAddress } from '../models/product';
   selector: 'app-addresses',
   standalone: true,
   imports: [
+    RouterModule,
     IonicModule,
     CommonModule
   ],

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 
@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
   selector:'app-order-success',
   standalone:true,
   imports:[
+    RouterModule,
     IonicModule
   ],
   template:`

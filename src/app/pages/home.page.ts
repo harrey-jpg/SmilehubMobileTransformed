@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 
@@ -13,6 +13,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
   selector:'app-home',
   standalone:true,
   imports:[
+    RouterModule,
     IonicModule,
     CommonModule,
     ProductCardComponent,
@@ -43,22 +44,24 @@ SmileHub
 
 
 
-<ion-buttons slot="end">
+<ion-buttons slot="end" class="header-actions">
 
 
-<ion-button routerLink="/wishlist">
+<ion-button routerLink="/wishlist" class="icon-btn">
 
 <ion-icon name="heart-outline"></ion-icon>
+
+<ion-badge color="danger" class="header-badge" *ngIf="state.wishlist.size > 0">{{badgeText(state.wishlist.size)}}</ion-badge>
 
 </ion-button>
 
 
 
-<ion-button routerLink="/cart">
+<ion-button routerLink="/cart" class="icon-btn">
 
 <ion-icon name="cart-outline"></ion-icon>
 
-{{state.cartCount}}
+<ion-badge color="danger" class="header-badge" *ngIf="state.cartCount > 0">{{badgeText(state.cartCount)}}</ion-badge>
 
 </ion-button>
 
@@ -425,6 +428,11 @@ currency:'PHP'
 }
 ).format(v);
 
+}
+
+
+badgeText(n:number){
+  return n > 99 ? '99+' : String(n);
 }
 
 

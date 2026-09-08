@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 
@@ -9,6 +10,7 @@ import { ProductCardComponent } from '../shared/product-card.component';
   selector: 'app-wishlist',
   standalone: true,
   imports: [
+    RouterModule,
     IonicModule,
     CommonModule,
     ProductCardComponent
