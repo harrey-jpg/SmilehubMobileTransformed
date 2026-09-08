@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 
-import { smileHubProducts } from '../data/products';
 import { AppStateService } from '../services/app-state.service';
 
 import { ProductCardComponent } from '../shared/product-card.component';
@@ -343,15 +342,17 @@ name="add-outline">
 
 `
 })
-export class HomePage {
+export class HomePage implements OnInit {
 
 
-featured =
-smileHubProducts.slice(0,6);
+get featured() {
+  return this.state.products.slice(0, 6);
+}
 
 
-latest =
-smileHubProducts.slice(-4);
+get latest() {
+  return this.state.products.slice(-4);
+}
 
 
 
@@ -390,6 +391,12 @@ constructor(
 public state:AppStateService,
 public router:Router
 ){}
+
+
+
+ngOnInit() {
+  this.state.loadProductsFromFirestore();
+}
 
 
 

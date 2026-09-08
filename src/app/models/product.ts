@@ -8,6 +8,13 @@ export interface Product {
   stock: string;
   description: string;
   imageAsset: string;
+  // Shared Firestore catalog fields (web/admin). Optional so the bundled
+  // fallback catalog keeps working offline.
+  sku?: string;
+  stockCount?: number;
+  status?: string;
+  image?: string;
+  specs?: string[];
 }
 
 export interface ShippingAddress {

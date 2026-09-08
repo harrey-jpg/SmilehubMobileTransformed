@@ -385,6 +385,7 @@ export class OrderDetailsPage {
 order:any = null;
 
 loading = true;
+private sub?: { unsubscribe(): void };
 
 
 
@@ -402,30 +403,30 @@ async ionViewWillEnter(){
 this.loading = true;
 
 
-try{
+try {
 
-
-this.order =
-await this.service.getOrder(
-this.route.snapshot.paramMap.get('id') || ''
-);
+this.sub?.unsubscribe();
+const id = this.route.snapshot.paramMap.get('id') || '';
+this.sub = this.service.watchOrder(id).subscribe({
+  next: row => { this.order = row; this.loading = false; },
+  error: () => { this.order = null; this.loading = false; }
+});
 
 
 }catch(_){
 
 
 this.order = null;
-
-
-}finally{
-
-
 this.loading = false;
 
 
 }
 
 
+}
+
+ionViewWillLeave() {
+  this.sub?.unsubscribe();
 }
 
 

@@ -4,8 +4,8 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { productCategories, smileHubProducts } from '../data/products';
 import { Product } from '../models/product';
+import { AppStateService } from '../services/app-state.service';
 import { ProductCardComponent } from '../shared/product-card.component';
 
 
@@ -135,7 +135,9 @@ style="margin:8px 0 16px">
 export class CatalogPage implements OnInit {
 
 
-categories = productCategories;
+get categories(): string[] {
+return this.state.getCategories();
+}
 
 category = 'All';
 
@@ -144,7 +146,8 @@ search = '';
 
 
 constructor(
-private route: ActivatedRoute
+private route: ActivatedRoute,
+public state: AppStateService
 ){}
 
 
@@ -152,6 +155,7 @@ private route: ActivatedRoute
 
 ngOnInit(){
 
+this.state.loadProductsFromFirestore();
 this.route.queryParamMap.subscribe(q=>{
 
 this.category =
@@ -175,7 +179,7 @@ this.search
 
 
 
-return smileHubProducts.filter(p =>
+return this.state.products.filter(p =>
 
 (this.category === 'All' ||
 p.category === this.category)

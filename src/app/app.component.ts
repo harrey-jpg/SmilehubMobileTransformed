@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { addIcons } from 'ionicons';
+import { AppStateService } from './services/app-state.service';
 
 import {
   homeOutline,
@@ -55,9 +56,9 @@ import {
     </ion-app>
   `
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
-  constructor() {
+  constructor(private state: AppStateService) {
 
     addIcons({
 
@@ -101,6 +102,11 @@ export class AppComponent {
 
     });
 
+  }
+
+  ngOnInit() {
+    // Pull the shared catalog from Firestore (falls back to bundled data).
+    this.state.loadProductsFromFirestore();
   }
 
 }

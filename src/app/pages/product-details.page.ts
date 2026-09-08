@@ -324,7 +324,19 @@ this.route.snapshot.paramMap.get('id')
 )
 );
 
+this.state.loadProductsFromFirestore().then(() => {
+  this.product = this.state.productById(
+    Number(this.route.snapshot.paramMap.get('id'))
+  );
+});
 
+
+}
+
+async ionViewWillEnter() {
+  this.product = this.state.productById(
+    Number(this.route.snapshot.paramMap.get('id'))
+  );
 }
 
 

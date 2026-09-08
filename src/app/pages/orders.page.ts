@@ -209,6 +209,7 @@ export class OrdersPage {
 orders:any[] = [];
 
 loading = true;
+private sub?: { unsubscribe(): void };
 
 
 
@@ -225,28 +226,30 @@ async ionViewWillEnter(){
 this.loading = true;
 
 
-try{
+try {
 
 
-this.orders =
-await this.service.listMyOrders();
+this.sub?.unsubscribe();
+this.sub = this.service.watchMyOrders().subscribe({
+  next: rows => { this.orders = rows; this.loading = false; },
+  error: () => { this.orders = []; this.loading = false; }
+});
 
 
 }catch(_){
 
 
 this.orders = [];
-
-
-}finally{
-
-
 this.loading = false;
 
 
 }
 
 
+}
+
+ionViewWillLeave() {
+  this.sub?.unsubscribe();
 }
 
 

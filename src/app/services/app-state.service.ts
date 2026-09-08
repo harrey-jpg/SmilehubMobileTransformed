@@ -1,9 +1,28 @@
 import { Injectable } from '@angular/core';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { firestore } from './firebase';
 import { Product, PaymentMethodItem, ShippingAddress } from '../models/product';
 import { smileHubProducts } from '../data/products';
 
+const assetByCategory: Record<string, string> = {
+  'Oral Care': 'assets/products/oral-care.svg',
+  'Instruments': 'assets/products/instrument.svg',
+  'PPE': 'assets/products/ppe.svg',
+  'Restorative': 'assets/products/restorative.svg',
+  'Disposables': 'assets/products/disposable.svg',
+  'Impression': 'assets/products/impression.svg',
+  'Orthodontics': 'assets/products/orthodontic.svg',
+  'Rotary': 'assets/products/instrument.svg',
+  'Equipment': 'assets/products/equipment.svg',
+  'Cosmetic': 'assets/products/restorative.svg'
+};
+
 @Injectable({ providedIn: 'root' })
 export class AppStateService {
+  // Live catalog. Starts with the bundled fallback and is replaced by the
+  // shared Firestore catalog (same `products` collection the web admin edits).
+  products: Product[] = [...smileHubProducts];
+  productsLoadedFromFirestore = false;
   wishlist = new Set<number>();
   cart = new Map<number, number>();
   couponApplied = false;
@@ -17,9 +36,51 @@ export class AppStateService {
     { title: 'Visa ending 1234', subtitle: 'Expires 08/29', icon: 'card-outline' }
   ];
 
-  constructor() { this.restore(); }
+  constructor() { this.restore(); this.loadProductsFromFirestore(); }
 
-  productById(id: number): Product { return smileHubProducts.find(p => p.id === id) || smileHubProducts[0]; }
+  async loadProductsFromFirestore(): Promise<void> {
+    try {
+      const snap = await getDocs(query(collection(firestore, 'products'), orderBy('id')));
+      if (snap.empty) return;
+      const loaded: Product[] = snap.docs.map(d => {
+        const v = d.data() as any;
+        const category = (v['category'] ?? 'General').toString();
+        const stockCount = Number(v['stock'] ?? 0);
+        const image = (v['image'] ?? '').toString() || assetByCategory[category] || 'assets/products/default.svg';
+        return {
+          id: Number(v['id'] ?? 0),
+          name: (v['name'] ?? 'Unnamed product').toString(),
+          brand: (v['brand'] ?? '').toString(),
+          category,
+          price: Number(v['price'] ?? 0),
+          rating: Number(v['rating'] ?? 4.5),
+          stock: stockCount === 0 ? 'Out of stock' : stockCount <= 10 ? 'Low stock' : 'In stock',
+          description: (v['description'] ?? '').toString(),
+          imageAsset: image,
+          sku: (v['sku'] ?? '').toString(),
+          stockCount,
+          status: (v['status'] ?? '').toString(),
+          image,
+          specs: Array.isArray(v['specs']) ? v['specs'].map((s: any) => String(s)) : []
+        } as Product;
+      }).filter(p => p.id);
+      if (loaded.length) {
+        this.products = loaded;
+        this.productsLoadedFromFirestore = true;
+      }
+    } catch (_) {
+      // Offline or denied: keep the bundled fallback catalog.
+    }
+  }
+
+  getCategories(): string[] {
+    const seen = new Set<string>();
+    for (const p of this.products) if (p.category) seen.add(p.category);
+    const cats = [...seen].sort();
+    return ['All', ...cats];
+  }
+
+  productById(id: number): Product { return this.products.find(p => p.id === id) || this.products[0] || smileHubProducts[0]; }
   quantityFor(id: number) { return this.cart.get(id) || 0; }
   get cartCount() { return Array.from(this.cart.values()).reduce((a,b) => a+b, 0); }
   get subtotal() { return Array.from(this.cart.entries()).reduce((sum,[id,q]) => sum + this.productById(id).price*q, 0); }

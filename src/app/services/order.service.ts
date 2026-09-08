@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where } from 'firebase/firestore';
+import { Observable } from 'rxjs';
+import { collection, doc, getDoc, getDocs, onSnapshot, query, serverTimestamp, setDoc, where } from 'firebase/firestore';
 import { firebaseAuth, firestore } from './firebase';
 
 @Injectable({ providedIn: 'root' })
@@ -36,5 +37,34 @@ export class OrderService {
   async getOrder(orderId: string): Promise<any | null> {
     const snap = await getDoc(doc(firestore, 'orders', orderId));
     return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+  }
+
+  watchMyOrders(): Observable<any[]> {
+    return new Observable(subscriber => {
+      const user = firebaseAuth.currentUser;
+      if (!user) {
+        subscriber.error(new Error('You must log in first.'));
+        return;
+      }
+      const q = query(collection(firestore, 'orders'), where('userId', '==', user.uid));
+      const unsub = onSnapshot(q,
+        snap => {
+          const orders = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a: any, b: any) => {
+            const at = a.createdAt?.toMillis?.() || 0; const bt = b.createdAt?.toMillis?.() || 0; return bt - at;
+          });
+          subscriber.next(orders);
+        },
+        err => subscriber.error(err));
+      return unsub;
+    });
+  }
+
+  watchOrder(orderId: string): Observable<any | null> {
+    return new Observable(subscriber => {
+      const unsub = onSnapshot(doc(firestore, 'orders', orderId),
+        snap => subscriber.next(snap.exists() ? { id: snap.id, ...snap.data() } : null),
+        err => subscriber.error(err));
+      return unsub;
+    });
   }
 }
