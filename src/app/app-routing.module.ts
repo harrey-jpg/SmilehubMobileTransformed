@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
 import { OnboardingPage } from './pages/onboarding.page';
 import { LoginPage } from './pages/login.page';
 import { SignupPage } from './pages/signup.page';
@@ -21,6 +22,9 @@ import { PaymentsPage } from './pages/payments.page';
 import { AddPaymentPage } from './pages/add-payment.page';
 import { HelpSupportPage } from './pages/help-support.page';
 import { ContactSupportPage } from './pages/contact-support.page';
+import { VerifyPhonePage } from './pages/verify-phone.page';
+import { NotificationsPage } from './pages/notifications.page';
+import { ChatbotPage } from './pages/chatbot.page';
 
 const routes: Routes = [
   { path: '', component: OnboardingPage },
@@ -44,8 +48,14 @@ const routes: Routes = [
   { path: 'add-payment', component: AddPaymentPage },
   { path: 'help', component: HelpSupportPage },
   { path: 'contact-support', component: ContactSupportPage },
+  { path: 'verify-phone', component: VerifyPhonePage },
+  { path: 'notifications', component: NotificationsPage },
+  { path: 'chatbot', component: ChatbotPage },
   { path: '**', redirectTo: '' }
 ];
 
-@NgModule({ imports: [RouterModule.forRoot(routes)], exports: [RouterModule] })
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
 export class AppRoutingModule {}

@@ -1,638 +1,1923 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonicModule, AlertController, LoadingController } from '@ionic/angular';
+
+import {
+  IonicModule,
+  AlertController,
+  LoadingController
+} from '@ionic/angular';
+
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { AddressService } from '../services/address.service';
-import { PhAddressService, PhPlace } from '../services/ph-address.service';
+import {
+  PhAddressService,
+  PhPlace
+} from '../services/ph-address.service';
+
 import { ShippingAddress } from '../models/product';
 
 
 @Component({
   selector: 'app-add-address',
   standalone: true,
+
   imports: [
     IonicModule,
     FormsModule,
     CommonModule
   ],
+
   template: `
 
 <ion-header>
+
   <ion-toolbar>
 
+
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/addresses"></ion-back-button>
+
+      <ion-back-button
+        defaultHref="/addresses">
+      </ion-back-button>
+
     </ion-buttons>
 
+
     <ion-title>
-      {{id ? 'Edit Address' : 'Add Address'}}
+
+      {{
+        id
+          ? 'Edit Address'
+          : 'Add Address'
+      }}
+
     </ion-title>
 
+
   </ion-toolbar>
+
 </ion-header>
+
 
 
 <ion-content>
 
+
 <div class="page-wrap no-bottom">
+
 
 <form (ngSubmit)="save()">
 
 
-<ion-item class="input-card" lines="none">
 
-<ion-select
-  label="Label"
-  labelPlacement="stacked"
-  [(ngModel)]="form.label"
-  name="label">
+  <!-- =========================
+       LABEL
+       ========================= -->
 
-  <ion-select-option value="Home">
-    Home
-  </ion-select-option>
+  <ion-item
+    class="input-card"
+    lines="none">
 
-  <ion-select-option value="Clinic">
-    Clinic
-  </ion-select-option>
 
-  <ion-select-option value="Office">
-    Office
-  </ion-select-option>
+    <ion-select
 
-  <ion-select-option value="Other">
-    Other
-  </ion-select-option>
+      label="Label"
 
-</ion-select>
+      labelPlacement="stacked"
 
-</ion-item>
+      [(ngModel)]="form.label"
 
+      name="label">
 
 
-<ion-item class="input-card" lines="none">
+      <ion-select-option
+        value="Home">
 
-<ion-input
-label="Recipient"
-labelPlacement="stacked"
-[(ngModel)]="form.recipient"
-name="recipient"
-required>
-</ion-input>
+        Home
 
-</ion-item>
+      </ion-select-option>
 
 
+      <ion-select-option
+        value="Clinic">
 
-<ion-item class="input-card" lines="none">
+        Clinic
 
-<ion-input
-label="Phone"
-labelPlacement="stacked"
-type="tel"
-[(ngModel)]="form.phone"
-name="phone"
-required>
-</ion-input>
+      </ion-select-option>
 
-</ion-item>
 
+      <ion-select-option
+        value="Office">
 
+        Office
 
-<ion-item class="input-card" lines="none">
+      </ion-select-option>
 
-<ion-input
-label="Street / Building"
-labelPlacement="stacked"
-placeholder="House no., street, subdivision"
-[(ngModel)]="form.street"
-name="street"
-required>
-</ion-input>
 
-</ion-item>
+      <ion-select-option
+        value="Other">
 
+        Other
 
+      </ion-select-option>
 
-<div class="form-grid" *ngIf="!manualLocation">
 
+    </ion-select>
 
-<ion-item class="input-card full" lines="none">
 
-<ion-select
-  label="Region"
-  labelPlacement="stacked"
-  [(ngModel)]="regionCode"
-  name="region"
-  (ionChange)="onRegionChange()"
-  placeholder="Select region">
+  </ion-item>
 
-  <ion-select-option
-    *ngFor="let r of regions"
-    [value]="r.code">
-    {{r.name}}
-  </ion-select-option>
 
-</ion-select>
 
-</ion-item>
+  <!-- =========================
+       RECIPIENT
+       ========================= -->
 
+  <ion-item
+    class="input-card"
+    lines="none">
 
-<ion-item class="input-card full" lines="none" *ngIf="hasProvinces">
 
-<ion-select
-  label="Province"
-  labelPlacement="stacked"
-  [(ngModel)]="provinceCode"
-  name="province"
-  [disabled]="!regionCode || loadingPlaces"
-  (ionChange)="onProvinceChange()"
-  placeholder="Select province">
+    <ion-input
 
-  <ion-select-option
-    *ngFor="let p of provinces"
-    [value]="p.code">
-    {{p.name}}
-  </ion-select-option>
+      label="Recipient"
 
-</ion-select>
+      labelPlacement="stacked"
 
-</ion-item>
+      placeholder="Full name"
 
+      [(ngModel)]="form.recipient"
 
-</div>
+      name="recipient"
 
+      required>
 
+    </ion-input>
 
-<ion-item class="input-card" lines="none" *ngIf="!manualLocation">
 
-<ion-select
-  label="City / Municipality"
-  labelPlacement="stacked"
-  [(ngModel)]="cityCode"
-  name="citySelect"
-  [disabled]="(!hasProvinces && !regionCode) || (hasProvinces && !provinceCode) || loadingPlaces"
-  (ionChange)="onCityChange()"
-  placeholder="Select city">
+  </ion-item>
 
-  <ion-select-option
-    *ngFor="let c of cities"
-    [value]="c.code">
-    {{c.name}}
-  </ion-select-option>
 
-</ion-select>
 
-</ion-item>
+  <!-- =========================
+       PHONE
+       ========================= -->
 
+  <ion-item
+    class="input-card"
+    lines="none">
 
 
-<ion-item class="input-card" lines="none" *ngIf="!manualLocation">
+    <ion-input
 
-<ion-select
-  label="Barangay"
-  labelPlacement="stacked"
-  [(ngModel)]="barangayName"
-  name="barangaySelect"
-  [disabled]="!cityCode || loadingPlaces"
-  placeholder="Select barangay">
+      label="Phone"
 
-  <ion-select-option
-    *ngFor="let b of barangays"
-    [value]="b.name">
-    {{b.name}}
-  </ion-select-option>
+      labelPlacement="stacked"
 
-</ion-select>
+      type="tel"
 
-</ion-item>
+      placeholder="09XXXXXXXXX"
 
+      [(ngModel)]="form.phone"
 
+      name="phone"
 
-<div class="form-grid" *ngIf="manualLocation">
+      required>
 
+    </ion-input>
 
-<ion-item class="input-card">
 
-<ion-input
-label="Barangay"
-labelPlacement="stacked"
-[(ngModel)]="form.barangay"
-name="barangay"
-required>
-</ion-input>
+  </ion-item>
 
-</ion-item>
 
 
+  <!-- =========================
+       STREET
+       ========================= -->
 
-<ion-item class="input-card">
+  <ion-item
+    class="input-card"
+    lines="none">
 
-<ion-input
-label="City"
-labelPlacement="stacked"
-[(ngModel)]="form.city"
-name="city"
-required>
-</ion-input>
 
-</ion-item>
+    <ion-input
 
+      label="Street / Building"
 
-</div>
+      labelPlacement="stacked"
 
+      placeholder="House no., street, subdivision"
 
+      [(ngModel)]="form.street"
 
-<ion-item class="input-card" lines="none">
+      name="street"
 
-<ion-input
-label="Postal code"
-labelPlacement="stacked"
-type="tel"
-maxlength="4"
-[(ngModel)]="form.postalCode"
-name="postalCode"
-required>
-</ion-input>
+      required>
 
-</ion-item>
+    </ion-input>
 
 
+  </ion-item>
 
-<div style="text-align:right;margin:2px 0 8px">
 
-<ion-button
-  fill="clear"
-  size="small"
-  type="button"
-  (click)="manualLocation = !manualLocation">
 
-  {{manualLocation ? 'Use dropdowns instead' : 'Enter address manually instead'}}
+  <!-- =========================
+       DROPDOWN LOCATION
+       ========================= -->
 
-</ion-button>
+  <ng-container *ngIf="!manualLocation">
 
-</div>
 
+    <!-- REGION -->
 
+    <ion-item
+      class="input-card"
+      lines="none">
 
-<ion-item class="input-card" lines="none">
 
-<ion-toggle
-[(ngModel)]="form.isDefault"
-name="isDefault">
+      <ion-select
 
-Set as default address
+        label="Region"
 
-</ion-toggle>
+        labelPlacement="stacked"
 
-</ion-item>
+        [(ngModel)]="regionCode"
 
+        name="region"
 
+        [disabled]="loadingPlaces"
 
-<ion-button
-expand="block"
-type="submit"
-class="primary-btn">
+        (ionChange)="onRegionChange()"
 
-{{id ? 'Save Changes' : 'Add Address'}}
+        placeholder="Select region">
 
-</ion-button>
+
+        <ion-select-option
+
+          *ngFor="let region of regions"
+
+          [value]="region.code">
+
+
+          {{ region.name }}
+
+
+        </ion-select-option>
+
+
+      </ion-select>
+
+
+    </ion-item>
+
+
+
+    <!-- PROVINCE -->
+
+    <ion-item
+
+      class="input-card"
+
+      lines="none"
+
+      *ngIf="hasProvinces">
+
+
+      <ion-select
+
+        label="Province"
+
+        labelPlacement="stacked"
+
+        [(ngModel)]="provinceCode"
+
+        name="province"
+
+        [disabled]="
+          !regionCode ||
+          loadingPlaces
+        "
+
+        (ionChange)="onProvinceChange()"
+
+        placeholder="Select province">
+
+
+        <ion-select-option
+
+          *ngFor="let province of provinces"
+
+          [value]="province.code">
+
+
+          {{ province.name }}
+
+
+        </ion-select-option>
+
+
+      </ion-select>
+
+
+    </ion-item>
+
+
+
+    <!-- CITY -->
+
+    <ion-item
+      class="input-card"
+      lines="none">
+
+
+      <ion-select
+
+        label="City / Municipality"
+
+        labelPlacement="stacked"
+
+        [(ngModel)]="cityCode"
+
+        name="citySelect"
+
+        [disabled]="
+          (
+            !hasProvinces &&
+            !regionCode
+          )
+          ||
+          (
+            hasProvinces &&
+            !provinceCode
+          )
+          ||
+          loadingPlaces
+        "
+
+        (ionChange)="onCityChange()"
+
+        placeholder="Select city / municipality">
+
+
+        <ion-select-option
+
+          *ngFor="let city of cities"
+
+          [value]="city.code">
+
+
+          {{ city.name }}
+
+
+        </ion-select-option>
+
+
+      </ion-select>
+
+
+    </ion-item>
+
+
+
+    <!-- BARANGAY -->
+
+    <ion-item
+      class="input-card"
+      lines="none">
+
+
+      <ion-select
+
+        label="Barangay"
+
+        labelPlacement="stacked"
+
+        [(ngModel)]="barangayName"
+
+        name="barangaySelect"
+
+        [disabled]="
+          !cityCode ||
+          loadingPlaces
+        "
+
+        placeholder="Select barangay">
+
+
+        <ion-select-option
+
+          *ngFor="let barangay of barangays"
+
+          [value]="barangay.name">
+
+
+          {{ barangay.name }}
+
+
+        </ion-select-option>
+
+
+      </ion-select>
+
+
+    </ion-item>
+
+
+  </ng-container>
+
+
+
+  <!-- =========================
+       MANUAL LOCATION
+       ========================= -->
+
+  <ng-container *ngIf="manualLocation">
+
+
+    <ion-item
+      class="input-card"
+      lines="none">
+
+
+      <ion-input
+
+        label="Barangay"
+
+        labelPlacement="stacked"
+
+        placeholder="Barangay"
+
+        [(ngModel)]="form.barangay"
+
+        name="barangay"
+
+        required>
+
+      </ion-input>
+
+
+    </ion-item>
+
+
+
+    <ion-item
+      class="input-card"
+      lines="none">
+
+
+      <ion-input
+
+        label="City / Municipality"
+
+        labelPlacement="stacked"
+
+        placeholder="City or municipality"
+
+        [(ngModel)]="form.city"
+
+        name="city"
+
+        required>
+
+      </ion-input>
+
+
+    </ion-item>
+
+
+  </ng-container>
+
+
+
+  <!-- =========================
+       POSTAL CODE
+       ========================= -->
+
+  <ion-item
+    class="input-card"
+    lines="none">
+
+
+    <ion-input
+
+      label="Postal Code"
+
+      labelPlacement="stacked"
+
+      type="tel"
+
+      inputmode="numeric"
+
+      maxlength="4"
+
+      placeholder="4-digit postal code"
+
+      [(ngModel)]="form.postalCode"
+
+      name="postalCode"
+
+      required>
+
+    </ion-input>
+
+
+  </ion-item>
+
+
+
+  <!-- =========================
+       LOCATION MODE
+       ========================= -->
+
+  <div
+    style="
+      text-align:right;
+      margin:2px 0 8px
+    ">
+
+
+    <ion-button
+
+      fill="clear"
+
+      size="small"
+
+      type="button"
+
+      (click)="toggleLocationMode()">
+
+
+      {{
+        manualLocation
+          ? 'Select location from dropdowns'
+          : 'Enter location manually'
+      }}
+
+
+    </ion-button>
+
+
+  </div>
+
+
+
+  <!-- =========================
+       DEFAULT ADDRESS
+       ========================= -->
+
+  <ion-item
+    class="input-card"
+    lines="none">
+
+
+    <ion-toggle
+
+      [(ngModel)]="form.isDefault"
+
+      name="isDefault">
+
+
+      Set as default address
+
+
+    </ion-toggle>
+
+
+  </ion-item>
+
+
+
+  <!-- =========================
+       SAVE
+       ========================= -->
+
+  <ion-button
+
+    expand="block"
+
+    type="submit"
+
+    class="primary-btn"
+
+    [disabled]="saving">
+
+
+    <ion-spinner
+
+      *ngIf="saving"
+
+      slot="start"
+
+      name="crescent">
+
+    </ion-spinner>
+
+
+    {{
+      saving
+        ? 'Saving...'
+        : id
+          ? 'Save Changes'
+          : 'Add Address'
+    }}
+
+
+  </ion-button>
 
 
 </form>
 
+
 </div>
+
 
 </ion-content>
 
 `
 })
+
+
 export class AddAddressPage {
 
 
-id = '';
+  id = '';
 
 
-form: ShippingAddress = {
-  label:'Home',
-  recipient:'',
-  phone:'',
-  city:'',
-  barangay:'',
-  street:'',
-  postalCode:'',
-  isDefault:false
-};
+  saving = false;
 
 
-// Cascading Philippine address dropdowns. Only the street (plus name,
-// phone and postal code) is typed — everything else is picked.
-regions: PhPlace[] = [];
-provinces: PhPlace[] = [];
-cities: PhPlace[] = [];
-barangays: PhPlace[] = [];
-regionCode = '';
-provinceCode = '';
-cityCode = '';
-barangayName = '';
-hasProvinces = true;
-loadingPlaces = false;
-manualLocation = false;
+  form: ShippingAddress = {
+
+    label: 'Home',
+
+    recipient: '',
+
+    phone: '',
+
+    city: '',
+
+    barangay: '',
+
+    street: '',
+
+    postalCode: '',
+
+    isDefault: false
+
+  };
 
 
+  /*
+   * Philippine address dropdown state
+   */
 
-constructor(
-  private route: ActivatedRoute,
-  private service: AddressService,
-  private places: PhAddressService,
-  private router: Router,
-  private alerts: AlertController,
-  private loading: LoadingController
-){
+  regions: PhPlace[] = [];
 
-this.id =
-this.route.snapshot.queryParamMap.get('id') || '';
+  provinces: PhPlace[] = [];
 
-}
+  cities: PhPlace[] = [];
+
+  barangays: PhPlace[] = [];
 
 
+  regionCode = '';
 
-async ionViewWillEnter(){
+  provinceCode = '';
 
-this.regions = await this.places.regions();
+  cityCode = '';
 
-if(!this.id) return;
-
-
-try{
-
-const list = await this.service.listAddresses();
-
-const found = list.find(
-a => a.addressId === this.id
-);
+  barangayName = '';
 
 
-if(found){
-
-this.form = {
-...found
-};
-
-await this.matchSavedLocation();
-
-}
+  hasProvinces = true;
 
 
-}catch(_){}
+  loadingPlaces = false;
 
 
-}
+  manualLocation = false;
 
 
 
-private findByName(list: PhPlace[], name: string): PhPlace | null {
-  const target = (name || '').trim().toLowerCase();
-  if (!target) return null;
-  return list.find(p => p.name.toLowerCase() === target)
-    || list.find(p => p.name.toLowerCase().includes(target))
-    || null;
-}
+  constructor(
 
-// Try to preselect dropdowns from a saved address (edit mode). Falls
-// back to manual text inputs when nothing matches (e.g. offline or a
-// differently-spelled place name).
-private async matchSavedLocation() {
-  const byRegion = this.findByName(this.regions, '');
-  if (byRegion) this.regionCode = byRegion.code;
-  // Without a saved region we cannot cascade; match city across regions
-  // is unreliable, so stay manual only when dropdown data is missing.
-  if (!this.regionCode) {
-    // Guess NCR for Metro Manila cities so dropdowns still work.
-    const ncr = this.regions.find(r => r.code === '130000000');
-    if (ncr) this.regionCode = ncr.code;
-  }
-  if (!this.regionCode) { this.manualLocation = true; return; }
+    private route:
+      ActivatedRoute,
 
-  await this.onRegionChange(true);
+    private service:
+      AddressService,
 
-  if (this.hasProvinces && this.provinces.length) {
-    // Province is not stored on the address, so keep the list ready and
-    // let the city match decide; user picks province if needed.
-    this.manualLocation = false;
+    private places:
+      PhAddressService,
+
+    private router:
+      Router,
+
+    private alerts:
+      AlertController,
+
+    private loading:
+      LoadingController
+
+  ) {
+
+
+    this.id =
+      this.route
+        .snapshot
+        .queryParamMap
+        .get('id') || '';
+
   }
 
-  // Try to find the saved city: NCR path first, else scan provinces.
-  let city: PhPlace | null = this.findByName(this.cities, this.form.city);
-  if (!city && this.hasProvinces) {
-    for (const p of this.provinces) {
-      const list = await this.places.cities(p.code);
-      const hit = list ? this.findByName(list, this.form.city) : null;
-      if (hit) {
-        this.provinceCode = p.code;
-        this.cities = list || [];
-        city = hit;
-        break;
+
+
+  /* =========================
+     PAGE ENTER
+     ========================= */
+
+  async ionViewWillEnter():
+    Promise<void> {
+
+
+    this.loadingPlaces = true;
+
+
+    try {
+
+
+      this.regions =
+        await this.places.regions();
+
+
+      if (!this.id) {
+
+        return;
+
       }
+
+
+      const list =
+        await this.service
+          .listAddresses();
+
+
+      const found =
+        list.find(
+          address =>
+            address.addressId ===
+            this.id
+        );
+
+
+      if (!found) {
+
+
+        await this.msg(
+          'Address not found.'
+        );
+
+
+        await this.router
+          .navigateByUrl(
+            '/addresses'
+          );
+
+
+        return;
+
+      }
+
+
+      this.form = {
+        ...found
+      };
+
+
+      await this.matchSavedLocation();
+
+
+    } catch (error: any) {
+
+
+      console.error(
+        'Unable to load address:',
+        error
+      );
+
+
+      /*
+       * We can still let the user edit
+       * the saved address manually.
+       */
+
+      if (this.id) {
+
+        this.manualLocation = true;
+
+      }
+
+
+    } finally {
+
+
+      this.loadingPlaces = false;
+
     }
+
   }
-  if (!city) {
-    // Saved city not in dropdown data (offline?) — edit as text.
-    this.manualLocation = true;
-    return;
+
+
+
+  /* =========================
+     FIND PLACE BY NAME
+     ========================= */
+
+  private findByName(
+    list: PhPlace[],
+    name: string
+  ): PhPlace | null {
+
+
+    const target =
+      String(name || '')
+        .trim()
+        .toLowerCase();
+
+
+    if (!target) {
+
+      return null;
+
+    }
+
+
+    const exact =
+      list.find(
+        place =>
+          String(place.name || '')
+            .trim()
+            .toLowerCase()
+          === target
+      );
+
+
+    if (exact) {
+
+      return exact;
+
+    }
+
+
+    return (
+
+      list.find(
+        place => {
+
+
+          const placeName =
+            String(
+              place.name || ''
+            )
+              .trim()
+              .toLowerCase();
+
+
+          return (
+            placeName.includes(target)
+            ||
+            target.includes(placeName)
+          );
+
+        }
+      )
+
+      ||
+
+      null
+
+    );
+
   }
-  this.cityCode = city.code;
-  await this.onCityChange(true);
-  const brgy = this.findByName(this.barangays, this.form.barangay);
-  if (brgy) {
-    this.barangayName = brgy.name;
+
+
+
+  /* =========================
+     MATCH OLD SAVED LOCATION
+     ========================= */
+
+  private async matchSavedLocation():
+    Promise<void> {
+
+
+    const savedCity =
+      String(
+        this.form.city || ''
+      ).trim();
+
+
+    const savedBarangay =
+      String(
+        this.form.barangay || ''
+      ).trim();
+
+
+    /*
+     * Older addresses only saved city
+     * and barangay, not region/province.
+     */
+
+    if (
+      !savedCity ||
+      this.regions.length === 0
+    ) {
+
+
+      this.manualLocation = true;
+
+      return;
+
+    }
+
+
+    this.loadingPlaces = true;
+
     this.manualLocation = false;
-  } else {
-    this.manualLocation = true;
-  }
-}
+
+
+    try {
+
+
+      /*
+       * Search every region until
+       * the saved city is found.
+       */
+
+      for (
+        const region
+        of this.regions
+      ) {
+
+
+        let provinces:
+          PhPlace[] = [];
+
+
+        try {
+
+
+          provinces =
+            await this.places
+              .provinces(
+                region.code
+              )
+            || [];
+
+
+        } catch {
+
+
+          provinces = [];
+
+        }
 
 
 
-async onRegionChange(silent = false){
-  this.provinceCode = '';
-  this.cityCode = '';
-  this.barangayName = '';
-  this.provinces = [];
-  this.cities = [];
-  this.barangays = [];
-  this.hasProvinces = true;
-  if (!this.regionCode) return;
-  if (!silent) this.loadingPlaces = true;
-  try {
-    const provs = await this.places.provinces(this.regionCode);
-    if (provs && provs.length) {
-      this.provinces = provs;
-      this.hasProvinces = true;
-    } else {
-      // NCR and similar: cities hang directly under the region.
-      const list = await this.places.regionCities(this.regionCode);
-      this.cities = list || [];
-      this.hasProvinces = false;
+        /*
+         * Regions such as NCR may have
+         * cities directly under region.
+         */
+
+        if (
+          provinces.length === 0
+        ) {
+
+
+          let regionCities:
+            PhPlace[] = [];
+
+
+          try {
+
+
+            regionCities =
+              await this.places
+                .regionCities(
+                  region.code
+                )
+              || [];
+
+
+          } catch {
+
+
+            regionCities = [];
+
+          }
+
+
+          const city =
+            this.findByName(
+              regionCities,
+              savedCity
+            );
+
+
+          if (!city) {
+
+            continue;
+
+          }
+
+
+          this.regionCode =
+            region.code;
+
+
+          this.provinceCode =
+            '';
+
+
+          this.hasProvinces =
+            false;
+
+
+          this.provinces =
+            [];
+
+
+          this.cities =
+            regionCities;
+
+
+          this.cityCode =
+            city.code;
+
+
+          try {
+
+
+            this.barangays =
+              await this.places
+                .barangays(
+                  city.code
+                )
+              || [];
+
+
+          } catch {
+
+
+            this.barangays = [];
+
+          }
+
+
+          const barangay =
+            this.findByName(
+              this.barangays,
+              savedBarangay
+            );
+
+
+          if (barangay) {
+
+
+            this.barangayName =
+              barangay.name;
+
+
+            this.manualLocation =
+              false;
+
+
+          } else {
+
+
+            this.manualLocation =
+              true;
+
+          }
+
+
+          return;
+
+        }
+
+
+
+        /*
+         * Standard:
+         * Region -> Province -> City
+         */
+
+        for (
+          const province
+          of provinces
+        ) {
+
+
+          let provinceCities:
+            PhPlace[] = [];
+
+
+          try {
+
+
+            provinceCities =
+              await this.places
+                .cities(
+                  province.code
+                )
+              || [];
+
+
+          } catch {
+
+
+            provinceCities = [];
+
+          }
+
+
+          const city =
+            this.findByName(
+              provinceCities,
+              savedCity
+            );
+
+
+          if (!city) {
+
+            continue;
+
+          }
+
+
+          this.regionCode =
+            region.code;
+
+
+          this.provinceCode =
+            province.code;
+
+
+          this.hasProvinces =
+            true;
+
+
+          this.provinces =
+            provinces;
+
+
+          this.cities =
+            provinceCities;
+
+
+          this.cityCode =
+            city.code;
+
+
+          try {
+
+
+            this.barangays =
+              await this.places
+                .barangays(
+                  city.code
+                )
+              || [];
+
+
+          } catch {
+
+
+            this.barangays = [];
+
+          }
+
+
+          const barangay =
+            this.findByName(
+              this.barangays,
+              savedBarangay
+            );
+
+
+          if (barangay) {
+
+
+            this.barangayName =
+              barangay.name;
+
+
+            this.manualLocation =
+              false;
+
+
+          } else {
+
+
+            /*
+             * City found but barangay
+             * could not be matched.
+             */
+
+            this.manualLocation =
+              true;
+
+          }
+
+
+          return;
+
+        }
+
+      }
+
+
+
+      /*
+       * No dropdown match.
+       * Keep old values editable.
+       */
+
+      this.manualLocation = true;
+
+
+    } catch (error) {
+
+
+      console.error(
+        'Unable to match saved location:',
+        error
+      );
+
+
+      this.manualLocation = true;
+
+
+    } finally {
+
+
+      this.loadingPlaces = false;
+
     }
-  } finally {
-    if (!silent) this.loadingPlaces = false;
+
   }
-}
 
 
 
-async onProvinceChange(silent = false){
-  this.cityCode = '';
-  this.barangayName = '';
-  this.cities = [];
-  this.barangays = [];
-  if (!this.provinceCode) return;
-  if (!silent) this.loadingPlaces = true;
-  try {
-    this.cities = await this.places.cities(this.provinceCode) || [];
-  } finally {
-    if (!silent) this.loadingPlaces = false;
+  /* =========================
+     REGION CHANGE
+     ========================= */
+
+  async onRegionChange(
+    silent = false
+  ): Promise<void> {
+
+
+    this.provinceCode = '';
+
+    this.cityCode = '';
+
+    this.barangayName = '';
+
+
+    this.provinces = [];
+
+    this.cities = [];
+
+    this.barangays = [];
+
+
+    this.hasProvinces = true;
+
+
+    if (!this.regionCode) {
+
+      return;
+
+    }
+
+
+    if (!silent) {
+
+      this.loadingPlaces = true;
+
+    }
+
+
+    try {
+
+
+      const provinces =
+        await this.places
+          .provinces(
+            this.regionCode
+          );
+
+
+      if (
+        provinces &&
+        provinces.length
+      ) {
+
+
+        this.provinces =
+          provinces;
+
+
+        this.hasProvinces =
+          true;
+
+
+      } else {
+
+
+        /*
+         * NCR and similar regions:
+         * cities directly under region.
+         */
+
+        this.cities =
+          await this.places
+            .regionCities(
+              this.regionCode
+            )
+          || [];
+
+
+        this.hasProvinces =
+          false;
+
+      }
+
+
+    } catch (error) {
+
+
+      console.error(
+        'Unable to load region:',
+        error
+      );
+
+
+      await this.msg(
+        'Unable to load locations. You may enter the location manually.'
+      );
+
+
+      this.manualLocation =
+        true;
+
+
+    } finally {
+
+
+      if (!silent) {
+
+        this.loadingPlaces =
+          false;
+
+      }
+
+    }
+
   }
-}
 
 
 
-async onCityChange(silent = false){
-  this.barangayName = '';
-  this.barangays = [];
-  if (!this.cityCode) return;
-  if (!silent) this.loadingPlaces = true;
-  try {
-    this.barangays = await this.places.barangays(this.cityCode) || [];
-  } finally {
-    if (!silent) this.loadingPlaces = false;
+  /* =========================
+     PROVINCE CHANGE
+     ========================= */
+
+  async onProvinceChange(
+    silent = false
+  ): Promise<void> {
+
+
+    this.cityCode = '';
+
+    this.barangayName = '';
+
+
+    this.cities = [];
+
+    this.barangays = [];
+
+
+    if (!this.provinceCode) {
+
+      return;
+
+    }
+
+
+    if (!silent) {
+
+      this.loadingPlaces = true;
+
+    }
+
+
+    try {
+
+
+      this.cities =
+        await this.places
+          .cities(
+            this.provinceCode
+          )
+        || [];
+
+
+    } catch (error) {
+
+
+      console.error(
+        'Unable to load cities:',
+        error
+      );
+
+
+      await this.msg(
+        'Unable to load cities.'
+      );
+
+
+    } finally {
+
+
+      if (!silent) {
+
+        this.loadingPlaces =
+          false;
+
+      }
+
+    }
+
   }
-}
 
 
 
-private locationValid(): boolean {
-  if (this.manualLocation) {
-    return !!this.form.barangay.trim() && !!this.form.city.trim();
+  /* =========================
+     CITY CHANGE
+     ========================= */
+
+  async onCityChange(
+    silent = false
+  ): Promise<void> {
+
+
+    this.barangayName = '';
+
+    this.barangays = [];
+
+
+    if (!this.cityCode) {
+
+      return;
+
+    }
+
+
+    if (!silent) {
+
+      this.loadingPlaces = true;
+
+    }
+
+
+    try {
+
+
+      this.barangays =
+        await this.places
+          .barangays(
+            this.cityCode
+          )
+        || [];
+
+
+    } catch (error) {
+
+
+      console.error(
+        'Unable to load barangays:',
+        error
+      );
+
+
+      await this.msg(
+        'Unable to load barangays.'
+      );
+
+
+    } finally {
+
+
+      if (!silent) {
+
+        this.loadingPlaces =
+          false;
+
+      }
+
+    }
+
   }
-  if (!this.regionCode || !this.cityCode || !this.barangayName) return false;
-  if (this.hasProvinces && !this.provinceCode) return false;
-  return true;
-}
 
 
 
-private applyDropdownLocation() {
-  const city = this.cities.find(c => c.code === this.cityCode);
-  this.form.city = city ? city.name : this.form.city;
-  this.form.barangay = this.barangayName;
-}
+  /* =========================
+     TOGGLE LOCATION MODE
+     ========================= */
+
+  toggleLocationMode(): void {
+
+
+    this.manualLocation =
+      !this.manualLocation;
+
+
+    /*
+     * When going back to dropdown mode,
+     * clear dropdown selection so user
+     * can select a valid location.
+     */
+
+    if (!this.manualLocation) {
+
+
+      this.regionCode = '';
+
+      this.provinceCode = '';
+
+      this.cityCode = '';
+
+      this.barangayName = '';
+
+
+      this.provinces = [];
+
+      this.cities = [];
+
+      this.barangays = [];
+
+
+      this.hasProvinces =
+        true;
+
+    }
+
+  }
 
 
 
-async save(){
+  /* =========================
+     LOCATION VALIDATION
+     ========================= */
+
+  private locationValid():
+    boolean {
 
 
-if(
-!this.form.recipient.trim() ||
-!this.form.phone.trim() ||
-!this.form.street.trim() ||
-!this.form.postalCode.trim() ||
-!this.locationValid()
-){
-
-return this.msg(
-'Complete all required address fields.'
-);
-
-}
+    if (this.manualLocation) {
 
 
+      return (
 
-const l =
-await this.loading.create({
-message:'Saving address...'
-});
+        !!String(
+          this.form.barangay || ''
+        ).trim()
 
+        &&
 
-await l.present();
+        !!String(
+          this.form.city || ''
+        ).trim()
 
+      );
 
-
-try{
-
-if (!this.manualLocation) this.applyDropdownLocation();
-
-if(this.id){
-
-await this.service.updateAddress(
-this.id,
-this.form
-);
+    }
 
 
-}else{
+    if (
+      !this.regionCode ||
+      !this.cityCode ||
+      !this.barangayName
+    ) {
+
+      return false;
+
+    }
 
 
-await this.service.addAddress(
-this.form
-);
+    if (
+      this.hasProvinces &&
+      !this.provinceCode
+    ) {
+
+      return false;
+
+    }
 
 
-}
+    return true;
 
-
-
-await this.router.navigateByUrl(
-'/addresses'
-);
+  }
 
 
 
-}catch(e:any){
+  /* =========================
+     APPLY DROPDOWN LOCATION
+     ========================= */
+
+  private applyDropdownLocation():
+    void {
 
 
-await this.msg(
-e?.message || 'Unable to save address.'
-);
+    const city =
+      this.cities.find(
+        item =>
+          item.code ===
+          this.cityCode
+      );
+
+
+    if (city) {
+
+      this.form.city =
+        city.name;
+
+    }
+
+
+    this.form.barangay =
+      this.barangayName;
+
+  }
 
 
 
-}finally{
+  /* =========================
+     SAVE ADDRESS
+     ========================= */
+
+  async save():
+    Promise<void> {
 
 
-await l.dismiss();
+    if (this.saving) {
+
+      return;
+
+    }
 
 
-}
+    /*
+     * Trim fields
+     */
+
+    this.form.recipient =
+      String(
+        this.form.recipient || ''
+      ).trim();
+
+
+    this.form.phone =
+      String(
+        this.form.phone || ''
+      ).trim();
+
+
+    this.form.street =
+      String(
+        this.form.street || ''
+      ).trim();
+
+
+    this.form.postalCode =
+      String(
+        this.form.postalCode || ''
+      ).trim();
 
 
 
-}
+    if (
+      !this.form.recipient ||
+      !this.form.phone ||
+      !this.form.street ||
+      !this.form.postalCode ||
+      !this.locationValid()
+    ) {
+
+
+      await this.msg(
+        'Complete all required address fields.'
+      );
+
+
+      return;
+
+    }
 
 
 
-private async msg(message:string){
+    /*
+     * Basic Philippine phone validation
+     */
+
+    const cleanPhone =
+      this.form.phone
+        .replace(
+          /[\s()-]/g,
+          ''
+        );
 
 
-const a =
-await this.alerts.create({
-
-header:'SmileHub',
-
-message,
-
-buttons:['OK']
-
-});
+    if (
+      !/^(\+63|0)9\d{9}$/
+        .test(cleanPhone)
+    ) {
 
 
-await a.present();
+      await this.msg(
+        'Enter a valid Philippine mobile number.'
+      );
 
-}
 
+      return;
+
+    }
+
+
+
+    /*
+     * Postal codes are 4 digits.
+     */
+
+    if (
+      !/^\d{4}$/
+        .test(
+          this.form.postalCode
+        )
+    ) {
+
+
+      await this.msg(
+        'Postal code must contain 4 digits.'
+      );
+
+
+      return;
+
+    }
+
+
+
+    const loader =
+      await this.loading.create({
+
+        message:
+          this.id
+            ? 'Saving changes...'
+            : 'Adding address...'
+
+      });
+
+
+    this.saving = true;
+
+
+    await loader.present();
+
+
+    try {
+
+
+      if (!this.manualLocation) {
+
+
+        this.applyDropdownLocation();
+
+      } else {
+
+
+        this.form.city =
+          String(
+            this.form.city || ''
+          ).trim();
+
+
+        this.form.barangay =
+          String(
+            this.form.barangay || ''
+          ).trim();
+
+      }
+
+
+
+      if (this.id) {
+
+
+        await this.service
+          .updateAddress(
+
+            this.id,
+
+            this.form
+
+          );
+
+
+      } else {
+
+
+        await this.service
+          .addAddress(
+            this.form
+          );
+
+      }
+
+
+
+      await this.router
+        .navigateByUrl(
+          '/addresses'
+        );
+
+
+    } catch (error: any) {
+
+
+      console.error(
+        'Unable to save address:',
+        error
+      );
+
+
+      await this.msg(
+
+        error?.message ||
+
+        'Unable to save address.'
+
+      );
+
+
+    } finally {
+
+
+      this.saving = false;
+
+
+      await loader.dismiss();
+
+    }
+
+  }
+
+
+
+  /* =========================
+     MESSAGE
+     ========================= */
+
+  private async msg(
+    message: string
+  ): Promise<void> {
+
+
+    const alert =
+      await this.alerts
+        .create({
+
+
+          header:
+            'SmileHub',
+
+
+          message,
+
+
+          buttons: [
+            'OK'
+          ]
+
+
+        });
+
+
+    await alert.present();
+
+  }
 
 
 }

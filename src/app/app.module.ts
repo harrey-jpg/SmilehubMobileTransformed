@@ -1,9 +1,13 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import { RouteReuseStrategy } from '@angular/router';
 
-import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import {
+  IonicModule,
+  IonicRouteStrategy
+} from '@ionic/angular';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -32,17 +36,19 @@ import { PaymentsPage } from './pages/payments.page';
 import { AddPaymentPage } from './pages/add-payment.page';
 import { HelpSupportPage } from './pages/help-support.page';
 import { ContactSupportPage } from './pages/contact-support.page';
-
+import { VerifyPhonePage } from './pages/verify-phone.page';
+import { NotificationsPage } from './pages/notifications.page';
+import { ChatbotPage } from './pages/chatbot.page';
 
 @NgModule({
-
-  declarations: [],
+  declarations: [
+    AppComponent
+  ],
 
   imports: [
-
     BrowserModule,
-
     FormsModule,
+    HttpClientModule,
 
     IonicModule.forRoot({
       mode: 'md'
@@ -50,14 +56,9 @@ import { ContactSupportPage } from './pages/contact-support.page';
 
     AppRoutingModule,
 
-
-    // Standalone Components
-    AppComponent,
     BottomNavComponent,
     ProductCardComponent,
 
-
-    // Standalone Pages
     OnboardingPage,
     LoginPage,
     SignupPage,
@@ -78,26 +79,21 @@ import { ContactSupportPage } from './pages/contact-support.page';
     PaymentsPage,
     AddPaymentPage,
     HelpSupportPage,
-    ContactSupportPage
-
+    ContactSupportPage,
+    VerifyPhonePage,
+    NotificationsPage,
+    ChatbotPage
   ],
 
-
   providers: [
-
     {
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy
     }
-
   ],
 
-
   bootstrap: [
-
     AppComponent
-
   ]
-
 })
 export class AppModule {}

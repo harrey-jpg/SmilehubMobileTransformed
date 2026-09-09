@@ -1,6 +1,17 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { IonicModule, AlertController } from '@ionic/angular';
+
+import {
+  ActivatedRoute,
+  Router,
+  RouterModule
+} from '@angular/router';
+
+import {
+  IonicModule,
+  AlertController,
+  ToastController
+} from '@ionic/angular';
+
 import { CommonModule } from '@angular/common';
 
 import { AddressService } from '../services/address.service';
@@ -11,48 +22,388 @@ import { ShippingAddress } from '../models/product';
 @Component({
   selector: 'app-addresses',
   standalone: true,
+
   imports: [
     RouterModule,
     IonicModule,
     CommonModule
   ],
+
+  styles: [`
+
+    /* =========================
+       PAGE HEADER INFO
+       ========================= */
+
+    .address-heading {
+      margin-bottom: 14px;
+    }
+
+    .address-heading h2 {
+      margin: 0;
+
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .address-heading p {
+      margin: 4px 0 0;
+
+      color: var(--ion-color-medium);
+
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+
+    /* =========================
+       ADDRESS CARD
+       ========================= */
+
+    .address-card {
+      position: relative;
+
+      padding: 16px;
+
+      cursor: pointer;
+
+      border:
+        1px solid
+        transparent;
+
+      transition:
+        border-color .15s ease,
+        transform .15s ease;
+    }
+
+    .address-card:active {
+      transform: scale(.99);
+    }
+
+    .address-card.selected {
+      border-color:
+        var(--ion-color-primary);
+    }
+
+
+    /* =========================
+       TOP
+       ========================= */
+
+    .address-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+
+      gap: 10px;
+
+      margin-bottom: 12px;
+    }
+
+    .address-label {
+      display: flex;
+      align-items: center;
+
+      gap: 8px;
+
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .address-label ion-icon {
+      color:
+        var(--ion-color-primary);
+
+      font-size: 18px;
+    }
+
+    .address-badges {
+      display: flex;
+      align-items: center;
+
+      gap: 6px;
+
+      flex-shrink: 0;
+    }
+
+    .default-badge {
+      padding:
+        4px 8px;
+
+      border-radius: 999px;
+
+      background:
+        rgba(var(--ion-color-primary-rgb), .14);
+
+      color:
+        var(--ion-color-primary);
+
+      font-size: 9px;
+      font-weight: 900;
+    }
+
+    .selected-icon {
+      color:
+        var(--ion-color-primary);
+
+      font-size: 20px;
+    }
+
+
+    /* =========================
+       RECIPIENT
+       ========================= */
+
+    .recipient-name {
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .recipient-phone {
+      margin-top: 2px;
+
+      font-size: 12px;
+
+      color:
+        var(--ion-color-medium);
+    }
+
+
+    /* =========================
+       ADDRESS
+       ========================= */
+
+    .full-address {
+      margin-top: 10px;
+
+      font-size: 12px;
+      line-height: 1.5;
+
+      color:
+        var(--ion-color-medium);
+    }
+
+
+    /* =========================
+       ACTIONS
+       ========================= */
+
+    .address-actions {
+      display: flex;
+      align-items: center;
+
+      gap: 4px;
+
+      margin-top: 12px;
+      padding-top: 10px;
+
+      border-top:
+        1px solid
+        rgba(120, 120, 120, .10);
+    }
+
+    .address-actions ion-button {
+      margin: 0;
+
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+
+    /* =========================
+       SELECT MODE
+       ========================= */
+
+    .select-hint {
+      display: flex;
+      align-items: center;
+
+      gap: 8px;
+
+      margin:
+        0 0 14px;
+
+      padding: 11px 13px;
+
+      border-radius: 12px;
+
+      background:
+        rgba(var(--ion-color-primary-rgb), .10);
+
+      color:
+        var(--ion-color-primary);
+
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .select-hint ion-icon {
+      flex-shrink: 0;
+
+      font-size: 18px;
+    }
+
+    .use-address {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      margin-top: 12px;
+      padding-top: 10px;
+
+      border-top:
+        1px solid
+        rgba(120, 120, 120, .10);
+
+      color:
+        var(--ion-color-primary);
+
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+
+    /* =========================
+       EMPTY / ERROR
+       ========================= */
+
+    .address-empty {
+      min-height: 58vh;
+
+      display: flex;
+      flex-direction: column;
+
+      align-items: center;
+      justify-content: center;
+
+      text-align: center;
+
+      padding: 30px 20px;
+    }
+
+    .empty-icon {
+      width: 74px;
+      height: 74px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-bottom: 14px;
+
+      border-radius: 50%;
+
+      background:
+        rgba(var(--ion-color-primary-rgb), .12);
+
+      color:
+        var(--ion-color-primary);
+
+      font-size: 34px;
+    }
+
+    .address-empty h2 {
+      margin: 0;
+
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .address-empty p {
+      max-width: 260px;
+
+      margin:
+        7px auto
+        17px;
+
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+
+    /* =========================
+       LOADING
+       ========================= */
+
+    .address-loading {
+      min-height: 45vh;
+
+      display: flex;
+      flex-direction: column;
+
+      align-items: center;
+      justify-content: center;
+
+      gap: 10px;
+
+      font-size: 12px;
+
+      color:
+        var(--ion-color-medium);
+    }
+
+
+    /* =========================
+       ADD BUTTON
+       ========================= */
+
+    .add-address-btn {
+      margin-top: 16px;
+
+      --border-radius: 13px;
+
+      font-weight: 800;
+    }
+
+  `],
+
   template: `
 
 <ion-header>
 
-<ion-toolbar>
+  <ion-toolbar>
 
 
-<ion-buttons slot="start">
+    <ion-buttons slot="start">
 
-<ion-back-button
-[defaultHref]="selectionMode?'/checkout':'/account'">
-</ion-back-button>
+      <ion-back-button
+        [defaultHref]="
+          selectionMode
+            ? '/checkout'
+            : '/account'
+        ">
+      </ion-back-button>
 
-</ion-buttons>
-
-
-
-<ion-title>
-
-{{selectionMode?'Select Address':'Addresses'}}
-
-</ion-title>
+    </ion-buttons>
 
 
+    <ion-title>
 
-<ion-buttons slot="end">
+      {{
+        selectionMode
+          ? 'Select Address'
+          : 'Addresses'
+      }}
 
-<ion-button routerLink="/add-address">
-
-<ion-icon name="add-outline"></ion-icon>
-
-</ion-button>
-
-</ion-buttons>
+    </ion-title>
 
 
-</ion-toolbar>
+    <ion-buttons slot="end">
+
+      <ion-button
+        routerLink="/add-address">
+
+        <ion-icon
+          slot="icon-only"
+          name="add-outline">
+        </ion-icon>
+
+      </ion-button>
+
+    </ion-buttons>
+
+
+  </ion-toolbar>
 
 </ion-header>
 
@@ -64,162 +415,431 @@ import { ShippingAddress } from '../models/product';
 <div class="page-wrap no-bottom">
 
 
+  <!-- =========================
+       LOADING
+       ========================= -->
 
-<div 
-style="text-align:center;padding:24px"
-*ngIf="loading">
+  <div
+    class="address-loading"
+    *ngIf="loading">
 
-<ion-spinner></ion-spinner>
+    <ion-spinner>
+    </ion-spinner>
 
-</div>
+    Loading addresses...
 
+  </div>
 
 
 
-<div 
-class="empty"
-*ngIf="!loading&&!addresses.length">
+  <!-- =========================
+       LOAD ERROR
+       ========================= -->
 
+  <div
+    class="address-empty"
+    *ngIf="
+      !loading &&
+      loadError
+    ">
 
-<div class="emoji">
-📍
-</div>
 
+    <div class="empty-icon">
 
-<h2>
-No saved addresses
-</h2>
+      <ion-icon
+        name="alert-circle-outline">
+      </ion-icon>
 
+    </div>
 
-<p class="muted">
-Add a delivery address for checkout.
-</p>
 
+    <h2>
 
-<ion-button routerLink="/add-address">
+      Unable to load addresses
 
-Add Address
+    </h2>
 
-</ion-button>
 
+    <p class="muted">
 
-</div>
+      {{ loadError }}
 
+    </p>
 
 
+    <ion-button
+      fill="outline"
+      (click)="loadAddresses()">
 
+      Retry
 
-<div class="list-stack">
+    </ion-button>
 
 
-<div 
-class="app-card card-button"
-*ngFor="let a of addresses"
-(click)="select(a)">
+  </div>
 
 
 
-<div class="row-between">
+  <!-- =========================
+       NO ADDRESSES
+       ========================= -->
 
-<b>
-📍 {{a.label}}
-</b>
+  <div
+    class="address-empty"
 
+    *ngIf="
+      !loading &&
+      !loadError &&
+      addresses.length === 0
+    ">
 
-<span 
-class="pill"
-*ngIf="a.isDefault">
 
-Default
+    <div class="empty-icon">
 
-</span>
+      <ion-icon
+        name="location-outline">
+      </ion-icon>
 
+    </div>
 
-</div>
 
+    <h2>
 
+      No saved addresses
 
+    </h2>
 
-<p>
 
-<b>
-{{a.recipient}}
-</b>
+    <p class="muted">
 
-<br>
+      Add a delivery address
+      so you're ready for checkout.
 
-{{a.phone}}
+    </p>
 
-</p>
 
+    <ion-button
+      routerLink="/add-address">
 
+      <ion-icon
+        slot="start"
+        name="add-outline">
+      </ion-icon>
 
-<p class="muted">
+      Add Address
 
-{{a.fullAddress || fullAddress(a)}}
+    </ion-button>
 
-</p>
 
+  </div>
 
 
 
-<div 
-class="row"
-*ngIf="!selectionMode">
+  <!-- =========================
+       ADDRESS LIST
+       ========================= -->
 
+  <ng-container
+    *ngIf="
+      !loading &&
+      !loadError &&
+      addresses.length > 0
+    ">
 
 
-<ion-button
-size="small"
-fill="outline"
-(click)="$event.stopPropagation();edit(a)">
+    <div class="address-heading">
 
-Edit
 
-</ion-button>
+      <h2>
 
+        {{
+          selectionMode
+            ? 'Choose Delivery Address'
+            : 'Saved Addresses'
+        }}
 
+      </h2>
 
-<ion-button
-size="small"
-fill="clear"
-color="danger"
-(click)="$event.stopPropagation();remove(a)">
 
-Delete
+      <p *ngIf="!selectionMode">
 
-</ion-button>
+        {{
+          addresses.length
+        }}
+        saved address{{
+          addresses.length === 1
+            ? ''
+            : 'es'
+        }}
 
+      </p>
 
-</div>
 
+    </div>
 
 
-</div>
 
+    <!-- CHECKOUT SELECT MODE INFO -->
 
-</div>
+    <div
+      class="select-hint"
+      *ngIf="selectionMode">
 
+      <ion-icon
+        name="information-circle-outline">
+      </ion-icon>
 
+      Tap an address below to use it
+      for this order.
 
+    </div>
 
 
-<ion-button
 
-expand="block"
+    <div class="list-stack">
 
-fill="outline"
 
-class="outline-btn"
+      <div
+        class="app-card address-card"
 
-routerLink="/add-address"
+        *ngFor="
+          let address of addresses;
+          trackBy: trackAddress
+        "
 
-style="margin-top:16px">
+        [class.selected]="
+          isSelected(address)
+        "
 
-Add New Address
+        (click)="select(address)">
 
-</ion-button>
 
+        <!-- TOP -->
+
+        <div class="address-top">
+
+
+          <div class="address-label">
+
+            <ion-icon
+              name="location-outline">
+            </ion-icon>
+
+            {{
+              address.label ||
+              'Address'
+            }}
+
+          </div>
+
+
+
+          <div class="address-badges">
+
+
+            <span
+              class="default-badge"
+              *ngIf="address.isDefault">
+
+              Default
+
+            </span>
+
+
+            <ion-icon
+              class="selected-icon"
+
+              *ngIf="
+                selectionMode &&
+                isSelected(address)
+              "
+
+              name="checkmark-circle">
+            </ion-icon>
+
+
+          </div>
+
+
+        </div>
+
+
+
+        <!-- RECIPIENT -->
+
+        <div class="recipient-name">
+
+          {{
+            address.recipient ||
+            'Recipient'
+          }}
+
+        </div>
+
+
+        <div
+          class="recipient-phone"
+          *ngIf="address.phone">
+
+          {{ address.phone }}
+
+        </div>
+
+
+
+        <!-- FULL ADDRESS -->
+
+        <div class="full-address">
+
+          {{
+            address.fullAddress ||
+            fullAddress(address)
+          }}
+
+        </div>
+
+
+
+        <!-- NORMAL MODE ACTIONS -->
+
+        <div
+          class="address-actions"
+
+          *ngIf="!selectionMode">
+
+
+          <ion-button
+            size="small"
+            fill="clear"
+
+            (click)="
+              $event.stopPropagation();
+              edit(address)
+            ">
+
+            <ion-icon
+              slot="start"
+              name="create-outline">
+            </ion-icon>
+
+            Edit
+
+          </ion-button>
+
+
+
+          <ion-button
+            size="small"
+
+            fill="clear"
+
+            color="danger"
+
+            [disabled]="
+              deletingId ===
+              address.addressId
+            "
+
+            (click)="
+              $event.stopPropagation();
+              remove(address)
+            ">
+
+
+            <ion-spinner
+              *ngIf="
+                deletingId ===
+                address.addressId
+              "
+
+              slot="start"
+
+              name="crescent">
+            </ion-spinner>
+
+
+            <ion-icon
+              *ngIf="
+                deletingId !==
+                address.addressId
+              "
+
+              slot="start"
+
+              name="trash-outline">
+            </ion-icon>
+
+
+            Delete
+
+          </ion-button>
+
+
+        </div>
+
+
+
+        <!-- SELECT MODE -->
+
+        <div
+          class="use-address"
+          *ngIf="selectionMode">
+
+          <span>
+
+            {{
+              isSelected(address)
+                ? 'Currently selected'
+                : 'Use this address'
+            }}
+
+          </span>
+
+
+          <ion-icon
+            [name]="
+              isSelected(address)
+                ? 'checkmark-circle-outline'
+                : 'chevron-forward-outline'
+            ">
+          </ion-icon>
+
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+
+
+    <!-- ADD NEW ADDRESS -->
+
+    <ion-button
+
+      class="add-address-btn"
+
+      expand="block"
+
+      fill="outline"
+
+      routerLink="/add-address">
+
+
+      <ion-icon
+        slot="start"
+        name="add-outline">
+      </ion-icon>
+
+
+      Add New Address
+
+
+    </ion-button>
+
+
+  </ng-container>
 
 
 </div>
@@ -229,176 +849,517 @@ Add New Address
 
 `
 })
+
+
 export class AddressesPage {
 
 
-addresses: ShippingAddress[] = [];
+  addresses:
+    ShippingAddress[] = [];
 
-loading = true;
 
-selectionMode = false;
+  loading = true;
 
 
+  selectionMode = false;
 
-constructor(
-private service: AddressService,
-private state: AppStateService,
-private route: ActivatedRoute,
-private router: Router,
-private alerts: AlertController
-){
 
+  loadError = '';
 
-this.selectionMode =
-route.snapshot.queryParamMap.get('select') === '1';
 
+  deletingId:
+    string | null = null;
 
-}
 
 
+  constructor(
 
+    private service:
+      AddressService,
 
-async ionViewWillEnter(){
+    private state:
+      AppStateService,
 
+    private route:
+      ActivatedRoute,
 
-this.loading = true;
+    private router:
+      Router,
 
+    private alerts:
+      AlertController,
 
-try{
+    private toastController:
+      ToastController
 
+  ) {
 
-this.addresses =
-await this.service.listAddresses();
 
+    this.selectionMode =
+      this.route
+        .snapshot
+        .queryParamMap
+        .get('select') === '1';
 
-}catch(_){
+  }
 
 
-this.addresses = [];
 
+  /* =========================
+     PAGE ENTER
+     ========================= */
 
-}finally{
+  async ionViewWillEnter():
+    Promise<void> {
 
 
-this.loading = false;
+    this.selectionMode =
+      this.route
+        .snapshot
+        .queryParamMap
+        .get('select') === '1';
 
 
-}
+    await this.loadAddresses();
 
+  }
 
-}
 
 
+  /* =========================
+     LOAD ADDRESSES
+     ========================= */
 
+  async loadAddresses():
+    Promise<void> {
 
 
-fullAddress(a: ShippingAddress){
+    this.loading = true;
 
+    this.loadError = '';
 
-return [
-a.street,
-a.barangay,
-a.city,
-a.postalCode
-]
-.filter(Boolean)
-.join(', ');
 
+    try {
 
-}
 
+      const rows =
+        await this.service
+          .listAddresses();
 
 
+      this.addresses = [
+        ...rows
+      ].sort(
+        (a, b) => {
 
-select(a: ShippingAddress){
+          if (
+            a.isDefault ===
+            b.isDefault
+          ) {
 
+            return 0;
 
-if(!this.selectionMode)
-return;
+          }
 
 
-this.state.checkoutAddress = a;
+          return a.isDefault
+            ? -1
+            : 1;
 
+        }
+      );
 
-this.router.navigateByUrl('/checkout');
 
+    } catch (error: any) {
 
-}
 
+      console.error(
+        'Unable to load addresses:',
+        error
+      );
 
 
+      this.addresses = [];
 
 
-edit(a: ShippingAddress){
+      this.loadError =
+        error?.message ||
+        'Please try again.';
 
 
-this.router.navigate(
-['/add-address'],
-{
-queryParams:{
-id:a.addressId
-}
-}
-);
+    } finally {
 
 
-}
+      this.loading = false;
 
+    }
 
+  }
 
 
 
-async remove(a: ShippingAddress){
+  /* =========================
+     FULL ADDRESS
+     ========================= */
 
+  fullAddress(
+    address: ShippingAddress
+  ): string {
 
-if(!a.addressId)
-return;
 
+    const locality = [
 
+      address.barangay,
 
-const alert =
-await this.alerts.create({
+      address.city
 
-header:'Delete address?',
+    ]
+      .filter(Boolean)
+      .join(', ');
 
-message:'This saved address will be removed.',
 
+    const postal =
+      address.postalCode
+        ? ` ${address.postalCode}`
+        : '';
 
-buttons:[
 
-{
-text:'Cancel',
-role:'cancel'
-},
+    return [
 
-{
+      address.street,
 
-text:'Delete',
+      locality
+        ? `${locality}${postal}`
+        : postal.trim()
 
-role:'destructive',
+    ]
 
-handler:async()=>{
+      .filter(Boolean)
 
-await this.service.deleteAddress(
-a.addressId!
-);
+      .join(', ');
 
-await this.ionViewWillEnter();
+  }
 
-}
 
-}
 
-]
+  /* =========================
+     SELECT ADDRESS
+     ========================= */
 
-});
+  async select(
+    address: ShippingAddress
+  ): Promise<void> {
 
 
+    if (!this.selectionMode) {
 
-await alert.present();
+      return;
 
+    }
 
-}
+
+    this.state.checkoutAddress =
+      address;
+
+
+    const toast =
+      await this.toastController
+        .create({
+
+          message:
+            `${address.label || 'Address'} selected.`,
+
+          duration:
+            1000,
+
+          position:
+            'bottom'
+
+        });
+
+
+    await toast.present();
+
+
+    await this.router
+      .navigateByUrl(
+        '/checkout'
+      );
+
+  }
+
+
+
+  /* =========================
+     SELECTED ADDRESS
+     ========================= */
+
+  isSelected(
+    address: ShippingAddress
+  ): boolean {
+
+
+    if (
+      !address?.addressId ||
+      !this.state.checkoutAddress
+    ) {
+
+      return false;
+
+    }
+
+
+    return (
+      this.state
+        .checkoutAddress
+        .addressId
+      ===
+      address.addressId
+    );
+
+  }
+
+
+
+  /* =========================
+     EDIT
+     ========================= */
+
+  edit(
+    address: ShippingAddress
+  ): void {
+
+
+    if (!address.addressId) {
+
+      return;
+
+    }
+
+
+    this.router.navigate(
+
+      ['/add-address'],
+
+      {
+
+        queryParams: {
+
+          id:
+            address.addressId
+
+        }
+
+      }
+
+    );
+
+  }
+
+
+
+  /* =========================
+     DELETE
+     ========================= */
+
+  async remove(
+    address: ShippingAddress
+  ): Promise<void> {
+
+
+    if (
+      !address.addressId ||
+      this.deletingId
+    ) {
+
+      return;
+
+    }
+
+
+    const alert =
+      await this.alerts
+        .create({
+
+
+          header:
+            'Delete address?',
+
+
+          message:
+            address.isDefault
+
+              ? 'This is your default address. Another saved address will become the default.'
+
+              : 'This saved address will be removed.',
+
+
+          buttons: [
+
+
+            {
+              text:
+                'Cancel',
+
+              role:
+                'cancel'
+            },
+
+
+            {
+              text:
+                'Delete',
+
+              role:
+                'destructive',
+
+              handler:
+                () => {
+
+                  void this
+                    .performDelete(
+                      address
+                    );
+
+                }
+            }
+
+
+          ]
+
+
+        });
+
+
+    await alert.present();
+
+  }
+
+
+
+  /* =========================
+     PERFORM DELETE
+     ========================= */
+
+  private async performDelete(
+    address: ShippingAddress
+  ): Promise<void> {
+
+
+    if (!address.addressId) {
+
+      return;
+
+    }
+
+
+    this.deletingId =
+      address.addressId;
+
+
+    try {
+
+
+      await this.service
+        .deleteAddress(
+          address.addressId
+        );
+
+
+      if (
+        this.state
+          .checkoutAddress
+          ?.addressId
+        ===
+        address.addressId
+      ) {
+
+        this.state.checkoutAddress =
+          null;
+
+      }
+
+
+      const toast =
+        await this.toastController
+          .create({
+
+            message:
+              'Address deleted.',
+
+            duration:
+              1200,
+
+            position:
+              'bottom'
+
+          });
+
+
+      await toast.present();
+
+
+      await this.loadAddresses();
+
+
+    } catch (error: any) {
+
+
+      console.error(
+        'Unable to delete address:',
+        error
+      );
+
+
+      const alert =
+        await this.alerts
+          .create({
+
+            header:
+              'Unable to delete address',
+
+            message:
+              error?.message ||
+              'Please try again.',
+
+            buttons: [
+              'OK'
+            ]
+
+          });
+
+
+      await alert.present();
+
+
+    } finally {
+
+
+      this.deletingId =
+        null;
+
+    }
+
+  }
+
+
+
+  /* =========================
+     TRACK ADDRESS
+     ========================= */
+
+  trackAddress(
+    index: number,
+    address: ShippingAddress
+  ): string | number {
+
+
+    return (
+      address.addressId ||
+      index
+    );
+
+  }
 
 
 }

@@ -34,3 +34,9 @@ Thumbs.db
 
 # Git
 *.orig
+
+chatbot-server/.env
+chatbot-server/node_modules/
+.firebase/
+
+**/firebase-debug.log

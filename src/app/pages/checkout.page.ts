@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import {
+  ActivatedRoute,
+  Router,
+  RouterModule
+} from '@angular/router';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { 
+import {
   IonicModule,
   AlertController,
   LoadingController
@@ -12,754 +17,2080 @@ import {
 import { AppStateService } from '../services/app-state.service';
 import { AddressService } from '../services/address.service';
 import { OrderService } from '../services/order.service';
-import { ShippingAddress } from '../models/product';
+
+import {
+  ShippingAddress
+} from '../models/product';
 
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
+
   imports: [
     CommonModule,
     FormsModule,
     RouterModule,
     IonicModule
   ],
+
+  styles: [`
+
+    /* =========================
+       STEPS
+       ========================= */
+
+    .checkout-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+
+      gap: 8px;
+
+      margin-bottom: 22px;
+    }
+
+
+    .checkout-step {
+      border-radius: 999px;
+
+      padding: 7px 10px;
+
+      text-align: center;
+
+      font-size: 11px;
+      font-weight: 800;
+
+      background:
+        rgba(19, 181, 205, .13);
+
+      color:
+        var(--ion-color-primary);
+    }
+
+
+    .checkout-step.active {
+      background:
+        rgba(19, 181, 205, .32);
+
+      color:
+        var(--ion-text-color);
+    }
+
+
+/* =========================
+   DELIVERY
+   ========================= */
+
+.delivery-list {
+  overflow: hidden;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  background: var(--ion-card-background);
+  border: 1px solid rgba(120, 120, 120, .08);
+}
+
+.delivery-option {
+  --background: var(--ion-card-background);
+  --min-height: 50px;
+  --padding-start: 16px;
+  --inner-padding-end: 14px;
+  margin: 0;
+}
+
+.delivery-option + .delivery-option {
+  border-top: 1px solid rgba(120, 120, 120, .10);
+}
+
+.delivery-label {
+  margin: 6px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+}
+
+.delivery-name {
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.delivery-price {
+  font-size: 11px;
+  line-height: 1.15;
+  color: var(--ion-color-medium);
+}
+
+.delivery-radio {
+  margin-left: 10px;
+}
+
+    /* =========================
+       PAYMENT
+       ========================= */
+
+    .payment-card {
+      min-height: 76px;
+    }
+
+
+    /* =========================
+       ORDER ITEMS
+       ========================= */
+
+    .checkout-item {
+      display: flex;
+      align-items: center;
+
+      gap: 12px;
+
+      padding: 11px 0;
+
+      border-bottom:
+        1px solid
+        rgba(120, 120, 120, .10);
+    }
+
+
+    .checkout-item:last-child {
+      border-bottom: none;
+    }
+
+
+    .checkout-image {
+      width: 54px;
+      height: 54px;
+
+      border-radius: 12px;
+
+      background:
+        rgba(120, 120, 120, .08);
+
+      object-fit: contain;
+
+      padding: 5px;
+
+      flex-shrink: 0;
+    }
+
+
+    .checkout-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+
+    .checkout-item-name {
+      font-size: 13px;
+      font-weight: 800;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+
+    .checkout-item-meta {
+      margin-top: 3px;
+
+      font-size: 11px;
+
+      color:
+        var(--ion-color-medium);
+    }
+
+
+    .checkout-item-total {
+      font-size: 12px;
+      font-weight: 900;
+
+      color:
+        var(--ion-color-primary);
+
+      white-space: nowrap;
+    }
+
+
+    /* =========================
+       SUMMARY
+       ========================= */
+
+    .summary-row {
+      margin-bottom: 7px;
+    }
+
+
+    .summary-label {
+      color:
+        var(--ion-color-medium);
+    }
+
+
+    .summary-divider {
+      margin: 14px 0;
+
+      opacity: .15;
+    }
+
+
+    .total-row {
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+
+    .place-order-btn {
+      margin-top: 16px;
+    }
+
+
+    /* =========================
+       EMPTY CHECKOUT
+       ========================= */
+
+    .empty-checkout {
+      min-height: 55vh;
+
+      display: flex;
+      flex-direction: column;
+
+      align-items: center;
+      justify-content: center;
+
+      text-align: center;
+
+      padding: 30px;
+    }
+
+
+    .empty-checkout .emoji {
+      font-size: 50px;
+
+      margin-bottom: 8px;
+    }
+
+  `],
+
   template: `
 
+<!-- =========================
+     HEADER
+     ========================= -->
+
 <ion-header>
+
   <ion-toolbar>
 
+
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/cart"></ion-back-button>
+
+      <ion-back-button
+        defaultHref="/cart">
+      </ion-back-button>
+
     </ion-buttons>
+
 
     <ion-title>
       Checkout
     </ion-title>
 
+
   </ion-toolbar>
+
 </ion-header>
 
 
+
+<!-- =========================
+     CONTENT
+     ========================= -->
+
 <ion-content>
 
-<div class="page-wrap no-bottom">
 
+<div
+  class="page-wrap no-bottom"
+  *ngIf="checkoutItems.length > 0">
 
-<div class="form-grid">
 
-<div class="pill">
-1 Shipping
-</div>
+  <!-- =========================
+       STEPS
+       ========================= -->
 
-<div class="pill" style="opacity:.65">
-2 Payment
-</div>
+  <div class="checkout-steps">
 
-<div class="pill" style="opacity:.65">
-3 Review
-</div>
 
-</div>
+    <div class="checkout-step active">
 
+      1 Shipping
 
+    </div>
 
 
-<div class="section-row">
+    <div class="checkout-step">
 
-<h2>
-Shipping Address
-</h2>
+      2 Payment
 
-<ion-button
-fill="clear"
-size="small"
-(click)="chooseAddress()">
+    </div>
 
-{{address ? 'Change' : 'Add'}}
 
-</ion-button>
+    <div class="checkout-step">
 
-</div>
+      3 Review
 
+    </div>
 
 
+  </div>
 
-<div 
-class="app-card card-button"
-(click)="chooseAddress()"
-*ngIf="!loadingAddress && address">
 
 
-<div class="row-between">
+  <!-- =========================
+       SHIPPING ADDRESS
+       ========================= -->
 
-<b>
-📍 {{address.label || 'Address'}}
-</b>
+  <div class="section-row">
 
 
-<ion-icon name="chevron-forward-outline"></ion-icon>
+    <h2>
 
+      Shipping Address
 
-</div>
+    </h2>
 
 
-<p>
+    <ion-button
+      fill="clear"
+      size="small"
 
-<b>
-{{address.recipient}}
-</b>
+      (click)="chooseAddress()">
 
-<br>
 
-{{address.phone}}
+      {{
+        address
+          ? 'Change'
+          : 'Add'
+      }}
 
-</p>
 
+    </ion-button>
 
-<p class="muted">
-{{fullAddress(address)}}
-</p>
 
+  </div>
 
-</div>
 
 
+  <!-- ADDRESS EXISTS -->
 
+  <div
+    class="app-card card-button"
 
+    *ngIf="
+      !loadingAddress &&
+      address
+    "
 
-<div 
-class="app-card card-button"
-(click)="chooseAddress()"
-*ngIf="!loadingAddress && !address">
+    (click)="chooseAddress()">
 
 
-<b>
-➕ No shipping address selected
-</b>
+    <div class="row-between">
 
-<p class="muted">
-Tap to add or choose an address.
-</p>
 
+      <b>
 
-</div>
+        📍
+        {{
+          address.label ||
+          'Address'
+        }}
 
+      </b>
 
 
+      <ion-icon
+        name="chevron-forward-outline">
+      </ion-icon>
 
 
-<div 
-class="app-card"
-*ngIf="loadingAddress">
+    </div>
 
-<ion-spinner></ion-spinner>
 
-</div>
 
+    <p>
 
 
+      <b>
 
+        {{ address.recipient }}
 
-<div class="section-row">
+      </b>
 
-<h2>
-Delivery Method
-</h2>
 
-</div>
+      <br>
 
 
+      {{ address.phone }}
 
 
-<ion-radio-group [(ngModel)]="delivery">
+    </p>
 
 
-<ion-item>
 
-<ion-radio value="Standard Delivery">
+    <p class="muted">
 
-Standard Delivery
+      {{ fullAddress(address) }}
 
-</ion-radio>
+    </p>
 
-</ion-item>
 
+  </div>
 
 
 
-<ion-item>
+  <!-- NO ADDRESS -->
 
-<ion-radio value="Express Delivery">
+  <div
+    class="app-card card-button"
 
-Express Delivery
+    *ngIf="
+      !loadingAddress &&
+      !address
+    "
 
-</ion-radio>
+    (click)="chooseAddress()">
 
-</ion-item>
 
+    <b>
+
+      ➕ No shipping address selected
+
+    </b>
+
+
+    <p class="muted">
+
+      Tap to add or choose an address.
+
+    </p>
+
+
+  </div>
+
+
+
+  <!-- ADDRESS LOADING -->
+
+  <div
+    class="app-card"
+
+    *ngIf="loadingAddress">
+
+
+    <ion-spinner>
+    </ion-spinner>
+
+
+    <span
+      style="margin-left:10px">
+
+      Loading address...
+
+    </span>
+
+
+  </div>
+
+
+
+  <!-- =========================
+       DELIVERY METHOD
+       ========================= -->
+
+  <div class="section-row">
+
+
+    <h2>
+
+      Delivery Method
+
+    </h2>
+
+
+  </div>
+
+
+
+<ion-radio-group
+  [(ngModel)]="delivery">
+
+  <div class="delivery-list">
+
+    <!-- STANDARD DELIVERY -->
+
+    <ion-item
+      class="delivery-option"
+      lines="none">
+
+      <ion-label class="delivery-label">
+
+        <div class="delivery-name">
+          Standard Delivery
+        </div>
+
+        <div class="delivery-price">
+          {{
+            standardShipping === 0
+              ? 'Free'
+              : money(standardShipping)
+          }}
+        </div>
+
+      </ion-label>
+
+      <ion-radio
+        class="delivery-radio"
+        slot="end"
+        value="Standard Delivery">
+      </ion-radio>
+
+    </ion-item>
+
+
+    <!-- EXPRESS DELIVERY -->
+
+    <ion-item
+      class="delivery-option"
+      lines="none">
+
+      <ion-label class="delivery-label">
+
+        <div class="delivery-name">
+          Express Delivery
+        </div>
+
+        <div class="delivery-price">
+          {{ money(expressShipping) }}
+        </div>
+
+      </ion-label>
+
+      <ion-radio
+        class="delivery-radio"
+        slot="end"
+        value="Express Delivery">
+      </ion-radio>
+
+    </ion-item>
+
+  </div>
 
 </ion-radio-group>
 
 
 
 
+  <!-- =========================
+       PAYMENT METHOD
+       ========================= -->
+
+  <div class="section-row">
+
+
+    <h2>
+
+      Payment Method
+
+    </h2>
+
+
+    <ion-button
+      fill="clear"
+      size="small"
+
+      routerLink="/payments"
+
+      [queryParams]="{
+        select: 1
+      }">
+
+
+      Change
+
+
+    </ion-button>
+
+
+  </div>
 
 
 
-<div class="section-row">
+  <div
+    class="app-card row card-button payment-card"
 
-<h2>
-Payment Method
-</h2>
+    routerLink="/payments"
+
+    [queryParams]="{
+      select: 1
+    }">
 
 
-<ion-button
-fill="clear"
-size="small"
-routerLink="/payments"
-[queryParams]="{select:1}">
+    <div class="category-icon">
 
-Change
 
-</ion-button>
+      <ion-icon
+        [name]="
+          state.selectedPayment?.icon ||
+          'wallet-outline'
+        ">
+      </ion-icon>
+
+
+    </div>
+
+
+
+    <div class="flex-1">
+
+
+      <b>
+
+        {{
+          state.selectedPayment?.title ||
+          'Select payment method'
+        }}
+
+      </b>
+
+
+      <div class="muted">
+
+
+        {{
+          state.selectedPayment?.subtitle ||
+          'Choose how you want to pay'
+        }}
+
+
+      </div>
+
+
+    </div>
+
+
+
+    <ion-icon
+      name="chevron-forward-outline">
+    </ion-icon>
+
+
+  </div>
+
+
+
+  <!-- =========================
+       ORDER ITEMS
+       ========================= -->
+
+  <div class="section-row">
+
+
+    <h2>
+
+      Order Items
+
+    </h2>
+
+
+    <span class="muted">
+
+      {{ totalQuantity }}
+      item{{ totalQuantity === 1 ? '' : 's' }}
+
+    </span>
+
+
+  </div>
+
+
+
+  <div class="app-card">
+
+
+    <div
+      class="checkout-item"
+
+      *ngFor="
+        let item
+        of orderItems
+      ">
+
+
+      <img
+        class="checkout-image"
+
+        [src]="item.product.imageAsset"
+
+        [alt]="item.product.name">
+
+
+
+      <div class="checkout-item-info">
+
+
+        <div class="checkout-item-name">
+
+          {{ item.product.name }}
+
+        </div>
+
+
+        <div class="checkout-item-meta">
+
+          {{
+            money(
+              item.product.price
+            )
+          }}
+
+          ×
+
+          {{ item.quantity }}
+
+        </div>
+
+
+      </div>
+
+
+
+      <div class="checkout-item-total">
+
+
+        {{
+          money(
+            item.product.price *
+            item.quantity
+          )
+        }}
+
+
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+
+  <!-- =========================
+       ORDER SUMMARY
+       ========================= -->
+
+  <div class="section-row">
+
+
+    <h2>
+
+      Order Summary
+
+    </h2>
+
+
+  </div>
+
+
+
+  <div class="app-card">
+
+
+    <!-- SUBTOTAL -->
+
+    <div
+      class="row-between summary-row">
+
+
+      <span class="summary-label">
+
+        Subtotal
+
+      </span>
+
+
+      <b>
+
+        {{ money(subtotal) }}
+
+      </b>
+
+
+    </div>
+
+
+
+    <!-- SHIPPING -->
+
+    <div
+      class="row-between summary-row">
+
+
+      <span class="summary-label">
+
+        Shipping
+
+      </span>
+
+
+      <b>
+
+
+        {{
+          shipping === 0
+            ? 'Free'
+            : money(shipping)
+        }}
+
+
+      </b>
+
+
+    </div>
+
+
+
+    <!-- DISCOUNT -->
+
+    <div
+      class="row-between summary-row"
+
+      *ngIf="discount > 0">
+
+
+      <span class="summary-label">
+
+        Discount
+
+      </span>
+
+
+      <b class="success">
+
+        −{{ money(discount) }}
+
+      </b>
+
+
+    </div>
+
+
+
+    <hr class="summary-divider">
+
+
+
+    <!-- TOTAL -->
+
+    <div
+      class="row-between total-row">
+
+
+      <span>
+
+        Order Total
+
+      </span>
+
+
+      <span>
+
+        {{ money(total) }}
+
+      </span>
+
+
+    </div>
+
+
+
+    <!-- PLACE ORDER -->
+
+    <ion-button
+      expand="block"
+
+      class="primary-btn place-order-btn"
+
+      (click)="confirmPlaceOrder()"
+
+      [disabled]="
+        !canPlaceOrder
+      ">
+
+
+      {{
+        placingOrder
+          ? 'Placing Order...'
+          : 'Place Order'
+      }}
+
+
+    </ion-button>
+
+
+
+    <p
+      class="muted"
+
+      *ngIf="!address"
+
+      style="
+        text-align:center;
+        font-size:11px;
+        margin-top:8px;
+      ">
+
+
+      Select a shipping address
+      before placing your order.
+
+
+    </p>
+
+
+  </div>
+
 
 </div>
 
 
 
+<!-- =========================
+     EMPTY CHECKOUT
+     ========================= -->
+
+<div
+  class="empty-checkout"
+
+  *ngIf="checkoutItems.length === 0">
 
 
-<div 
-class="app-card row card-button"
-routerLink="/payments"
-[queryParams]="{select:1}">
+  <div class="emoji">
+
+    🛒
+
+  </div>
 
 
-<div class="category-icon">
+  <h2>
 
-<ion-icon
-[name]="state.selectedPayment.icon">
-</ion-icon>
+    No items to checkout
 
-</div>
+  </h2>
 
 
-<div class="flex-1">
+  <p class="muted">
 
-<b>
-{{state.selectedPayment.title}}
-</b>
+    Add products to your cart
+    before checking out.
 
-
-<div class="muted">
-
-{{state.selectedPayment.subtitle}}
-
-</div>
-
-</div>
+  </p>
 
 
-<ion-icon name="chevron-forward-outline"></ion-icon>
+  <ion-button
+    routerLink="/catalog">
 
 
-</div>
+    Browse Products
 
 
-
-
-
-
-<div class="section-row">
-
-<h2>
-Order Summary
-</h2>
-
-</div>
-
-
-
-
-
-<div class="app-card">
-
-
-<div class="row-between">
-
-<span>
-Subtotal
-</span>
-
-
-<b>
-{{money(subtotal)}}
-</b>
+  </ion-button>
 
 
 </div>
 
-
-
-
-<div class="row-between">
-
-<span>
-Shipping
-</span>
-
-
-<b>
-{{shipping===0 ? 'Free' : money(shipping)}}
-</b>
-
-
-</div>
-
-
-
-
-<div 
-class="row-between"
-*ngIf="discount">
-
-
-<span>
-Discount
-</span>
-
-
-<b class="success">
-
--{{money(discount)}}
-
-</b>
-
-
-</div>
-
-
-
-<hr>
-
-
-
-<div class="row-between total-row">
-
-<span>
-Order Total
-</span>
-
-
-<span>
-{{money(total)}}
-</span>
-
-
-</div>
-
-
-
-
-<ion-button
-
-expand="block"
-
-class="primary-btn"
-
-(click)="placeOrder()"
-
-[disabled]="loadingAddress">
-
-Place Order
-
-</ion-button>
-
-
-
-</div>
-
-
-</div>
 
 </ion-content>
 
 `
 })
+
+
 export class CheckoutPage implements OnInit {
 
+  async validateStock(): Promise<boolean> {
 
-address: ShippingAddress | null = null;
-
-loadingAddress = true;
-
-delivery = 'Standard Delivery';
-
-buyNowProductId:number|null = null;
-
-buyNowQuantity = 1;
+  for (const item of this.orderItems) {
 
 
-
-constructor(
-public state: AppStateService,
-private addresses: AddressService,
-private orders: OrderService,
-private route: ActivatedRoute,
-private router: Router,
-private alerts: AlertController,
-private loading: LoadingController
-){}
+    const latest =
+      this.state.products.find(
+        p =>
+          p.id === item.product.id
+      );
 
 
+    if (!latest) {
 
-async ngOnInit(){
+      await this.message(
+        `${item.product.name} is no longer available.`
+      );
 
-const id =
-Number(
-this.route.snapshot.queryParamMap.get('productId')
-);
+      return false;
 
-
-if(id){
-
-this.buyNowProductId = id;
-
-}
-
-
-this.buyNowQuantity =
-Math.max(
-1,
-Number(
-this.route.snapshot.queryParamMap.get('quantity') || 1
-)
-);
-
-
-await this.loadAddress();
-
-}
+    }
 
 
 
-async ionViewWillEnter(){
+    const stock =
+      Number(
+        latest.stockCount ?? 0
+      );
 
-if(this.state.checkoutAddress){
 
-this.address =
-this.state.checkoutAddress;
+
+    if (
+      item.quantity > stock
+    ) {
+
+      await this.message(
+
+        `Only ${stock} ${item.product.name} available.`
+
+      );
+
+
+      return false;
+
+    }
+
+
+  }
+
+
+  return true;
 
 }
+  address:
+    ShippingAddress |
+    null = null;
 
-}
+
+  loadingAddress = true;
 
 
+  placingOrder = false;
 
-async loadAddress(){
 
-try{
+  delivery =
+    'Standard Delivery';
 
-this.address =
-this.state.checkoutAddress ||
-await this.addresses.getDefaultAddress();
 
-}
-catch(_){}
+  buyNowProductId:
+    number |
+    null = null;
 
-finally{
 
-this.loadingAddress = false;
-
-}
-
-}
+  buyNowQuantity = 1;
 
 
 
-chooseAddress(){
+  /*
+    Existing shipping amounts
+    from your original code.
+  */
 
-this.router.navigate(
-['/addresses'],
-{
-queryParams:{
-select:1
-}
-}
-);
-
-}
+  readonly expressShipping = 220;
 
 
 
-get checkoutItems(): [number, number][] {
+  constructor(
 
-  if (this.buyNowProductId !== null) {
+    public state: AppStateService,
+
+    private addresses:
+      AddressService,
+
+    private orders:
+      OrderService,
+
+    private route:
+      ActivatedRoute,
+
+    private router:
+      Router,
+
+    private alerts:
+      AlertController,
+
+    private loading:
+      LoadingController
+
+  ) {}
+
+
+
+  /* =========================
+     INITIAL LOAD
+     ========================= */
+
+  async ngOnInit():
+    Promise<void> {
+
+
+    const productIdParam =
+      this.route.snapshot
+        .queryParamMap
+        .get('productId');
+
+
+    if (
+      productIdParam !== null
+    ) {
+
+
+      const id =
+        Number(productIdParam);
+
+
+      if (
+        Number.isFinite(id) &&
+        id > 0
+      ) {
+
+
+        this.buyNowProductId =
+          id;
+
+
+      }
+
+    }
+
+
+
+    const quantity =
+      Number(
+
+        this.route.snapshot
+          .queryParamMap
+          .get('quantity')
+
+        || 1
+
+      );
+
+
+    this.buyNowQuantity =
+      Number.isFinite(quantity)
+
+        ? Math.max(
+            1,
+            Math.floor(quantity)
+          )
+
+        : 1;
+
+
+
+    await this.loadAddress();
+
+  }
+
+
+
+  /* =========================
+     PAGE ENTER
+     ========================= */
+
+  async ionViewWillEnter():
+    Promise<void> {
+
+
+    if (
+      this.state.checkoutAddress
+    ) {
+
+
+      this.address =
+        this.state.checkoutAddress;
+
+
+    } else if (
+      !this.address
+    ) {
+
+
+      await this.loadAddress();
+
+
+    }
+
+  }
+
+
+
+  /* =========================
+     LOAD ADDRESS
+     ========================= */
+
+  async loadAddress():
+    Promise<void> {
+
+
+    this.loadingAddress =
+      true;
+
+
+    try {
+
+
+      this.address =
+
+        this.state.checkoutAddress
+
+        ||
+
+        await this.addresses
+          .getDefaultAddress();
+
+
+    } catch {
+
+
+      this.address = null;
+
+
+    } finally {
+
+
+      this.loadingAddress =
+        false;
+
+
+    }
+
+  }
+
+
+
+  /* =========================
+     CHOOSE ADDRESS
+     ========================= */
+
+  chooseAddress(): void {
+
+
+    this.router.navigate(
+
+      ['/addresses'],
+
+      {
+
+        queryParams: {
+          select: 1
+        }
+
+      }
+
+    );
+
+  }
+
+
+
+  /* =========================
+     CHECKOUT ITEMS
+     ========================= */
+
+  get checkoutItems():
+    [number, number][] {
+
+
+    /*
+      BUY NOW checkout
+    */
+
+    if (
+      this.buyNowProductId !== null
+    ) {
+
+
+      return [
+
+        [
+
+          this.buyNowProductId,
+
+          this.buyNowQuantity
+
+        ]
+
+      ];
+
+    }
+
+
+    /*
+      NORMAL CART checkout
+    */
 
     return [
-      [
-        this.buyNowProductId,
-        this.buyNowQuantity
-      ]
+
+      ...this.state.cart.entries()
+
     ];
 
   }
 
-  return [
-    ...this.state.cart.entries()
-  ];
+
+
+  /* =========================
+     ORDER ITEM OBJECTS
+     ========================= */
+
+  get orderItems() {
+
+
+    return this.checkoutItems
+
+      .map(
+        ([id, quantity]) => {
+
+
+          const product =
+            this.state.productById(id);
+
+
+          return {
+
+            product,
+
+            quantity
+
+          };
+
+
+        }
+      )
+
+      .filter(
+        item =>
+          !!item.product
+      );
+
+  }
+
+
+
+  /* =========================
+     TOTAL QUANTITY
+     ========================= */
+
+  get totalQuantity():
+    number {
+
+
+    return this.checkoutItems.reduce(
+
+      (
+        total,
+        [, quantity]
+      ) =>
+
+        total + quantity,
+
+      0
+
+    );
+
+  }
+
+
+
+  /* =========================
+     SUBTOTAL
+     ========================= */
+
+  get subtotal():
+    number {
+
+
+    return this.checkoutItems.reduce(
+
+      (
+        total,
+        [id, quantity]
+      ) => {
+
+
+        const product =
+          this.state.productById(id);
+
+
+        if (!product) {
+
+          return total;
+
+        }
+
+
+        return (
+
+          total
+
+          +
+
+          product.price *
+          quantity
+
+        );
+
+
+      },
+
+      0
+
+    );
+
+  }
+
+
+
+  /* =========================
+     STANDARD SHIPPING
+     ========================= */
+
+  get standardShipping():
+    number {
+
+
+    return (
+
+      this.subtotal >= 3000
+
+        ? 0
+
+        : 120
+
+    );
+
+  }
+
+
+
+  /* =========================
+     SELECTED SHIPPING
+     ========================= */
+
+  get shipping():
+    number {
+
+
+    return (
+
+      this.delivery ===
+      'Express Delivery'
+
+        ? this.expressShipping
+
+        : this.standardShipping
+
+    );
+
+  }
+
+
+
+  /* =========================
+     DISCOUNT
+     ========================= */
+
+  get discount():
+    number {
+
+
+    if (
+      !this.state.couponApplied
+    ) {
+
+
+      return 0;
+
+    }
+
+
+    return Math.min(
+
+      this.subtotal * 0.10,
+
+      349.90
+
+    );
+
+  }
+
+
+
+  /* =========================
+     TOTAL
+     ========================= */
+
+  get total():
+    number {
+
+
+    return (
+
+      this.subtotal
+
+      +
+
+      this.shipping
+
+      -
+
+      this.discount
+
+    );
+
+  }
+
+
+
+  /* =========================
+     CAN PLACE ORDER
+     ========================= */
+
+  get canPlaceOrder():
+    boolean {
+
+
+    return (
+
+      !this.loadingAddress
+
+      &&
+
+      !this.placingOrder
+
+      &&
+
+      !!this.address
+
+      &&
+
+      this.checkoutItems.length > 0
+
+      &&
+
+      !!this.state.selectedPayment?.title
+
+    );
+
+  }
+
+
+
+  /* =========================
+     FULL ADDRESS
+     ========================= */
+
+  fullAddress(
+    address: ShippingAddress
+  ): string {
+
+
+    return (
+
+      address.fullAddress
+
+      ||
+
+      [
+
+        address.street,
+
+        address.barangay,
+
+        address.city,
+
+        address.postalCode
+
+      ]
+
+        .filter(Boolean)
+
+        .join(', ')
+
+    );
+
+  }
+
+
+
+  /* =========================
+     CONFIRM ORDER
+     ========================= */
+
+  async confirmPlaceOrder():
+    Promise<void> {
+
+
+    if (!this.address) {
+
+
+      await this.message(
+        'Select a shipping address first.'
+      );
+
+
+      return;
+
+    }
+
+
+
+    if (
+      this.checkoutItems.length === 0
+    ) {
+
+
+      await this.message(
+        'There are no items to checkout.'
+      );
+
+
+      return;
+
+    }
+
+
+
+    const payment =
+      this.state.selectedPayment?.title;
+
+
+    if (!payment) {
+
+
+      await this.message(
+        'Select a payment method first.'
+      );
+
+
+      return;
+
+    }
+
+
+
+    const alert =
+      await this.alerts.create({
+
+
+        header:
+          'Place this order?',
+
+
+        message:
+
+          `Total: ${this.money(this.total)}
+Payment: ${payment}
+Delivery: ${this.delivery}`,
+
+
+        buttons: [
+
+          {
+
+            text: 'Cancel',
+
+            role: 'cancel'
+
+          },
+
+          {
+
+            text: 'Place Order',
+
+            handler: () => {
+
+
+              void this.placeOrder();
+
+
+            }
+
+          }
+
+        ]
+
+
+      });
+
+
+    await alert.present();
+
+  }
+
+
+
+  /* =========================
+     PLACE ORDER
+     ========================= */
+
+  async placeOrder():
+    Promise<void> {
+
+
+    if (
+      this.placingOrder
+    ) {
+
+
+      return;
+
+    }
+
+
+
+    if (!this.address) {
+
+
+      await this.message(
+        'Select a shipping address first.'
+      );
+
+
+      return;
+
+    }
+
+
+
+    if (
+      this.checkoutItems.length === 0
+    ) {
+
+
+      await this.message(
+        'There are no items to checkout.'
+      );
+
+
+      return;
+
+    }
+
+
+
+    const payment =
+      this.state.selectedPayment?.title;
+
+
+    if (!payment) {
+
+
+      await this.message(
+        'Select a payment method first.'
+      );
+
+
+      return;
+
+    }
+
+
+
+    this.placingOrder =
+      true;
+
+
+
+    const loader =
+      await this.loading.create({
+
+
+        message:
+          'Placing order...'
+
+
+      });
+
+
+
+    await loader.present();
+
+
+
+    try {
+      const stockOkay =
+  await this.validateStock();
+
+
+if (!stockOkay) {
+
+  return;
 
 }
 
+      /* =====================
+         BUILD ITEMS
+         ===================== */
 
+      const items =
+        this.checkoutItems.map(
 
-get subtotal(){
+          ([id, quantity]) => {
 
-return this.checkoutItems.reduce(
 
-(sum,[id,q]) =>
+            const product =
+              this.state.productById(id);
 
-sum +
-this.state.productById(id).price*q,
 
-0
+            return {
 
-);
 
-}
+              productId:
+                product.id,
 
 
+              name:
+                product.name,
 
-get standardShipping(){
 
-return this.subtotal >= 3000
+              brand:
+                product.brand,
 
-?
 
-0
+              category:
+                product.category,
 
-:
 
-120;
+              price:
+                product.price,
 
-}
 
+              quantity,
 
 
-get shipping(){
+              lineTotal:
 
-return this.delivery === 'Express Delivery'
+                product.price *
+                quantity
 
-?
 
-220
+            };
 
-:
 
-this.standardShipping;
+          }
 
-}
+        );
 
 
 
-get discount(){
+      /* =====================
+         SAVE ORDER
+         ===================== */
 
-return this.state.couponApplied
+      const result =
+        await this.orders.placeOrder({
 
-?
 
-Math.min(
-this.subtotal * .10,
-349.90
-)
+          items,
 
-:
 
-0;
+          shippingAddress:
+            this.address,
 
-}
 
+          deliveryMethod:
+            this.delivery,
 
 
-get total(){
+          paymentMethod:
+            payment,
 
-return (
-this.subtotal +
-this.shipping -
-this.discount
-);
 
-}
+          subtotal:
+            this.subtotal,
 
 
+          shippingFee:
+            this.shipping,
 
 
-fullAddress(a:ShippingAddress){
+          discount:
+            this.discount,
 
-return (
 
-a.fullAddress ||
+          total:
+            this.total
 
-[
-a.street,
-a.barangay,
-a.city,
-a.postalCode
-]
-.filter(Boolean)
-.join(', ')
 
-);
+        });
 
-}
 
 
+      /* =====================
+         CLEAR CART ONLY FOR
+         NORMAL CART CHECKOUT
+         ===================== */
 
+      if (
+        this.buyNowProductId === null
+      ) {
 
-async placeOrder(){
 
-if(!this.address){
+        const cartIds = [
 
-return this.message(
-'Select a shipping address first.'
-);
+          ...this.state.cart.keys()
 
-}
+        ];
 
 
-const load =
-await this.loading.create({
-message:'Placing order...'
-});
+        for (
+          const id
+          of cartIds
+        ) {
 
 
-await load.present();
+          this.state.removeFromCart(id);
 
 
-try{
+        }
 
+      }
 
-const items =
-this.checkoutItems.map(([id,q])=>{
 
-const p =
-this.state.productById(id);
 
+      /* =====================
+         GO TO SUCCESS PAGE
+         ===================== */
+      await this.state.loadProductsFromFirestore();
+      await this.router.navigate(
 
-return {
+        ['/order-success'],
 
-productId:p.id,
+        {
 
-name:p.name,
+          queryParams: {
 
-brand:p.brand,
 
-category:p.category,
+            orderId:
+              result.orderId,
 
-price:p.price,
 
-quantity:q,
+            orderNumber:
+              result.orderNumber
 
-lineTotal:p.price*q
 
-};
+          }
 
+        }
 
-});
+      );
 
 
+    } catch (error: any) {
 
-const result =
-await this.orders.placeOrder({
 
-items,
+      await this.message(
 
-shippingAddress:this.address,
+        error?.message
 
-deliveryMethod:this.delivery,
+        ||
 
-paymentMethod:
-this.state.selectedPayment.title,
+        'Unable to place order.'
 
-subtotal:this.subtotal,
+      );
 
-shippingFee:this.shipping,
 
-discount:this.discount,
+    } finally {
 
-total:this.total
 
-});
+      this.placingOrder =
+        false;
 
 
+      try {
 
-this.router.navigate(
-['/order-success'],
-{
-queryParams:{
-orderId:result.orderId,
-orderNumber:result.orderNumber
-}
-}
-);
 
+        await loader.dismiss();
 
 
-}
-catch(e:any){
+      } catch {
 
-await this.message(
-e?.message || 'Unable to place order.'
-);
 
-}
-finally{
+        // Loader may already be dismissed.
 
-await load.dismiss();
+      }
 
-}
+    }
 
+  }
 
-}
 
 
+  /* =========================
+     MONEY FORMAT
+     ========================= */
 
+  money(
+    value: number
+  ): string {
 
 
-money(v:number){
+    return new Intl.NumberFormat(
 
-return new Intl.NumberFormat(
-'en-PH',
-{
-style:'currency',
-currency:'PHP'
-}
-).format(v);
+      'en-PH',
 
-}
+      {
 
+        style: 'currency',
 
+        currency: 'PHP'
 
+      }
 
+    ).format(value);
 
-private async message(message:string){
+  }
 
-const a =
-await this.alerts.create({
 
-header:'SmileHub',
 
-message,
+  /* =========================
+     ALERT MESSAGE
+     ========================= */
 
-buttons:['OK']
+  private async message(
+    message: string
+  ): Promise<void> {
 
-});
 
+    const alert =
+      await this.alerts.create({
 
-await a.present();
 
-}
+        header:
+          'SmileHub',
+
+
+        message,
+
+
+        buttons: [
+          'OK'
+        ]
+
+
+      });
+
+
+    await alert.present();
+
+  }
 
 
 }

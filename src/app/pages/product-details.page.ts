@@ -1,393 +1,3356 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  OnInit,
+  OnDestroy
+} from '@angular/core';
 
-import { AppStateService } from '../services/app-state.service';
-import { Product } from '../models/product';
+import {
+  ActivatedRoute,
+  Router,
+  RouterModule
+} from '@angular/router';
+
+import {
+  IonicModule,
+  ToastController
+} from '@ionic/angular';
+
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  AppStateService
+} from '../services/app-state.service';
+
+import {
+  ReviewService,
+  ProductReview
+} from '../services/review.service';
+
+import {
+  NotificationService
+} from '../services/notification.service';
+
+import {
+  Product
+} from '../models/product';
+
 
 
 @Component({
-  selector:'app-product-details',
-  standalone:true,
-  imports:[
+
+  selector: 'app-product-details',
+
+  standalone: true,
+
+  imports: [
     RouterModule,
     IonicModule,
     CommonModule
   ],
-  template:`
+
+  styles: [`
+
+    /* =========================
+       PRODUCT IMAGE
+       ========================= */
+
+    .product-art {
+      min-height: 280px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 18px;
+
+      overflow: hidden;
+    }
+
+    .product-art img {
+      width: 210px;
+      height: 210px;
+
+      object-fit: contain;
+    }
+
+
+
+    /* =========================
+       BASIC INFO
+       ========================= */
+
+    .product-brand {
+      margin-top: 18px;
+
+      font-size: 11px;
+      font-weight: 800;
+
+      color:
+        var(--ion-color-primary);
+    }
+
+    .product-name {
+      margin: 6px 0 8px;
+
+      font-size: 25px;
+      line-height: 1.18;
+
+      font-weight: 900;
+    }
+
+    .price {
+      font-size: 23px;
+      font-weight: 900;
+    }
+
+    .rating-wrap {
+      display: flex;
+      align-items: center;
+
+      gap: 6px;
+
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .rating-count {
+      font-size: 10px;
+
+      color:
+        var(--ion-color-medium);
+    }
+
+
+
+    /* =========================
+       STOCK
+       ========================= */
+
+    .stock-badge {
+      display: inline-flex;
+      align-items: center;
+
+      margin-left: 5px;
+
+      padding: 5px 8px;
+
+      border-radius: 999px;
+
+      font-size: 9px;
+      font-weight: 900;
+
+      background:
+        rgba(
+          var(--ion-color-success-rgb),
+          .12
+        );
+
+      color:
+        var(--ion-color-success);
+    }
+
+    .stock-badge.low {
+      background:
+        rgba(
+          var(--ion-color-warning-rgb),
+          .13
+        );
+
+      color:
+        var(--ion-color-warning);
+    }
+
+    .stock-badge.out {
+      background:
+        rgba(
+          var(--ion-color-danger-rgb),
+          .12
+        );
+
+      color:
+        var(--ion-color-danger);
+    }
+
+    .stock-warning {
+      margin-top: 8px;
+
+      padding: 9px 11px;
+
+      border-radius: 11px;
+
+      font-size: 10px;
+      font-weight: 800;
+
+      background:
+        rgba(
+          var(--ion-color-warning-rgb),
+          .10
+        );
+
+      color:
+        var(--ion-color-warning);
+    }
+
+
+
+    /* =========================
+       DESCRIPTION
+       ========================= */
+
+    .description {
+      margin-top: 15px;
+
+      font-size: 12px;
+      line-height: 1.6;
+
+      color:
+        var(--ion-color-medium);
+    }
+
+
+
+    /* =========================
+       QUANTITY
+       ========================= */
+
+    .quantity-card {
+      margin-top: 18px;
+
+      padding: 16px;
+    }
+
+    .quantity-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 12px;
+    }
+
+    .quantity-title {
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .quantity-stock {
+      font-size: 10px;
+
+      color:
+        var(--ion-color-medium);
+    }
+
+    .qty-controls {
+      display: flex;
+      align-items: center;
+
+      gap: 16px;
+
+      margin-top: 13px;
+    }
+
+    .qty-controls button {
+      width: 38px;
+      height: 38px;
+
+      border: none;
+      border-radius: 11px;
+
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .11
+        );
+
+      color:
+        var(--ion-color-primary);
+
+      font-size: 20px;
+      font-weight: 900;
+
+      cursor: pointer;
+    }
+
+    .qty-controls button:disabled {
+      opacity: .4;
+
+      cursor: default;
+    }
+
+    .qty-value {
+      min-width: 28px;
+
+      text-align: center;
+
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .cart-stock-note {
+      margin-top: 10px;
+
+      font-size: 10px;
+
+      color:
+        var(--ion-color-medium);
+    }
+
+
+
+    /* =========================
+       ACTIONS
+       ========================= */
+
+    .product-actions {
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+      gap: 10px;
+
+      margin-top: 16px;
+    }
+
+    .product-actions ion-button {
+      margin: 0;
+
+      --border-radius: 13px;
+
+      font-weight: 800;
+    }
+
+
+    .stock-alert-wrap {
+      margin-top: 10px;
+    }
+
+
+    .stock-alert-button {
+      margin: 0;
+
+      --border-radius: 13px;
+
+      font-weight: 900;
+    }
+
+
+    .stock-alert-note {
+      margin-top: 7px;
+
+      padding: 9px 11px;
+
+      border-radius: 11px;
+
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .08
+        );
+
+      color:
+        var(--ion-color-medium);
+
+      font-size: 9px;
+      line-height: 1.45;
+    }
+
+
+
+    /* =========================
+       SECTION
+       ========================= */
+
+    .section-title {
+      margin: 22px 2px 10px;
+
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+
+
+    /* =========================
+       SPECS
+       ========================= */
+
+    .spec-card {
+      padding: 15px;
+    }
+
+    .spec-row {
+      display: flex;
+      align-items: flex-start;
+
+      gap: 9px;
+
+      padding: 8px 0;
+
+      border-bottom:
+        1px solid
+        rgba(120, 120, 120, .10);
+
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .spec-row:last-child {
+      border-bottom: none;
+    }
+
+    .spec-row ion-icon {
+      flex-shrink: 0;
+
+      margin-top: 1px;
+
+      color:
+        var(--ion-color-primary);
+
+      font-size: 17px;
+    }
+
+
+
+    /* =========================
+       PRODUCT DETAILS
+       ========================= */
+
+    .details-card {
+      padding: 15px;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 16px;
+
+      padding: 9px 0;
+
+      border-bottom:
+        1px solid
+        rgba(120, 120, 120, .10);
+
+      font-size: 11px;
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-label {
+      color:
+        var(--ion-color-medium);
+    }
+
+    .detail-value {
+      text-align: right;
+
+      font-weight: 800;
+    }
+
+
+
+ /* =========================
+   REVIEWS
+   ========================= */
+
+.review-summary {
+  padding: 18px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.review-score {
+  font-size: 30px;
+  font-weight: 900;
+
+  line-height: 1;
+}
+
+.review-stars {
+  margin-top: 7px;
+
+  color: #f4b400;
+
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+
+.review-count {
+  margin-top: 7px;
+
+  font-size: 10px;
+
+  color:
+    var(--ion-color-medium);
+}
+
+
+
+.review-state-card {
+  min-height: 125px;
+
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.review-empty-star {
+  margin-bottom: 8px;
+
+  font-size: 34px;
+
+  line-height: 1;
+
+  color:
+    var(--ion-text-color);
+}
+
+.review-state-title {
+  margin-top: 6px;
+
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.review-state-text {
+  margin-top: 5px;
+
+  font-size: 10px;
+
+  color:
+    var(--ion-color-medium);
+}
+
+
+
+.review-card {
+  padding: 16px;
+
+  margin-top: 10px;
+}
+
+.review-header {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 12px;
+}
+
+.review-user {
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.review-date {
+  margin-top: 4px;
+
+  font-size: 9px;
+
+  color:
+    var(--ion-color-medium);
+}
+
+.review-rating {
+  color: #f4b400;
+
+  font-size: 13px;
+
+  letter-spacing: 1px;
+
+  white-space: nowrap;
+}
+
+.review-comment {
+  margin: 12px 0 0;
+
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+
+    /* =========================
+       RELATED PRODUCTS
+       ========================= */
+
+    .related-scroll {
+      display: flex;
+
+      gap: 10px;
+
+      overflow-x: auto;
+
+      padding-bottom: 5px;
+
+      scrollbar-width: none;
+    }
+
+    .related-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .related-card {
+      width: 145px;
+      min-width: 145px;
+
+      padding: 12px;
+
+      cursor: pointer;
+    }
+
+    .related-image {
+      height: 105px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-bottom: 8px;
+
+      border-radius: 12px;
+
+      background:
+        rgba(120, 120, 120, .06);
+    }
+
+    .related-image img {
+      width: 85px;
+      height: 85px;
+
+      object-fit: contain;
+    }
+
+    .related-name {
+      min-height: 34px;
+
+      font-size: 11px;
+      line-height: 1.4;
+
+      font-weight: 800;
+
+      overflow: hidden;
+    }
+
+    .related-price {
+      margin-top: 6px;
+
+      font-size: 12px;
+      font-weight: 900;
+
+      color:
+        var(--ion-color-primary);
+    }
+
+
+
+    /* =========================
+       HEADER
+       ========================= */
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+    }
+
+    .icon-btn {
+      position: relative;
+    }
+
+    .header-badge {
+      position: absolute;
+
+      top: 2px;
+      right: 1px;
+
+      min-width: 16px;
+      height: 16px;
+
+      padding: 2px 4px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 999px;
+
+      font-size: 8px;
+      font-weight: 900;
+    }
+
+  `],
+
+  template: `
+
+<!-- =========================
+     HEADER
+     ========================= -->
 
 <ion-header>
 
-<ion-toolbar>
+  <ion-toolbar>
 
 
-<ion-buttons slot="start">
+    <ion-buttons slot="start">
 
-<ion-back-button defaultHref="/catalog">
-</ion-back-button>
+      <ion-back-button
+        defaultHref="/catalog">
+      </ion-back-button>
 
-</ion-buttons>
-
-
-
-
-<ion-title>
-Product Details
-</ion-title>
+    </ion-buttons>
 
 
 
+    <ion-title>
 
+      Product Details
 
-<ion-buttons slot="end" class="header-actions">
-
-
-
-<ion-button
-class="icon-btn"
-(click)="state.toggleWishlist(product.id)">
-
-
-<ion-icon
-
-[name]="state.wishlist.has(product.id)?'heart':'heart-outline'">
-
-</ion-icon>
-
-
-</ion-button>
+    </ion-title>
 
 
 
+    <ion-buttons
+      slot="end"
+      class="header-actions">
 
 
-<ion-button routerLink="/cart" class="icon-btn">
+      <ion-button
+        *ngIf="product as p"
+
+        class="icon-btn"
+
+        (click)="toggleWishlist()">
 
 
-<ion-icon name="cart-outline">
-</ion-icon>
+        <ion-icon
+          [name]="
+            state.wishlist.has(p.id)
+              ? 'heart'
+              : 'heart-outline'
+          ">
+        </ion-icon>
 
 
-<ion-badge color="danger" class="header-badge" *ngIf="state.cartCount > 0">{{ state.cartCount }}</ion-badge>
-
-
-</ion-button>
-
-
-
-</ion-buttons>
+      </ion-button>
 
 
 
-</ion-toolbar>
+      <ion-button
+        routerLink="/cart"
+        class="icon-btn">
+
+
+        <ion-icon
+          name="cart-outline">
+        </ion-icon>
+
+
+        <ion-badge
+          color="danger"
+
+          class="header-badge"
+
+          *ngIf="state.cartCount > 0">
+
+          {{ badgeText(state.cartCount) }}
+
+        </ion-badge>
+
+
+      </ion-button>
+
+
+    </ion-buttons>
+
+
+  </ion-toolbar>
 
 </ion-header>
 
 
 
+<!-- =========================
+     CONTENT
+     ========================= -->
+
+<ion-content
+  *ngIf="product as p">
+
+
+  <div class="page-wrap no-bottom">
 
 
 
-<ion-content *ngIf="product">
+    <!-- PRODUCT IMAGE -->
+
+    <div class="product-art">
 
 
-<div class="page-wrap no-bottom">
+      <img
+        [src]="productImage(p)"
+        [alt]="p.name">
+
+
+    </div>
 
 
 
+    <!-- BRAND -->
+
+    <div class="product-brand">
+
+      {{ p.brand }}
+      •
+      {{ p.category }}
+
+    </div>
 
 
-<div 
-class="product-art"
-style="min-height:280px">
+
+    <!-- NAME -->
+
+    <h1 class="product-name">
+
+      {{ p.name }}
+
+    </h1>
 
 
-<img
 
-[src]="product.imageAsset"
+    <!-- PRICE / RATING -->
 
-style="width:190px;height:190px">
+    <div class="row-between">
+
+
+      <div class="price">
+
+        {{ money(p.price) }}
+
+      </div>
+
+
+
+      <div class="rating-wrap">
+
+
+        <span>
+
+          <ng-container
+            *ngIf="reviewCount > 0; else noRating">
+
+            ★ {{ averageRating.toFixed(1) }}
+
+            <span class="rating-count">
+
+              ({{ reviewCount }})
+
+            </span>
+
+          </ng-container>
+
+          <ng-template #noRating>
+
+            No reviews yet
+
+          </ng-template>
+
+        </span>
+
+
+
+        <span
+          class="stock-badge"
+
+          [class.low]="isLowStock"
+
+          [class.out]="isOutOfStock">
+
+
+          {{ stockLabel }}
+
+
+        </span>
+
+
+      </div>
+
+
+    </div>
+
+
+
+    <!-- LOW STOCK -->
+
+    <div
+      class="stock-warning"
+
+      *ngIf="
+        isLowStock &&
+        !isOutOfStock
+      ">
+
+
+      Only {{ availableStock }}
+
+      item{{
+        availableStock === 1
+          ? ''
+          : 's'
+      }}
+
+      left in stock.
+
+
+    </div>
+
+
+
+    <!-- DESCRIPTION -->
+
+    <p class="description">
+
+      {{ p.description }}
+
+    </p>
+
+
+
+    <!-- =========================
+         QUANTITY
+         ========================= -->
+
+    <div class="app-card quantity-card">
+
+
+      <div class="quantity-header">
+
+
+        <div class="quantity-title">
+
+          Quantity
+
+        </div>
+
+
+        <div
+          class="quantity-stock"
+
+          *ngIf="
+            availableStock !== null
+          ">
+
+
+          {{ availableStock }}
+          available
+
+
+        </div>
+
+
+      </div>
+
+
+
+      <div class="qty-controls">
+
+
+        <button
+          type="button"
+
+          [disabled]="
+            quantity <= 1
+          "
+
+          (click)="decreaseQuantity()">
+
+          −
+
+        </button>
+
+
+
+        <div class="qty-value">
+
+          {{ quantity }}
+
+        </div>
+
+
+
+        <button
+          type="button"
+
+          [disabled]="
+            isOutOfStock ||
+            reachedMaximumStock
+          "
+
+          (click)="increaseQuantity()">
+
+          +
+
+        </button>
+
+
+      </div>
+
+
+
+      <div
+        class="cart-stock-note"
+
+        *ngIf="
+          existingCartQuantity > 0
+        ">
+
+
+        You already have
+
+        {{ existingCartQuantity }}
+
+        item{{
+          existingCartQuantity === 1
+            ? ''
+            : 's'
+        }}
+
+        of this product in your cart.
+
+
+      </div>
+
+
+    </div>
+
+
+
+    <!-- =========================
+         ACTIONS
+         ========================= -->
+
+    <div class="product-actions">
+
+
+      <ion-button
+        fill="outline"
+
+        [disabled]="
+          isOutOfStock ||
+          !canAddSelectedQuantity
+        "
+
+        (click)="add()">
+
+
+        <ion-icon
+          *ngIf="addedToCart"
+
+          slot="start"
+
+          name="checkmark-circle-outline">
+        </ion-icon>
+
+
+        {{
+          addedToCart
+            ? 'Added!'
+            : 'Add to Cart'
+        }}
+
+
+      </ion-button>
+
+
+
+      <ion-button
+        class="primary-btn"
+
+        [disabled]="
+          isOutOfStock ||
+          !canBuySelectedQuantity
+        "
+
+        (click)="buyNow()">
+
+
+        {{
+          isOutOfStock
+            ? 'Out of Stock'
+            : 'Buy Now'
+        }}
+
+
+      </ion-button>
+
+
+    </div>
+
+
+
+    <!-- =========================
+         BACK IN STOCK ALERT
+         ========================= -->
+
+    <div
+      class="stock-alert-wrap"
+      *ngIf="isOutOfStock">
+
+
+      <ion-button
+        class="stock-alert-button"
+
+        expand="block"
+
+        [fill]="
+          stockAlertEnabled
+            ? 'outline'
+            : 'solid'
+        "
+
+        [disabled]="
+          stockAlertBusy
+        "
+
+        (click)="
+          toggleStockAlert()
+        ">
+
+
+        <ion-spinner
+          *ngIf="stockAlertBusy"
+
+          slot="start"
+
+          name="crescent">
+        </ion-spinner>
+
+
+        <ion-icon
+          *ngIf="!stockAlertBusy"
+
+          slot="start"
+
+          name="notifications-outline">
+        </ion-icon>
+
+
+        {{
+          stockAlertBusy
+            ? 'Updating...'
+            : stockAlertEnabled
+              ? 'Cancel Stock Alert'
+              : 'Notify Me When Available'
+        }}
+
+
+      </ion-button>
+
+
+      <div
+        class="stock-alert-note"
+        *ngIf="stockAlertEnabled">
+
+        Stock alert is on. SmileHub will add a notification
+        when this product becomes available again while the app is active.
+
+      </div>
+
+
+    </div>
+
+
+
+    <!-- =========================
+         PRODUCT INFORMATION
+         ========================= -->
+
+    <div class="section-title">
+
+      Product Information
+
+    </div>
+
+
+
+    <div class="app-card details-card">
+
+
+      <div class="detail-row">
+
+
+        <span class="detail-label">
+
+          Brand
+
+        </span>
+
+
+        <span class="detail-value">
+
+          {{ p.brand || '—' }}
+
+        </span>
+
+
+      </div>
+
+
+
+      <div class="detail-row">
+
+
+        <span class="detail-label">
+
+          Category
+
+        </span>
+
+
+        <span class="detail-value">
+
+          {{ p.category || '—' }}
+
+        </span>
+
+
+      </div>
+
+
+
+      <div
+        class="detail-row"
+
+        *ngIf="p.sku">
+
+
+        <span class="detail-label">
+
+          SKU
+
+        </span>
+
+
+        <span class="detail-value">
+
+          {{ p.sku }}
+
+        </span>
+
+
+      </div>
+
+
+
+      <div class="detail-row">
+
+
+        <span class="detail-label">
+
+          Availability
+
+        </span>
+
+
+        <span class="detail-value">
+
+          {{ stockLabel }}
+
+        </span>
+
+
+      </div>
+
+
+    </div>
+
+
+
+    <!-- =========================
+         SPECIFICATIONS
+         ========================= -->
+
+    <ng-container
+      *ngIf="
+        p.specs &&
+        p.specs.length > 0
+      ">
+
+
+      <div class="section-title">
+
+        Specifications
+
+      </div>
+
+
+
+      <div class="app-card spec-card">
+
+
+        <div
+          class="spec-row"
+
+          *ngFor="
+            let spec of p.specs
+          ">
+
+
+          <ion-icon
+            name="checkmark-circle-outline">
+          </ion-icon>
+
+
+          <span>
+
+            {{ spec }}
+
+          </span>
+
+
+        </div>
+
+
+      </div>
+
+
+    </ng-container>
+
+
+
+<!-- =========================
+     CUSTOMER REVIEWS
+     ========================= -->
+
+<div class="section-title">
+
+  Customer Reviews
+
+</div>
+
+
+<!-- HAS REVIEWS -->
+
+<ng-container
+  *ngIf="
+    !loadingReviews &&
+    reviewCount > 0
+  ">
+
+
+  <!-- REVIEW SUMMARY -->
+
+  <div class="app-card review-summary">
+
+
+    <div class="review-score">
+
+      {{ averageRating.toFixed(1) }}
+
+    </div>
+
+
+    <div class="review-stars">
+
+      {{ starsForAverage() }}
+
+    </div>
+
+
+    <div class="review-count">
+
+      {{
+        reviewCount === 1
+          ? '1 customer review'
+          : reviewCount + ' customer reviews'
+      }}
+
+    </div>
+
+
+  </div>
+
+
+
+  <!-- REVIEW LIST -->
+
+  <div
+    class="app-card review-card"
+
+    *ngFor="
+      let review of reviews
+    ">
+
+
+    <div class="review-header">
+
+
+      <div>
+
+
+        <div class="review-user">
+
+          {{
+            review.userName ||
+            'SmileHub Customer'
+          }}
+
+        </div>
+
+
+        <div class="review-date">
+
+          {{
+            reviewDate(
+              review.createdAt
+            )
+          }}
+
+        </div>
+
+
+      </div>
+
+
+      <div class="review-rating">
+
+        {{
+          stars(
+            review.rating
+          )
+        }}
+
+      </div>
+
+
+    </div>
+
+
+    <p class="review-comment">
+
+      {{ review.comment }}
+
+    </p>
+
+
+  </div>
+
+
+</ng-container>
+
+
+
+<!-- LOADING -->
+
+<div
+  class="app-card review-state-card"
+
+  *ngIf="
+    loadingReviews
+  ">
+
+
+  <ion-spinner
+    name="crescent">
+  </ion-spinner>
+
+
+  <div class="review-state-title">
+
+    Loading reviews...
+
+  </div>
 
 
 </div>
 
 
 
+<!-- NO REVIEWS -->
+
+<div
+  class="app-card review-state-card"
+
+  *ngIf="
+    !loadingReviews &&
+    reviewCount === 0
+  ">
 
 
+  <div class="review-empty-star">
 
-<div 
-class="brand"
-style="margin-top:18px">
+    ☆
 
-
-{{product.brand}} • {{product.category}}
+  </div>
 
 
-</div>
+  <div class="review-state-title">
+
+    No reviews yet
+
+  </div>
 
 
+  <div class="review-state-text">
 
+    Customer reviews will appear here.
 
-
-
-<h1 style="font-size:25px;margin:6px 0 8px">
-
-
-{{product.name}}
-
-
-</h1>
-
-
-
-
-
-
-<div class="row-between">
-
-
-<div 
-class="price"
-style="font-size:23px">
-
-
-{{money(product.price)}}
+  </div>
 
 
 </div>
 
+    <!-- =========================
+         RELATED PRODUCTS
+         ========================= -->
 
+    <ng-container
+      *ngIf="
+        relatedProducts.length > 0
+      ">
 
 
-<div>
+      <div class="section-title">
 
-★ {{product.rating}}
+        You May Also Like
 
-<span class="pill">
+      </div>
 
-{{product.stock}}
 
-</span>
 
+      <div class="related-scroll">
 
-</div>
 
+        <div
+          class="app-card related-card"
 
+          *ngFor="
+            let related
+            of relatedProducts
+          "
 
-</div>
+          (click)="
+            openProduct(
+              related
+            )
+          ">
 
 
+          <div class="related-image">
 
 
+            <img
+              [src]="
+                productImage(
+                  related
+                )
+              "
 
+              [alt]="
+                related.name
+              ">
 
-<p class="muted">
 
-{{product.description}}
+          </div>
 
-</p>
 
 
+          <div class="related-name">
 
+            {{ related.name }}
 
+          </div>
 
 
-<div 
-class="app-card"
-style="margin-top:18px">
 
+          <div class="related-price">
 
-<b>
-Quantity
-</b>
+            {{
+              money(
+                related.price
+              )
+            }}
 
+          </div>
 
 
+        </div>
 
-<div 
-class="qty"
-style="margin-top:10px">
 
+      </div>
 
-<button
-(click)="quantity=Math.max(1,quantity-1)">
 
-−
+    </ng-container>
 
-</button>
 
 
-<b>
+  </div>
 
-{{quantity}}
 
-</b>
+</ion-content>
 
 
 
-<button
-(click)="quantity=quantity+1">
+<!-- =========================
+     PRODUCT NOT FOUND
+     ========================= -->
 
-+
+<ion-content
+  *ngIf="!product">
 
-</button>
 
+  <div
+    style="
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      text-align:center;
+      padding:30px;
+    ">
 
-</div>
 
+    <div
+      style="
+        font-size:45px;
+        margin-bottom:10px;
+      ">
 
+      🔍
 
-</div>
+    </div>
 
 
+    <h2>
 
+      Product not found
 
+    </h2>
 
 
-<div 
-class="form-grid"
-style="margin-top:16px">
+    <p class="muted">
 
+      This product may no longer be available.
 
-<ion-button
+    </p>
 
-class="outline-btn"
 
-fill="outline"
+    <ion-button
+      routerLink="/catalog"
 
-(click)="add()">
+      fill="outline">
 
+      Back to Catalog
 
-Add to Cart
+    </ion-button>
 
 
-</ion-button>
-
-
-
-
-
-<ion-button
-
-class="primary-btn"
-
-(click)="buyNow()">
-
-
-Buy Now
-
-
-</ion-button>
-
-
-
-</div>
-
-
-
-
-
-</div>
+  </div>
 
 
 </ion-content>
 
 `
+
 })
-export class ProductDetailsPage implements OnInit {
 
 
-product!:Product;
-
-quantity = 1;
-
-Math = Math;
+export class ProductDetailsPage
+implements OnInit, OnDestroy {
 
 
 
-constructor(
-private route:ActivatedRoute,
-public state:AppStateService,
-private router:Router
-){}
+  product?:
+    Product;
 
 
 
-
-
-ngOnInit(){
-
-this.product =
-this.state.productById(
-Number(
-this.route.snapshot.paramMap.get('id')
-)
-);
-
-this.state.loadProductsFromFirestore().then(() => {
-  this.product = this.state.productById(
-    Number(this.route.snapshot.paramMap.get('id'))
-  );
-});
-
-
-}
-
-async ionViewWillEnter() {
-  this.product = this.state.productById(
-    Number(this.route.snapshot.paramMap.get('id'))
-  );
-}
+  quantity =
+    1;
 
 
 
-
-add(){
-
-this.state.addToCart(
-this.product.id,
-this.quantity
-);
-
-}
+  addedToCart =
+    false;
 
 
+  stockAlertEnabled =
+    false;
 
 
-
-buyNow(){
-
-this.router.navigate(
-['/checkout'],
-{
-queryParams:{
-productId:this.product.id,
-quantity:this.quantity
-}
-}
-);
-
-
-}
+  stockAlertBusy =
+    false;
 
 
 
-
-money(v:number){
-
-return new Intl.NumberFormat(
-'en-PH',
-{
-style:'currency',
-currency:'PHP'
-}
-).format(v);
+  reviews:
+    ProductReview[] = [];
 
 
-}
 
+  loadingReviews =
+    false;
+
+
+
+  averageRating =
+    0;
+
+
+
+  reviewCount =
+    0;
+
+
+
+  private addedTimer?:
+    ReturnType<typeof setTimeout>;
+
+
+
+  constructor(
+
+    private route:
+      ActivatedRoute,
+
+    public state:
+      AppStateService,
+
+    private router:
+      Router,
+
+    private toastController:
+      ToastController,
+
+    private reviewService:
+      ReviewService,
+
+    private notificationService:
+      NotificationService
+
+  ) {}
+
+
+
+  /* =========================
+     INITIAL LOAD
+     ========================= */
+
+  ngOnInit():
+    void {
+
+
+    this.refreshProduct();
+
+
+    void this.loadReviews();
+
+
+    void this.loadStockAlertState();
+
+
+  }
+
+
+
+  /* =========================
+     PAGE ENTER
+     ========================= */
+
+  async ionViewWillEnter():
+    Promise<void> {
+
+
+    /*
+     * Refresh products so stock changes
+     * appear without browser refresh.
+     */
+
+    await this.state
+      .loadProductsFromFirestore();
+
+
+    this.refreshProduct();
+
+
+    await this.loadReviews();
+
+
+    await this.loadStockAlertState();
+
+
+  }
+
+
+
+  /* =========================
+     LOAD PRODUCT
+     ========================= */
+
+  private refreshProduct():
+    void {
+
+
+    const id =
+      Number(
+        this.route
+          .snapshot
+          .paramMap
+          .get('id')
+      );
+
+
+    if (
+      !Number.isFinite(id)
+    ) {
+
+
+      this.product =
+        undefined;
+
+
+      return;
+
+
+    }
+
+
+
+    const found =
+      this.state.products
+        .find(
+          product =>
+            product.id === id
+        );
+
+
+
+    if (!found) {
+
+
+      this.product =
+        undefined;
+
+
+      return;
+
+
+    }
+
+
+
+    this.product =
+      found;
+
+
+    this.state
+      .markProductViewed(
+        found.id
+      );
+
+
+
+    if (
+      this.availableStock !== null
+      &&
+      this.availableStock > 0
+      &&
+      this.quantity >
+        this.availableStock
+    ) {
+
+
+      this.quantity =
+        this.availableStock;
+
+
+    }
+
+
+
+    if (
+      this.quantity < 1
+    ) {
+
+
+      this.quantity =
+        1;
+
+
+    }
+
+
+  }
+
+
+
+  /* =========================
+     IMAGE
+     ========================= */
+
+  productImage(
+    product: Product
+  ):
+    string {
+
+
+    return (
+
+      product.image
+
+      ||
+
+      product.imageAsset
+
+      ||
+
+      'assets/products/default.svg'
+
+    );
+
+
+  }
+
+
+
+  /* =========================
+     AVAILABLE STOCK
+     ========================= */
+
+  get availableStock():
+    number | null {
+
+
+    if (!this.product) {
+
+      return null;
+
+    }
+
+
+
+    if (
+      typeof this.product.stockCount
+        === 'number'
+
+      &&
+
+      Number.isFinite(
+        this.product.stockCount
+      )
+    ) {
+
+
+      return Math.max(
+
+        0,
+
+        Math.floor(
+          this.product.stockCount
+        )
+
+      );
+
+
+    }
+
+
+
+    const stockText =
+      String(
+        this.product.stock ?? ''
+      )
+        .trim();
+
+
+
+    if (
+      /^\\d+$/.test(
+        stockText
+      )
+    ) {
+
+
+      return Math.max(
+
+        0,
+
+        Number(
+          stockText
+        )
+
+      );
+
+
+    }
+
+
+    return null;
+
+
+  }
+
+
+
+  /* =========================
+     OUT OF STOCK
+     ========================= */
+
+  get isOutOfStock():
+    boolean {
+
+
+    if (!this.product) {
+
+      return true;
+
+    }
+
+
+
+    if (
+      this.availableStock !== null
+    ) {
+
+
+      return (
+        this.availableStock <= 0
+      );
+
+
+    }
+
+
+
+    const stock =
+      String(
+        this.product.stock || ''
+      )
+        .trim()
+        .toLowerCase();
+
+
+
+    return (
+
+      stock ===
+        'out of stock'
+
+      ||
+
+      stock ===
+        'sold out'
+
+      ||
+
+      stock ===
+        'unavailable'
+
+      ||
+
+      stock ===
+        '0'
+
+    );
+
+
+  }
+
+
+
+  /* =========================
+     LOW STOCK
+     ========================= */
+
+  get isLowStock():
+    boolean {
+
+
+    return (
+
+      this.availableStock !== null
+
+      &&
+
+      this.availableStock > 0
+
+      &&
+
+      this.availableStock <= 10
+
+    );
+
+
+  }
+
+
+
+  /* =========================
+     STOCK LABEL
+     ========================= */
+
+  get stockLabel():
+    string {
+
+
+    if (
+      this.isOutOfStock
+    ) {
+
+
+      return 'Out of Stock';
+
+
+    }
+
+
+
+    if (
+      this.availableStock !== null
+    ) {
+
+
+      if (
+        this.availableStock <= 10
+      ) {
+
+
+        return (
+          `Only ${this.availableStock} left`
+        );
+
+
+      }
+
+
+
+      return (
+        `${this.availableStock} in stock`
+      );
+
+
+    }
+
+
+
+    return (
+
+      this.product?.stock
+
+      ||
+
+      'Available'
+
+    );
+
+
+  }
+
+
+
+  /* =========================
+     EXISTING CART QUANTITY
+     ========================= */
+
+  get existingCartQuantity():
+    number {
+
+
+    if (!this.product) {
+
+      return 0;
+
+    }
+
+
+
+    return this.state
+      .quantityFor(
+        this.product.id
+      );
+
+
+  }
+
+
+
+  /* =========================
+     REMAINING CART STOCK
+     ========================= */
+
+  get remainingStockForCart():
+    number | null {
+
+
+    if (
+      this.availableStock === null
+    ) {
+
+
+      return null;
+
+
+    }
+
+
+
+    return Math.max(
+
+      0,
+
+      this.availableStock
+      -
+      this.existingCartQuantity
+
+    );
+
+
+  }
+
+
+
+  /* =========================
+     MAXIMUM STOCK
+     ========================= */
+
+  get reachedMaximumStock():
+    boolean {
+
+
+    if (
+      this.availableStock === null
+    ) {
+
+
+      return false;
+
+
+    }
+
+
+
+    return (
+
+      this.quantity >=
+      this.availableStock
+
+    );
+
+
+  }
+
+
+
+  /* =========================
+     CAN ADD TO CART
+     ========================= */
+
+  get canAddSelectedQuantity():
+    boolean {
+
+
+    if (
+      this.isOutOfStock
+    ) {
+
+
+      return false;
+
+
+    }
+
+
+
+    if (
+      this.remainingStockForCart
+        === null
+    ) {
+
+
+      return true;
+
+
+    }
+
+
+
+    return (
+
+      this.quantity <=
+      this.remainingStockForCart
+
+    );
+
+
+  }
+
+
+
+  /* =========================
+     CAN BUY NOW
+     ========================= */
+
+  get canBuySelectedQuantity():
+    boolean {
+
+
+    if (
+      this.isOutOfStock
+    ) {
+
+
+      return false;
+
+
+    }
+
+
+
+    if (
+      this.availableStock === null
+    ) {
+
+
+      return true;
+
+
+    }
+
+
+
+    return (
+
+      this.quantity <=
+      this.availableStock
+
+    );
+
+
+  }
+
+
+
+  /* =========================
+     QUANTITY
+     ========================= */
+
+  decreaseQuantity():
+    void {
+
+
+    if (
+      this.quantity > 1
+    ) {
+
+
+      this.quantity--;
+
+
+    }
+
+
+  }
+
+
+
+  async increaseQuantity():
+    Promise<void> {
+
+
+    if (
+      this.isOutOfStock
+    ) {
+
+
+      return;
+
+
+    }
+
+
+
+    if (
+      this.availableStock !== null
+      &&
+      this.quantity >=
+        this.availableStock
+    ) {
+
+
+      await this.showToast(
+
+        this.availableStock === 1
+
+          ? 'Only 1 item is available.'
+
+          : `Only ${this.availableStock} items are available.`
+
+      );
+
+
+      return;
+
+
+    }
+
+
+
+    this.quantity++;
+
+
+  }
+
+
+
+  /* =========================
+     LOAD STOCK ALERT
+     ========================= */
+
+  private async loadStockAlertState():
+    Promise<void> {
+
+
+    if (!this.product) {
+
+
+      this.stockAlertEnabled =
+        false;
+
+
+      return;
+
+
+    }
+
+
+    try {
+
+
+      this.stockAlertEnabled =
+        await this.notificationService
+          .isStockAlertEnabled(
+            this.product.id
+          );
+
+
+    } catch {
+
+
+      this.stockAlertEnabled =
+        false;
+
+
+    }
+
+
+  }
+
+
+
+  /* =========================
+     TOGGLE STOCK ALERT
+     ========================= */
+
+  async toggleStockAlert():
+    Promise<void> {
+
+
+    if (
+      !this.product
+      ||
+      this.stockAlertBusy
+    ) {
+
+
+      return;
+
+
+    }
+
+
+    if (
+      !this.isOutOfStock
+      &&
+      !this.stockAlertEnabled
+    ) {
+
+
+      await this.showToast(
+        'This product is currently available.'
+      );
+
+
+      return;
+
+
+    }
+
+
+    this.stockAlertBusy =
+      true;
+
+
+    try {
+
+
+      if (
+        this.stockAlertEnabled
+      ) {
+
+
+        await this.notificationService
+          .disableStockAlert(
+            this.product.id
+          );
+
+
+        this.stockAlertEnabled =
+          false;
+
+
+        await this.showToast(
+          'Stock alert cancelled.'
+        );
+
+
+      } else {
+
+
+        await this.notificationService
+          .enableStockAlert(
+            this.product.id
+          );
+
+
+        this.stockAlertEnabled =
+          true;
+
+
+        await this.showToast(
+          `We will notify you when ${this.product.name} is available again.`
+        );
+
+
+      }
+
+
+    } catch (
+      error: any
+    ) {
+
+
+      console.error(
+        'Stock alert error:',
+        error
+      );
+
+
+      await this.showToast(
+        error?.message
+        ||
+        'Unable to update stock alert.'
+      );
+
+
+    } finally {
+
+
+      this.stockAlertBusy =
+        false;
+
+
+    }
+
+
+  }
+
+
+
+  /* =========================
+     WISHLIST
+     ========================= */
+
+  async toggleWishlist():
+    Promise<void> {
+
+
+    if (!this.product) {
+
+      return;
+
+    }
+
+
+
+    const wasSaved =
+      this.state.wishlist
+        .has(
+          this.product.id
+        );
+
+
+
+    this.state.toggleWishlist(
+      this.product.id
+    );
+
+
+
+    await this.showToast(
+
+      wasSaved
+
+        ? 'Removed from wishlist.'
+
+        : 'Saved to wishlist.'
+
+    );
+
+
+  }
+
+
+
+  /* =========================
+     ADD TO CART
+     ========================= */
+
+  async add():
+    Promise<void> {
+
+
+    if (
+      !this.product
+
+      ||
+
+      this.isOutOfStock
+    ) {
+
+
+      return;
+
+
+    }
+
+
+
+    if (
+      !this.canAddSelectedQuantity
+    ) {
+
+
+      const remaining =
+        this.remainingStockForCart;
+
+
+
+      if (
+        remaining !== null
+      ) {
+
+
+        if (
+          remaining <= 0
+        ) {
+
+
+          await this.showToast(
+            'All available stock is already in your cart.'
+          );
+
+
+        } else {
+
+
+          await this.showToast(
+
+            remaining === 1
+
+              ? 'You can only add 1 more item.'
+
+              : `You can only add ${remaining} more items.`
+
+          );
+
+
+        }
+
+
+      }
+
+
+
+      return;
+
+
+    }
+
+
+
+    this.state.addToCart(
+
+      this.product.id,
+
+      this.quantity
+
+    );
+
+
+
+    this.addedToCart =
+      true;
+
+
+
+    if (
+      this.addedTimer
+    ) {
+
+
+      clearTimeout(
+        this.addedTimer
+      );
+
+
+    }
+
+
+
+    this.addedTimer =
+      setTimeout(
+
+        () => {
+
+
+          this.addedToCart =
+            false;
+
+
+        },
+
+        1300
+
+      );
+
+
+
+    await this.showToast(
+
+      this.quantity === 1
+
+        ? `${this.product.name} added to cart.`
+
+        : `${this.quantity} × ${this.product.name} added to cart.`
+
+    );
+
+
+  }
+
+
+
+  /* =========================
+     BUY NOW
+     ========================= */
+
+  async buyNow():
+    Promise<void> {
+
+
+    if (!this.product) {
+
+      return;
+
+    }
+
+
+
+    if (
+      this.isOutOfStock
+    ) {
+
+
+      await this.showToast(
+        'This product is currently out of stock.'
+      );
+
+
+      return;
+
+
+    }
+
+
+
+    if (
+      !this.canBuySelectedQuantity
+    ) {
+
+
+      await this.showToast(
+        'Selected quantity exceeds the available stock.'
+      );
+
+
+      return;
+
+
+    }
+
+
+
+    await this.router.navigate(
+
+      ['/checkout'],
+
+      {
+
+        queryParams: {
+
+          productId:
+            this.product.id,
+
+          quantity:
+            this.quantity
+
+        }
+
+      }
+
+    );
+
+
+  }
+
+
+
+  /* =========================
+     REVIEWS
+     ========================= */
+
+  async loadReviews():
+    Promise<void> {
+
+
+    if (!this.product) {
+
+
+      this.reviews = [];
+
+      this.averageRating = 0;
+
+      this.reviewCount = 0;
+
+
+      return;
+
+
+    }
+
+
+
+    this.loadingReviews =
+      true;
+
+
+
+    try {
+
+
+      const reviews =
+        await this.reviewService
+          .getProductReviews(
+            this.product.id
+          );
+
+
+
+      this.reviews =
+        reviews;
+
+
+
+      this.reviewCount =
+        reviews.length;
+
+
+
+      if (
+        reviews.length === 0
+      ) {
+
+
+        this.averageRating =
+          0;
+
+
+      } else {
+
+
+        const total =
+          reviews.reduce(
+
+            (
+              sum,
+              review
+            ) =>
+
+              sum +
+              Number(
+                review.rating || 0
+              ),
+
+            0
+
+          );
+
+
+
+        this.averageRating =
+          total /
+          reviews.length;
+
+
+      }
+
+
+    } catch (error) {
+
+
+      console.error(
+        'Unable to load reviews:',
+        error
+      );
+
+
+      this.reviews =
+        [];
+
+
+      this.averageRating =
+        0;
+
+
+      this.reviewCount =
+        0;
+
+
+    } finally {
+
+
+      this.loadingReviews =
+        false;
+
+
+    }
+
+
+  }
+
+
+
+  /* =========================
+     DISPLAY RATING
+     ========================= */
+
+  get displayRating():
+    string {
+
+
+    if (
+      this.reviewCount > 0
+    ) {
+
+
+      return this.averageRating
+        .toFixed(1);
+
+
+    }
+
+
+    return 'No reviews yet';
+
+
+  }
+
+
+
+  /* =========================
+     STAR DISPLAY
+     ========================= */
+
+  stars(
+    rating: number
+  ):
+    string {
+
+
+    const safeRating =
+      Math.max(
+
+        0,
+
+        Math.min(
+
+          5,
+
+          Math.round(
+            Number(
+              rating || 0
+            )
+          )
+
+        )
+
+      );
+
+
+
+    return (
+
+      '★'.repeat(
+        safeRating
+      )
+
+      +
+
+      '☆'.repeat(
+        5 - safeRating
+      )
+
+    );
+
+
+  }
+
+
+
+  starsForAverage():
+    string {
+
+
+    return this.stars(
+
+      this.averageRating
+
+    );
+
+
+  }
+
+
+
+  /* =========================
+     REVIEW DATE
+     ========================= */
+
+  reviewDate(
+    value: any
+  ):
+    string {
+
+
+    try {
+
+
+      const date =
+
+        value?.toDate?.()
+
+        ??
+
+        (
+          value instanceof Date
+
+            ? value
+
+            : null
+        );
+
+
+
+      if (!date) {
+
+        return '';
+
+      }
+
+
+
+      return date
+        .toLocaleDateString(
+
+          'en-PH',
+
+          {
+
+            year:
+              'numeric',
+
+            month:
+              'short',
+
+            day:
+              'numeric'
+
+          }
+
+        );
+
+
+    } catch {
+
+
+      return '';
+
+
+    }
+
+
+  }
+
+
+
+  /* =========================
+     RELATED PRODUCTS
+     ========================= */
+
+  get relatedProducts():
+    Product[] {
+
+
+    if (!this.product) {
+
+      return [];
+
+    }
+
+
+
+    return this.state.products
+
+      .filter(
+
+        item =>
+
+          item.id !==
+            this.product!.id
+
+          &&
+
+          item.category ===
+            this.product!.category
+
+      )
+
+      .slice(
+        0,
+        4
+      );
+
+
+  }
+
+
+
+  openProduct(
+    product: Product
+  ):
+    void {
+
+
+    this.quantity =
+      1;
+
+
+
+    this.addedToCart =
+      false;
+
+
+
+    this.reviews =
+      [];
+
+
+
+    this.reviewCount =
+      0;
+
+
+
+    this.averageRating =
+      0;
+
+
+
+    void this.router.navigate(
+
+      [
+        '/product-details',
+        product.id
+      ]
+
+    )
+      .then(
+
+        async () => {
+
+
+          await this.state
+            .loadProductsFromFirestore();
+
+
+          this.refreshProduct();
+
+
+          await this.loadReviews();
+
+
+          await this.loadStockAlertState();
+
+
+        }
+
+      );
+
+
+  }
+
+
+
+  /* =========================
+     TOAST
+     ========================= */
+
+  private async showToast(
+    message: string
+  ):
+    Promise<void> {
+
+
+    const toast =
+      await this.toastController
+        .create({
+
+          message,
+
+          duration:
+            1400,
+
+          position:
+            'bottom'
+
+        });
+
+
+
+    await toast.present();
+
+
+  }
+
+
+
+  /* =========================
+     MONEY
+     ========================= */
+
+  money(
+    value: number
+  ):
+    string {
+
+
+    return new Intl.NumberFormat(
+
+      'en-PH',
+
+      {
+
+        style:
+          'currency',
+
+        currency:
+          'PHP'
+
+      }
+
+    )
+      .format(
+        Number(
+          value || 0
+        )
+      );
+
+
+  }
+
+
+
+  /* =========================
+     CART BADGE
+     ========================= */
+
+  badgeText(
+    value: number
+  ):
+    string {
+
+
+    return value > 99
+
+      ? '99+'
+
+      : String(
+          value
+        );
+
+
+  }
+
+
+
+  /* =========================
+     CLEANUP
+     ========================= */
+
+  ngOnDestroy():
+    void {
+
+
+    if (
+      this.addedTimer
+    ) {
+
+
+      clearTimeout(
+        this.addedTimer
+      );
+
+
+    }
+
+
+  }
 
 
 }
