@@ -37,7 +37,6 @@ import {
 } from '../models/product';
 
 
-
 @Component({
 
   selector: 'app-product-details',
@@ -50,91 +49,88 @@ import {
     CommonModule
   ],
 
+
   styles: [`
 
     /* =========================
-       PRODUCT IMAGE
+       PAGE
        ========================= */
 
+    .product-page {
+      padding-bottom: 30px;
+    }
+
+
+    /* =========================
+       PRODUCT HERO
+       ========================= */
+
+    .product-hero {
+      border-radius: 24px;
+
+      overflow: hidden;
+
+      background:
+        var(--ion-card-background);
+
+      padding: 14px;
+    }
+
+
     .product-art {
-      min-height: 280px;
+      min-height: 265px;
 
       display: flex;
       align-items: center;
       justify-content: center;
 
-      border-radius: 18px;
+      position: relative;
+
+      border-radius: 20px;
 
       overflow: hidden;
+
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .07
+        );
     }
+
 
     .product-art img {
-      width: 210px;
-      height: 210px;
+      width: 220px;
+      height: 220px;
+
+      max-width: 88%;
 
       object-fit: contain;
+
+      transition:
+        transform .2s ease;
     }
 
+
+    .product-art:hover img {
+      transform:
+        scale(1.03);
+    }
 
 
     /* =========================
-       BASIC INFO
+       STOCK HERO BADGE
        ========================= */
 
-    .product-brand {
-      margin-top: 18px;
+    .hero-stock {
+      position: absolute;
 
-      font-size: 11px;
-      font-weight: 800;
+      left: 12px;
+      top: 12px;
 
-      color:
-        var(--ion-color-primary);
-    }
-
-    .product-name {
-      margin: 6px 0 8px;
-
-      font-size: 25px;
-      line-height: 1.18;
-
-      font-weight: 900;
-    }
-
-    .price {
-      font-size: 23px;
-      font-weight: 900;
-    }
-
-    .rating-wrap {
-      display: flex;
-      align-items: center;
-
-      gap: 6px;
-
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    .rating-count {
-      font-size: 10px;
-
-      color:
-        var(--ion-color-medium);
-    }
-
-
-
-    /* =========================
-       STOCK
-       ========================= */
-
-    .stock-badge {
       display: inline-flex;
       align-items: center;
 
-      margin-left: 5px;
-
-      padding: 5px 8px;
+      padding: 6px 10px;
 
       border-radius: 999px;
 
@@ -144,41 +140,163 @@ import {
       background:
         rgba(
           var(--ion-color-success-rgb),
-          .12
+          .15
         );
 
       color:
         var(--ion-color-success);
     }
 
-    .stock-badge.low {
+
+    .hero-stock.low {
       background:
         rgba(
           var(--ion-color-warning-rgb),
-          .13
+          .16
         );
 
       color:
         var(--ion-color-warning);
     }
 
-    .stock-badge.out {
+
+    .hero-stock.out {
       background:
         rgba(
           var(--ion-color-danger-rgb),
-          .12
+          .16
         );
 
       color:
         var(--ion-color-danger);
     }
 
+
+    /* =========================
+       PRODUCT INFO
+       ========================= */
+
+    .product-info {
+      padding:
+        18px 3px 0;
+    }
+
+
+    .product-brand {
+      display: flex;
+      align-items: center;
+
+      gap: 7px;
+
+      color:
+        var(--ion-color-primary);
+
+      font-size: 10px;
+      font-weight: 900;
+
+      letter-spacing: .5px;
+
+      text-transform: uppercase;
+    }
+
+
+    .brand-dot {
+      width: 4px;
+      height: 4px;
+
+      border-radius: 50%;
+
+      background:
+        var(--ion-color-primary);
+
+      opacity: .6;
+    }
+
+
+    .product-name {
+      margin:
+        7px 0 10px;
+
+      font-size: 24px;
+      line-height: 1.18;
+
+      font-weight: 900;
+    }
+
+
+    .price-rating-row {
+      display: flex;
+
+      align-items: flex-end;
+      justify-content: space-between;
+
+      gap: 14px;
+    }
+
+
+    .price {
+      color:
+        var(--ion-color-primary);
+
+      font-size: 23px;
+      font-weight: 900;
+    }
+
+
+    .rating-wrap {
+      min-width: 0;
+
+      display: flex;
+      align-items: center;
+
+      gap: 5px;
+
+      font-size: 11px;
+      font-weight: 800;
+
+      white-space: nowrap;
+    }
+
+
+    .rating-star {
+      color: #f4b400;
+    }
+
+
+    .rating-count {
+      font-size: 9px;
+
+      color:
+        var(--ion-color-medium);
+    }
+
+
+    /* =========================
+       DESCRIPTION
+       ========================= */
+
+    .description {
+      margin:
+        14px 0 0;
+
+      font-size: 12px;
+      line-height: 1.6;
+
+      color:
+        var(--ion-color-medium);
+    }
+
+
+    /* =========================
+       LOW STOCK
+       ========================= */
+
     .stock-warning {
-      margin-top: 8px;
+      margin-top: 12px;
 
-      padding: 9px 11px;
+      padding: 10px 12px;
 
-      border-radius: 11px;
+      border-radius: 13px;
 
       font-size: 10px;
       font-weight: 800;
@@ -194,45 +312,34 @@ import {
     }
 
 
-
     /* =========================
-       DESCRIPTION
-       ========================= */
-
-    .description {
-      margin-top: 15px;
-
-      font-size: 12px;
-      line-height: 1.6;
-
-      color:
-        var(--ion-color-medium);
-    }
-
-
-
-    /* =========================
-       QUANTITY
+       QUANTITY CARD
        ========================= */
 
     .quantity-card {
       margin-top: 18px;
 
       padding: 16px;
+
+      border-radius: 18px;
     }
+
 
     .quantity-header {
       display: flex;
+
       align-items: center;
       justify-content: space-between;
 
       gap: 12px;
     }
 
+
     .quantity-title {
       font-size: 13px;
       font-weight: 900;
     }
+
 
     .quantity-stock {
       font-size: 10px;
@@ -241,26 +348,50 @@ import {
         var(--ion-color-medium);
     }
 
-    .qty-controls {
+
+    .qty-row {
+      margin-top: 14px;
+
       display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 14px;
+    }
+
+
+    .qty-controls {
+      display: inline-flex;
+
       align-items: center;
 
-      gap: 16px;
+      gap: 7px;
 
-      margin-top: 13px;
+      padding: 5px;
+
+      border-radius: 14px;
+
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .07
+        );
     }
+
 
     .qty-controls button {
       width: 38px;
       height: 38px;
 
       border: none;
+
       border-radius: 11px;
 
       background:
         rgba(
           var(--ion-color-primary-rgb),
-          .11
+          .13
         );
 
       color:
@@ -272,14 +403,16 @@ import {
       cursor: pointer;
     }
 
+
     .qty-controls button:disabled {
-      opacity: .4;
+      opacity: .35;
 
       cursor: default;
     }
 
+
     .qty-value {
-      min-width: 28px;
+      width: 36px;
 
       text-align: center;
 
@@ -287,15 +420,39 @@ import {
       font-weight: 900;
     }
 
-    .cart-stock-note {
-      margin-top: 10px;
 
-      font-size: 10px;
+    .qty-total-label {
+      text-align: right;
+
+      font-size: 9px;
 
       color:
         var(--ion-color-medium);
     }
 
+
+    .qty-total {
+      margin-top: 2px;
+
+      text-align: right;
+
+      color:
+        var(--ion-color-primary);
+
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+
+    .cart-stock-note {
+      margin-top: 11px;
+
+      font-size: 10px;
+      line-height: 1.45;
+
+      color:
+        var(--ion-color-medium);
+    }
 
 
     /* =========================
@@ -303,45 +460,56 @@ import {
        ========================= */
 
     .product-actions {
+      margin-top: 14px;
+
       display: grid;
 
       grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+        repeat(
+          2,
+          minmax(0, 1fr)
+        );
 
       gap: 10px;
-
-      margin-top: 16px;
     }
+
 
     .product-actions ion-button {
+      min-height: 46px;
+
       margin: 0;
 
-      --border-radius: 13px;
+      --border-radius: 14px;
 
-      font-weight: 800;
+      font-size: 12px;
+      font-weight: 900;
     }
 
 
+    /* =========================
+       STOCK ALERT
+       ========================= */
+
     .stock-alert-wrap {
-      margin-top: 10px;
+      margin-top: 11px;
     }
 
 
     .stock-alert-button {
       margin: 0;
 
-      --border-radius: 13px;
+      --border-radius: 14px;
 
       font-weight: 900;
     }
 
 
     .stock-alert-note {
-      margin-top: 7px;
+      margin-top: 8px;
 
-      padding: 9px 11px;
+      padding: 10px 12px;
 
-      border-radius: 11px;
+      border-radius: 12px;
 
       background:
         rgba(
@@ -357,18 +525,65 @@ import {
     }
 
 
-
     /* =========================
-       SECTION
+       SECTION TITLE
        ========================= */
 
     .section-title {
-      margin: 22px 2px 10px;
+      margin:
+        24px 2px 10px;
 
       font-size: 15px;
       font-weight: 900;
     }
 
+
+    /* =========================
+       PRODUCT DETAILS
+       ========================= */
+
+    .details-card {
+      padding:
+        6px 15px;
+
+      border-radius: 18px;
+    }
+
+
+    .detail-row {
+      min-height: 45px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 18px;
+
+      border-bottom:
+        1px solid
+        rgba(120,120,120,.10);
+
+      font-size: 11px;
+    }
+
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+
+    .detail-label {
+      color:
+        var(--ion-color-medium);
+    }
+
+
+    .detail-value {
+      text-align: right;
+
+      font-weight: 900;
+    }
 
 
     /* =========================
@@ -376,33 +591,38 @@ import {
        ========================= */
 
     .spec-card {
-      padding: 15px;
+      padding:
+        7px 15px;
+
+      border-radius: 18px;
     }
 
+
     .spec-row {
+      min-height: 42px;
+
       display: flex;
-      align-items: flex-start;
 
-      gap: 9px;
+      align-items: center;
 
-      padding: 8px 0;
+      gap: 10px;
 
       border-bottom:
         1px solid
-        rgba(120, 120, 120, .10);
+        rgba(120,120,120,.10);
 
       font-size: 11px;
       line-height: 1.45;
     }
 
+
     .spec-row:last-child {
       border-bottom: none;
     }
 
+
     .spec-row ion-icon {
       flex-shrink: 0;
-
-      margin-top: 1px;
 
       color:
         var(--ion-color-primary);
@@ -411,179 +631,150 @@ import {
     }
 
 
-
     /* =========================
-       PRODUCT DETAILS
+       REVIEWS
        ========================= */
 
-    .details-card {
-      padding: 15px;
-    }
+    .review-summary {
+      padding: 18px;
 
-    .detail-row {
       display: flex;
+      flex-direction: column;
+
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
 
-      gap: 16px;
+      text-align: center;
 
-      padding: 9px 0;
-
-      border-bottom:
-        1px solid
-        rgba(120, 120, 120, .10);
-
-      font-size: 11px;
+      border-radius: 18px;
     }
 
-    .detail-row:last-child {
-      border-bottom: none;
+
+    .review-score {
+      font-size: 32px;
+      font-weight: 900;
+
+      line-height: 1;
     }
 
-    .detail-label {
+
+    .review-stars {
+      margin-top: 7px;
+
+      color: #f4b400;
+
+      font-size: 16px;
+      letter-spacing: 2px;
+    }
+
+
+    .review-count {
+      margin-top: 7px;
+
+      font-size: 10px;
+
       color:
         var(--ion-color-medium);
     }
 
-    .detail-value {
-      text-align: right;
 
-      font-weight: 800;
+    .review-card {
+      margin-top: 10px;
+
+      padding: 15px;
+
+      border-radius: 18px;
     }
 
 
+    .review-header {
+      display: flex;
 
- /* =========================
-   REVIEWS
-   ========================= */
+      align-items: flex-start;
+      justify-content: space-between;
 
-.review-summary {
-  padding: 18px;
-
-  display: flex;
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-
-  text-align: center;
-}
-
-.review-score {
-  font-size: 30px;
-  font-weight: 900;
-
-  line-height: 1;
-}
-
-.review-stars {
-  margin-top: 7px;
-
-  color: #f4b400;
-
-  font-size: 16px;
-  letter-spacing: 2px;
-}
-
-.review-count {
-  margin-top: 7px;
-
-  font-size: 10px;
-
-  color:
-    var(--ion-color-medium);
-}
+      gap: 12px;
+    }
 
 
-
-.review-state-card {
-  min-height: 125px;
-
-  padding: 20px;
-
-  display: flex;
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-
-  text-align: center;
-}
-
-.review-empty-star {
-  margin-bottom: 8px;
-
-  font-size: 34px;
-
-  line-height: 1;
-
-  color:
-    var(--ion-text-color);
-}
-
-.review-state-title {
-  margin-top: 6px;
-
-  font-size: 13px;
-  font-weight: 900;
-}
-
-.review-state-text {
-  margin-top: 5px;
-
-  font-size: 10px;
-
-  color:
-    var(--ion-color-medium);
-}
+    .review-user {
+      font-size: 12px;
+      font-weight: 900;
+    }
 
 
+    .review-date {
+      margin-top: 3px;
 
-.review-card {
-  padding: 16px;
+      font-size: 9px;
 
-  margin-top: 10px;
-}
+      color:
+        var(--ion-color-medium);
+    }
 
-.review-header {
-  display: flex;
 
-  align-items: flex-start;
-  justify-content: space-between;
+    .review-rating {
+      color: #f4b400;
 
-  gap: 12px;
-}
+      font-size: 12px;
 
-.review-user {
-  font-size: 12px;
-  font-weight: 900;
-}
+      letter-spacing: 1px;
 
-.review-date {
-  margin-top: 4px;
+      white-space: nowrap;
+    }
 
-  font-size: 9px;
 
-  color:
-    var(--ion-color-medium);
-}
+    .review-comment {
+      margin:
+        11px 0 0;
 
-.review-rating {
-  color: #f4b400;
+      font-size: 11px;
+      line-height: 1.55;
+    }
 
-  font-size: 13px;
 
-  letter-spacing: 1px;
+    .review-state-card {
+      min-height: 135px;
 
-  white-space: nowrap;
-}
+      padding: 20px;
 
-.review-comment {
-  margin: 12px 0 0;
+      display: flex;
+      flex-direction: column;
 
-  font-size: 11px;
-  line-height: 1.55;
-}
+      align-items: center;
+      justify-content: center;
+
+      text-align: center;
+
+      border-radius: 18px;
+    }
+
+
+    .review-empty-star {
+      margin-bottom: 8px;
+
+      font-size: 34px;
+
+      line-height: 1;
+    }
+
+
+    .review-state-title {
+      margin-top: 5px;
+
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+
+    .review-state-text {
+      margin-top: 5px;
+
+      font-size: 10px;
+
+      color:
+        var(--ion-color-medium);
+    }
 
 
     /* =========================
@@ -596,49 +787,77 @@ import {
       gap: 10px;
 
       overflow-x: auto;
+      overflow-y: hidden;
 
-      padding-bottom: 5px;
+      padding:
+        2px 1px 8px;
 
       scrollbar-width: none;
     }
+
 
     .related-scroll::-webkit-scrollbar {
       display: none;
     }
 
-    .related-card {
-      width: 145px;
-      min-width: 145px;
 
-      padding: 12px;
+    .related-card {
+      width: 155px;
+      min-width: 155px;
+
+      padding: 11px;
+
+      border-radius: 17px;
 
       cursor: pointer;
     }
 
+
     .related-image {
-      height: 105px;
+      height: 112px;
 
       display: flex;
+
       align-items: center;
       justify-content: center;
 
-      margin-bottom: 8px;
+      margin-bottom: 9px;
 
-      border-radius: 12px;
+      border-radius: 13px;
+
+      overflow: hidden;
 
       background:
-        rgba(120, 120, 120, .06);
+        rgba(
+          var(--ion-color-primary-rgb),
+          .06
+        );
     }
 
+
     .related-image img {
-      width: 85px;
-      height: 85px;
+      width: 90px;
+      height: 90px;
 
       object-fit: contain;
     }
 
+
+    .related-brand {
+      color:
+        var(--ion-color-primary);
+
+      font-size: 8px;
+      font-weight: 900;
+
+      text-transform: uppercase;
+    }
+
+
     .related-name {
       min-height: 34px;
+
+      margin-top: 4px;
 
       font-size: 11px;
       line-height: 1.4;
@@ -646,18 +865,23 @@ import {
       font-weight: 800;
 
       overflow: hidden;
+
+      display: -webkit-box;
+
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
 
-    .related-price {
-      margin-top: 6px;
 
-      font-size: 12px;
-      font-weight: 900;
+    .related-price {
+      margin-top: 7px;
 
       color:
         var(--ion-color-primary);
-    }
 
+      font-size: 12px;
+      font-weight: 900;
+    }
 
 
     /* =========================
@@ -669,9 +893,11 @@ import {
       align-items: center;
     }
 
+
     .icon-btn {
       position: relative;
     }
+
 
     .header-badge {
       position: absolute;
@@ -685,6 +911,7 @@ import {
       padding: 2px 4px;
 
       display: flex;
+
       align-items: center;
       justify-content: center;
 
@@ -694,7 +921,108 @@ import {
       font-weight: 900;
     }
 
+
+    /* =========================
+       PRODUCT NOT FOUND
+       ========================= */
+
+    .not-found {
+      min-height: 100%;
+
+      display: flex;
+      flex-direction: column;
+
+      align-items: center;
+      justify-content: center;
+
+      text-align: center;
+
+      padding: 30px;
+    }
+
+
+    .not-found-icon {
+      width: 72px;
+      height: 72px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      margin-bottom: 12px;
+
+      border-radius: 22px;
+
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .10
+        );
+
+      font-size: 34px;
+    }
+
+
+    .not-found h2 {
+      margin:
+        0 0 6px;
+
+      font-weight: 900;
+    }
+
+
+    .not-found p {
+      margin:
+        0 0 18px;
+
+      font-size: 11px;
+
+      color:
+        var(--ion-color-medium);
+    }
+
+
+    /* =========================
+       RESPONSIVE
+       ========================= */
+
+    @media (min-width: 720px) {
+
+      .product-hero {
+        display: grid;
+
+        grid-template-columns:
+          1fr 1fr;
+
+        gap: 24px;
+
+        align-items: center;
+
+        padding: 20px;
+      }
+
+
+      .product-info {
+        padding: 10px;
+      }
+
+
+      .product-art {
+        min-height: 340px;
+      }
+
+
+      .product-art img {
+        width: 280px;
+        height: 280px;
+      }
+
+    }
+
+
   `],
+
 
   template: `
 
@@ -716,13 +1044,11 @@ import {
     </ion-buttons>
 
 
-
     <ion-title>
 
       Product Details
 
     </ion-title>
-
 
 
     <ion-buttons
@@ -731,6 +1057,7 @@ import {
 
 
       <ion-button
+
         *ngIf="product as p"
 
         class="icon-btn"
@@ -739,20 +1066,23 @@ import {
 
 
         <ion-icon
+
           [name]="
             state.wishlist.has(p.id)
               ? 'heart'
               : 'heart-outline'
           ">
+
         </ion-icon>
 
 
       </ion-button>
 
 
-
       <ion-button
+
         routerLink="/cart"
+
         class="icon-btn">
 
 
@@ -762,13 +1092,16 @@ import {
 
 
         <ion-badge
+
           color="danger"
 
           class="header-badge"
 
           *ngIf="state.cartCount > 0">
 
+
           {{ badgeText(state.cartCount) }}
+
 
         </ion-badge>
 
@@ -786,96 +1119,36 @@ import {
 
 
 <!-- =========================
-     CONTENT
+     PRODUCT
      ========================= -->
 
 <ion-content
   *ngIf="product as p">
 
 
-  <div class="page-wrap no-bottom">
+  <div class="page-wrap no-bottom product-page">
 
 
+    <!-- =========================
+         HERO
+         ========================= -->
 
-    <!-- PRODUCT IMAGE -->
-
-    <div class="product-art">
-
-
-      <img
-        [src]="productImage(p)"
-        [alt]="p.name">
+    <div class="product-hero">
 
 
-    </div>
+      <div class="product-art">
 
 
+        <img
 
-    <!-- BRAND -->
+          [src]="productImage(p)"
 
-    <div class="product-brand">
-
-      {{ p.brand }}
-      •
-      {{ p.category }}
-
-    </div>
-
-
-
-    <!-- NAME -->
-
-    <h1 class="product-name">
-
-      {{ p.name }}
-
-    </h1>
-
-
-
-    <!-- PRICE / RATING -->
-
-    <div class="row-between">
-
-
-      <div class="price">
-
-        {{ money(p.price) }}
-
-      </div>
-
-
-
-      <div class="rating-wrap">
-
-
-        <span>
-
-          <ng-container
-            *ngIf="reviewCount > 0; else noRating">
-
-            ★ {{ averageRating.toFixed(1) }}
-
-            <span class="rating-count">
-
-              ({{ reviewCount }})
-
-            </span>
-
-          </ng-container>
-
-          <ng-template #noRating>
-
-            No reviews yet
-
-          </ng-template>
-
-        </span>
-
+          [alt]="p.name">
 
 
         <span
-          class="stock-badge"
+
+          class="hero-stock"
 
           [class.low]="isLowStock"
 
@@ -891,43 +1164,135 @@ import {
       </div>
 
 
+
+      <div class="product-info">
+
+
+        <div class="product-brand">
+
+
+          <span>
+            {{ p.brand }}
+          </span>
+
+
+          <span class="brand-dot">
+          </span>
+
+
+          <span>
+            {{ p.category }}
+          </span>
+
+
+        </div>
+
+
+
+        <h1 class="product-name">
+
+          {{ p.name }}
+
+        </h1>
+
+
+
+        <div class="price-rating-row">
+
+
+          <div class="price">
+
+            {{ money(p.price) }}
+
+          </div>
+
+
+
+          <div class="rating-wrap">
+
+
+            <ng-container
+              *ngIf="
+                reviewCount > 0;
+                else noRating
+              ">
+
+
+              <span class="rating-star">
+                ★
+              </span>
+
+
+              <span>
+                {{ averageRating.toFixed(1) }}
+              </span>
+
+
+              <span class="rating-count">
+
+                ({{ reviewCount }})
+
+              </span>
+
+
+            </ng-container>
+
+
+
+            <ng-template #noRating>
+
+              <span class="rating-count">
+
+                No reviews yet
+
+              </span>
+
+            </ng-template>
+
+
+          </div>
+
+
+        </div>
+
+
+
+        <div
+
+          class="stock-warning"
+
+          *ngIf="
+            isLowStock &&
+            !isOutOfStock
+          ">
+
+
+          Only {{ availableStock }}
+
+          item{{
+            availableStock === 1
+              ? ''
+              : 's'
+          }}
+
+          left in stock.
+
+
+        </div>
+
+
+
+        <p class="description">
+
+          {{ p.description }}
+
+        </p>
+
+
+      </div>
+
+
     </div>
-
-
-
-    <!-- LOW STOCK -->
-
-    <div
-      class="stock-warning"
-
-      *ngIf="
-        isLowStock &&
-        !isOutOfStock
-      ">
-
-
-      Only {{ availableStock }}
-
-      item{{
-        availableStock === 1
-          ? ''
-          : 's'
-      }}
-
-      left in stock.
-
-
-    </div>
-
-
-
-    <!-- DESCRIPTION -->
-
-    <p class="description">
-
-      {{ p.description }}
-
-    </p>
 
 
 
@@ -943,12 +1308,13 @@ import {
 
         <div class="quantity-title">
 
-          Quantity
+          Select Quantity
 
         </div>
 
 
         <div
+
           class="quantity-stock"
 
           *ngIf="
@@ -967,45 +1333,72 @@ import {
 
 
 
-      <div class="qty-controls">
+      <div class="qty-row">
 
 
-        <button
-          type="button"
-
-          [disabled]="
-            quantity <= 1
-          "
-
-          (click)="decreaseQuantity()">
-
-          −
-
-        </button>
+        <div class="qty-controls">
 
 
+          <button
 
-        <div class="qty-value">
+            type="button"
 
-          {{ quantity }}
+            [disabled]="
+              quantity <= 1
+            "
+
+            (click)="decreaseQuantity()">
+
+            −
+
+          </button>
+
+
+          <div class="qty-value">
+
+            {{ quantity }}
+
+          </div>
+
+
+          <button
+
+            type="button"
+
+            [disabled]="
+              isOutOfStock ||
+              reachedMaximumStock
+            "
+
+            (click)="increaseQuantity()">
+
+            +
+
+          </button>
+
 
         </div>
 
 
 
-        <button
-          type="button"
+        <div>
 
-          [disabled]="
-            isOutOfStock ||
-            reachedMaximumStock
-          "
 
-          (click)="increaseQuantity()">
+          <div class="qty-total-label">
 
-          +
+            Subtotal
 
-        </button>
+          </div>
+
+
+          <div class="qty-total">
+
+            {{ money(p.price * quantity) }}
+
+          </div>
+
+
+        </div>
 
 
       </div>
@@ -1013,6 +1406,7 @@ import {
 
 
       <div
+
         class="cart-stock-note"
 
         *ngIf="
@@ -1048,6 +1442,7 @@ import {
 
 
       <ion-button
+
         fill="outline"
 
         [disabled]="
@@ -1059,11 +1454,13 @@ import {
 
 
         <ion-icon
+
           *ngIf="addedToCart"
 
           slot="start"
 
           name="checkmark-circle-outline">
+
         </ion-icon>
 
 
@@ -1079,6 +1476,7 @@ import {
 
 
       <ion-button
+
         class="primary-btn"
 
         [disabled]="
@@ -1104,15 +1502,18 @@ import {
 
 
     <!-- =========================
-         BACK IN STOCK ALERT
+         BACK IN STOCK
          ========================= -->
 
     <div
+
       class="stock-alert-wrap"
+
       *ngIf="isOutOfStock">
 
 
       <ion-button
+
         class="stock-alert-button"
 
         expand="block"
@@ -1127,26 +1528,28 @@ import {
           stockAlertBusy
         "
 
-        (click)="
-          toggleStockAlert()
-        ">
+        (click)="toggleStockAlert()">
 
 
         <ion-spinner
+
           *ngIf="stockAlertBusy"
 
           slot="start"
 
           name="crescent">
+
         </ion-spinner>
 
 
         <ion-icon
+
           *ngIf="!stockAlertBusy"
 
           slot="start"
 
           name="notifications-outline">
+
         </ion-icon>
 
 
@@ -1162,12 +1565,20 @@ import {
       </ion-button>
 
 
+
       <div
+
         class="stock-alert-note"
+
         *ngIf="stockAlertEnabled">
 
-        Stock alert is on. SmileHub will add a notification
-        when this product becomes available again while the app is active.
+
+        Stock alert is on.
+        SmileHub will notify you
+        when this product becomes
+        available again while
+        the app is active.
+
 
       </div>
 
@@ -1187,26 +1598,18 @@ import {
     </div>
 
 
-
     <div class="app-card details-card">
 
 
       <div class="detail-row">
 
-
         <span class="detail-label">
-
           Brand
-
         </span>
-
 
         <span class="detail-value">
-
           {{ p.brand || '—' }}
-
         </span>
-
 
       </div>
 
@@ -1214,20 +1617,13 @@ import {
 
       <div class="detail-row">
 
-
         <span class="detail-label">
-
           Category
-
         </span>
-
 
         <span class="detail-value">
-
           {{ p.category || '—' }}
-
         </span>
-
 
       </div>
 
@@ -1235,23 +1631,15 @@ import {
 
       <div
         class="detail-row"
-
         *ngIf="p.sku">
 
-
         <span class="detail-label">
-
           SKU
-
         </span>
-
 
         <span class="detail-value">
-
           {{ p.sku }}
-
         </span>
-
 
       </div>
 
@@ -1259,20 +1647,13 @@ import {
 
       <div class="detail-row">
 
-
         <span class="detail-label">
-
           Availability
-
         </span>
-
 
         <span class="detail-value">
-
           {{ stockLabel }}
-
         </span>
-
 
       </div>
 
@@ -1286,6 +1667,7 @@ import {
          ========================= -->
 
     <ng-container
+
       *ngIf="
         p.specs &&
         p.specs.length > 0
@@ -1299,11 +1681,11 @@ import {
       </div>
 
 
-
       <div class="app-card spec-card">
 
 
         <div
+
           class="spec-row"
 
           *ngFor="
@@ -1333,92 +1715,49 @@ import {
 
 
 
-<!-- =========================
-     CUSTOMER REVIEWS
-     ========================= -->
+    <!-- =========================
+         CUSTOMER REVIEWS
+         ========================= -->
 
-<div class="section-title">
+    <div class="section-title">
 
-  Customer Reviews
-
-</div>
-
-
-<!-- HAS REVIEWS -->
-
-<ng-container
-  *ngIf="
-    !loadingReviews &&
-    reviewCount > 0
-  ">
-
-
-  <!-- REVIEW SUMMARY -->
-
-  <div class="app-card review-summary">
-
-
-    <div class="review-score">
-
-      {{ averageRating.toFixed(1) }}
+      Customer Reviews
 
     </div>
 
 
-    <div class="review-stars">
 
-      {{ starsForAverage() }}
+    <ng-container
 
-    </div>
-
-
-    <div class="review-count">
-
-      {{
-        reviewCount === 1
-          ? '1 customer review'
-          : reviewCount + ' customer reviews'
-      }}
-
-    </div>
+      *ngIf="
+        !loadingReviews &&
+        reviewCount > 0
+      ">
 
 
-  </div>
+      <div class="app-card review-summary">
 
 
+        <div class="review-score">
 
-  <!-- REVIEW LIST -->
-
-  <div
-    class="app-card review-card"
-
-    *ngFor="
-      let review of reviews
-    ">
-
-
-    <div class="review-header">
-
-
-      <div>
-
-
-        <div class="review-user">
-
-          {{
-            review.userName ||
-            'SmileHub Customer'
-          }}
+          {{ averageRating.toFixed(1) }}
 
         </div>
 
 
-        <div class="review-date">
+        <div class="review-stars">
+
+          {{ starsForAverage() }}
+
+        </div>
+
+
+        <div class="review-count">
 
           {{
-            reviewDate(
-              review.createdAt
-            )
+            reviewCount === 1
+              ? '1 customer review'
+              : reviewCount + ' customer reviews'
           }}
 
         </div>
@@ -1427,13 +1766,97 @@ import {
       </div>
 
 
-      <div class="review-rating">
 
-        {{
-          stars(
-            review.rating
-          )
-        }}
+      <div
+
+        class="app-card review-card"
+
+        *ngFor="
+          let review of reviews
+        ">
+
+
+        <div class="review-header">
+
+
+          <div>
+
+
+            <div class="review-user">
+
+              {{
+                review.userName ||
+                'SmileHub Customer'
+              }}
+
+            </div>
+
+
+            <div class="review-date">
+
+              {{
+                reviewDate(
+                  review.createdAt
+                )
+              }}
+
+            </div>
+
+
+          </div>
+
+
+
+          <div class="review-rating">
+
+            {{
+              stars(
+                review.rating
+              )
+            }}
+
+          </div>
+
+
+        </div>
+
+
+
+        <p class="review-comment">
+
+          {{ review.comment }}
+
+        </p>
+
+
+      </div>
+
+
+    </ng-container>
+
+
+
+    <!-- =========================
+         REVIEW LOADING
+         ========================= -->
+
+    <div
+
+      class="app-card review-state-card"
+
+      *ngIf="
+        loadingReviews
+      ">
+
+
+      <ion-spinner
+        name="crescent">
+      </ion-spinner>
+
+
+      <div class="review-state-title">
+
+        Loading reviews...
 
       </div>
 
@@ -1441,85 +1864,52 @@ import {
     </div>
 
 
-    <p class="review-comment">
 
-      {{ review.comment }}
+    <!-- =========================
+         NO REVIEWS
+         ========================= -->
 
-    </p>
+    <div
 
+      class="app-card review-state-card"
 
-  </div>
-
-
-</ng-container>
-
-
-
-<!-- LOADING -->
-
-<div
-  class="app-card review-state-card"
-
-  *ngIf="
-    loadingReviews
-  ">
+      *ngIf="
+        !loadingReviews &&
+        reviewCount === 0
+      ">
 
 
-  <ion-spinner
-    name="crescent">
-  </ion-spinner>
+      <div class="review-empty-star">
+
+        ☆
+
+      </div>
 
 
-  <div class="review-state-title">
+      <div class="review-state-title">
 
-    Loading reviews...
+        No reviews yet
 
-  </div>
-
-
-</div>
+      </div>
 
 
+      <div class="review-state-text">
 
-<!-- NO REVIEWS -->
+        Customer reviews will appear here.
 
-<div
-  class="app-card review-state-card"
-
-  *ngIf="
-    !loadingReviews &&
-    reviewCount === 0
-  ">
+      </div>
 
 
-  <div class="review-empty-star">
-
-    ☆
-
-  </div>
+    </div>
 
 
-  <div class="review-state-title">
-
-    No reviews yet
-
-  </div>
-
-
-  <div class="review-state-text">
-
-    Customer reviews will appear here.
-
-  </div>
-
-
-</div>
 
     <!-- =========================
          RELATED PRODUCTS
          ========================= -->
 
     <ng-container
+
       *ngIf="
         relatedProducts.length > 0
       ">
@@ -1532,11 +1922,11 @@ import {
       </div>
 
 
-
       <div class="related-scroll">
 
 
         <div
+
           class="app-card related-card"
 
           *ngFor="
@@ -1544,30 +1934,28 @@ import {
             of relatedProducts
           "
 
-          (click)="
-            openProduct(
-              related
-            )
-          ">
+          (click)="openProduct(related)">
 
 
           <div class="related-image">
 
 
             <img
-              [src]="
-                productImage(
-                  related
-                )
-              "
 
-              [alt]="
-                related.name
-              ">
+              [src]="productImage(related)"
+
+              [alt]="related.name">
 
 
           </div>
 
+
+
+          <div class="related-brand">
+
+            {{ related.brand }}
+
+          </div>
 
 
           <div class="related-name">
@@ -1577,14 +1965,9 @@ import {
           </div>
 
 
-
           <div class="related-price">
 
-            {{
-              money(
-                related.price
-              )
-            }}
+            {{ money(related.price) }}
 
           </div>
 
@@ -1596,7 +1979,6 @@ import {
 
 
     </ng-container>
-
 
 
   </div>
@@ -1614,23 +1996,10 @@ import {
   *ngIf="!product">
 
 
-  <div
-    style="
-      height:100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex-direction:column;
-      text-align:center;
-      padding:30px;
-    ">
+  <div class="not-found">
 
 
-    <div
-      style="
-        font-size:45px;
-        margin-bottom:10px;
-      ">
+    <div class="not-found-icon">
 
       🔍
 
@@ -1644,7 +2013,7 @@ import {
     </h2>
 
 
-    <p class="muted">
+    <p>
 
       This product may no longer be available.
 
@@ -1652,6 +2021,7 @@ import {
 
 
     <ion-button
+
       routerLink="/catalog"
 
       fill="outline">
@@ -1675,15 +2045,12 @@ export class ProductDetailsPage
 implements OnInit, OnDestroy {
 
 
-
   product?:
     Product;
 
 
-
   quantity =
     1;
-
 
 
   addedToCart =
@@ -1698,25 +2065,20 @@ implements OnInit, OnDestroy {
     false;
 
 
-
   reviews:
     ProductReview[] = [];
-
 
 
   loadingReviews =
     false;
 
 
-
   averageRating =
     0;
 
 
-
   reviewCount =
     0;
-
 
 
   private addedTimer?:
@@ -1759,10 +2121,12 @@ implements OnInit, OnDestroy {
     this.refreshProduct();
 
 
-    void this.loadReviews();
+    void this
+      .loadReviews();
 
 
-    void this.loadStockAlertState();
+    void this
+      .loadStockAlertState();
 
 
   }
@@ -1777,11 +2141,6 @@ implements OnInit, OnDestroy {
     Promise<void> {
 
 
-    /*
-     * Refresh products so stock changes
-     * appear without browser refresh.
-     */
-
     await this.state
       .loadProductsFromFirestore();
 
@@ -1789,10 +2148,12 @@ implements OnInit, OnDestroy {
     this.refreshProduct();
 
 
-    await this.loadReviews();
+    await this
+      .loadReviews();
 
 
-    await this.loadStockAlertState();
+    await this
+      .loadStockAlertState();
 
 
   }
@@ -1800,7 +2161,7 @@ implements OnInit, OnDestroy {
 
 
   /* =========================
-     LOAD PRODUCT
+     REFRESH PRODUCT
      ========================= */
 
   private refreshProduct():
@@ -1831,7 +2192,6 @@ implements OnInit, OnDestroy {
     }
 
 
-
     const found =
       this.state.products
         .find(
@@ -1840,8 +2200,9 @@ implements OnInit, OnDestroy {
         );
 
 
-
-    if (!found) {
+    if (
+      !found
+    ) {
 
 
       this.product =
@@ -1854,7 +2215,6 @@ implements OnInit, OnDestroy {
     }
 
 
-
     this.product =
       found;
 
@@ -1863,7 +2223,6 @@ implements OnInit, OnDestroy {
       .markProductViewed(
         found.id
       );
-
 
 
     if (
@@ -1883,7 +2242,6 @@ implements OnInit, OnDestroy {
     }
 
 
-
     if (
       this.quantity < 1
     ) {
@@ -1901,7 +2259,7 @@ implements OnInit, OnDestroy {
 
 
   /* =========================
-     IMAGE
+     PRODUCT IMAGE
      ========================= */
 
   productImage(
@@ -1937,20 +2295,19 @@ implements OnInit, OnDestroy {
     number | null {
 
 
-    if (!this.product) {
+    if (
+      !this.product
+    ) {
 
       return null;
 
     }
 
 
-
     if (
       typeof this.product.stockCount
         === 'number'
-
       &&
-
       Number.isFinite(
         this.product.stockCount
       )
@@ -1971,17 +2328,17 @@ implements OnInit, OnDestroy {
     }
 
 
-
     const stockText =
       String(
-        this.product.stock ?? ''
+        this.product.stock
+        ??
+        ''
       )
         .trim();
 
 
-
     if (
-      /^\\d+$/.test(
+      /^[0-9]+$/.test(
         stockText
       )
     ) {
@@ -2016,12 +2373,13 @@ implements OnInit, OnDestroy {
     boolean {
 
 
-    if (!this.product) {
+    if (
+      !this.product
+    ) {
 
       return true;
 
     }
-
 
 
     if (
@@ -2037,14 +2395,14 @@ implements OnInit, OnDestroy {
     }
 
 
-
     const stock =
       String(
-        this.product.stock || ''
+        this.product.stock
+        ||
+        ''
       )
         .trim()
         .toLowerCase();
-
 
 
     return (
@@ -2120,7 +2478,6 @@ implements OnInit, OnDestroy {
     }
 
 
-
     if (
       this.availableStock !== null
     ) {
@@ -2132,21 +2489,25 @@ implements OnInit, OnDestroy {
 
 
         return (
-          `Only ${this.availableStock} left`
+          'Only '
+          +
+          this.availableStock
+          +
+          ' left'
         );
 
 
       }
 
 
-
       return (
-        `${this.availableStock} in stock`
+        this.availableStock
+        +
+        ' in stock'
       );
 
 
     }
-
 
 
     return (
@@ -2172,12 +2533,13 @@ implements OnInit, OnDestroy {
     number {
 
 
-    if (!this.product) {
+    if (
+      !this.product
+    ) {
 
       return 0;
 
     }
-
 
 
     return this.state
@@ -2191,7 +2553,7 @@ implements OnInit, OnDestroy {
 
 
   /* =========================
-     REMAINING CART STOCK
+     REMAINING STOCK
      ========================= */
 
   get remainingStockForCart():
@@ -2202,12 +2564,9 @@ implements OnInit, OnDestroy {
       this.availableStock === null
     ) {
 
-
       return null;
 
-
     }
-
 
 
     return Math.max(
@@ -2237,12 +2596,9 @@ implements OnInit, OnDestroy {
       this.availableStock === null
     ) {
 
-
       return false;
 
-
     }
-
 
 
     return (
@@ -2269,25 +2625,19 @@ implements OnInit, OnDestroy {
       this.isOutOfStock
     ) {
 
-
       return false;
 
-
     }
-
 
 
     if (
-      this.remainingStockForCart
-        === null
+      this.remainingStockForCart ===
+        null
     ) {
-
 
       return true;
 
-
     }
-
 
 
     return (
@@ -2303,7 +2653,7 @@ implements OnInit, OnDestroy {
 
 
   /* =========================
-     CAN BUY NOW
+     CAN BUY
      ========================= */
 
   get canBuySelectedQuantity():
@@ -2314,24 +2664,19 @@ implements OnInit, OnDestroy {
       this.isOutOfStock
     ) {
 
-
       return false;
 
-
     }
-
 
 
     if (
-      this.availableStock === null
+      this.availableStock ===
+        null
     ) {
-
 
       return true;
 
-
     }
-
 
 
     return (
@@ -2377,12 +2722,9 @@ implements OnInit, OnDestroy {
       this.isOutOfStock
     ) {
 
-
       return;
 
-
     }
-
 
 
     if (
@@ -2399,7 +2741,11 @@ implements OnInit, OnDestroy {
 
           ? 'Only 1 item is available.'
 
-          : `Only ${this.availableStock} items are available.`
+          : 'Only '
+            +
+            this.availableStock
+            +
+            ' items are available.'
 
       );
 
@@ -2408,7 +2754,6 @@ implements OnInit, OnDestroy {
 
 
     }
-
 
 
     this.quantity++;
@@ -2426,7 +2771,9 @@ implements OnInit, OnDestroy {
     Promise<void> {
 
 
-    if (!this.product) {
+    if (
+      !this.product
+    ) {
 
 
       this.stockAlertEnabled =
@@ -2443,7 +2790,8 @@ implements OnInit, OnDestroy {
 
 
       this.stockAlertEnabled =
-        await this.notificationService
+        await this
+          .notificationService
           .isStockAlertEnabled(
             this.product.id
           );
@@ -2477,9 +2825,7 @@ implements OnInit, OnDestroy {
       this.stockAlertBusy
     ) {
 
-
       return;
-
 
     }
 
@@ -2514,7 +2860,8 @@ implements OnInit, OnDestroy {
       ) {
 
 
-        await this.notificationService
+        await this
+          .notificationService
           .disableStockAlert(
             this.product.id
           );
@@ -2532,7 +2879,8 @@ implements OnInit, OnDestroy {
       } else {
 
 
-        await this.notificationService
+        await this
+          .notificationService
           .enableStockAlert(
             this.product.id
           );
@@ -2543,7 +2891,13 @@ implements OnInit, OnDestroy {
 
 
         await this.showToast(
-          `We will notify you when ${this.product.name} is available again.`
+
+          'We will notify you when '
+          +
+          this.product.name
+          +
+          ' is available again.'
+
         );
 
 
@@ -2562,9 +2916,11 @@ implements OnInit, OnDestroy {
 
 
       await this.showToast(
+
         error?.message
         ||
         'Unable to update stock alert.'
+
       );
 
 
@@ -2590,12 +2946,13 @@ implements OnInit, OnDestroy {
     Promise<void> {
 
 
-    if (!this.product) {
+    if (
+      !this.product
+    ) {
 
       return;
 
     }
-
 
 
     const wasSaved =
@@ -2605,19 +2962,16 @@ implements OnInit, OnDestroy {
         );
 
 
-
-    this.state.toggleWishlist(
-      this.product.id
-    );
-
+    this.state
+      .toggleWishlist(
+        this.product.id
+      );
 
 
     await this.showToast(
 
       wasSaved
-
         ? 'Removed from wishlist.'
-
         : 'Saved to wishlist.'
 
     );
@@ -2637,18 +2991,13 @@ implements OnInit, OnDestroy {
 
     if (
       !this.product
-
       ||
-
       this.isOutOfStock
     ) {
 
-
       return;
 
-
     }
-
 
 
     if (
@@ -2658,7 +3007,6 @@ implements OnInit, OnDestroy {
 
       const remaining =
         this.remainingStockForCart;
-
 
 
       if (
@@ -2685,7 +3033,11 @@ implements OnInit, OnDestroy {
 
               ? 'You can only add 1 more item.'
 
-              : `You can only add ${remaining} more items.`
+              : 'You can only add '
+                +
+                remaining
+                +
+                ' more items.'
 
           );
 
@@ -2696,27 +3048,24 @@ implements OnInit, OnDestroy {
       }
 
 
-
       return;
 
 
     }
 
 
+    this.state
+      .addToCart(
 
-    this.state.addToCart(
+        this.product.id,
 
-      this.product.id,
+        this.quantity
 
-      this.quantity
-
-    );
-
+      );
 
 
     this.addedToCart =
       true;
-
 
 
     if (
@@ -2732,16 +3081,13 @@ implements OnInit, OnDestroy {
     }
 
 
-
     this.addedTimer =
       setTimeout(
 
         () => {
 
-
           this.addedToCart =
             false;
-
 
         },
 
@@ -2750,14 +3096,21 @@ implements OnInit, OnDestroy {
       );
 
 
-
     await this.showToast(
 
       this.quantity === 1
 
-        ? `${this.product.name} added to cart.`
+        ? this.product.name
+          +
+          ' added to cart.'
 
-        : `${this.quantity} × ${this.product.name} added to cart.`
+        : this.quantity
+          +
+          ' × '
+          +
+          this.product.name
+          +
+          ' added to cart.'
 
     );
 
@@ -2774,12 +3127,13 @@ implements OnInit, OnDestroy {
     Promise<void> {
 
 
-    if (!this.product) {
+    if (
+      !this.product
+    ) {
 
       return;
 
     }
-
 
 
     if (
@@ -2798,7 +3152,6 @@ implements OnInit, OnDestroy {
     }
 
 
-
     if (
       !this.canBuySelectedQuantity
     ) {
@@ -2815,26 +3168,28 @@ implements OnInit, OnDestroy {
     }
 
 
+    await this.router
+      .navigate(
 
-    await this.router.navigate(
+        [
+          '/checkout'
+        ],
 
-      ['/checkout'],
+        {
 
-      {
+          queryParams: {
 
-        queryParams: {
+            productId:
+              this.product.id,
 
-          productId:
-            this.product.id,
+            quantity:
+              this.quantity
 
-          quantity:
-            this.quantity
+          }
 
         }
 
-      }
-
-    );
+      );
 
 
   }
@@ -2842,14 +3197,16 @@ implements OnInit, OnDestroy {
 
 
   /* =========================
-     REVIEWS
+     LOAD REVIEWS
      ========================= */
 
   async loadReviews():
     Promise<void> {
 
 
-    if (!this.product) {
+    if (
+      !this.product
+    ) {
 
 
       this.reviews = [];
@@ -2865,31 +3222,27 @@ implements OnInit, OnDestroy {
     }
 
 
-
     this.loadingReviews =
       true;
-
 
 
     try {
 
 
       const reviews =
-        await this.reviewService
+        await this
+          .reviewService
           .getProductReviews(
             this.product.id
           );
-
 
 
       this.reviews =
         reviews;
 
 
-
       this.reviewCount =
         reviews.length;
-
 
 
       if (
@@ -2910,17 +3263,25 @@ implements OnInit, OnDestroy {
             (
               sum,
               review
-            ) =>
+            ) => {
 
-              sum +
-              Number(
-                review.rating || 0
-              ),
+              return (
+
+                sum
+                +
+                Number(
+                  review.rating
+                  ||
+                  0
+                )
+
+              );
+
+            },
 
             0
 
           );
-
 
 
         this.averageRating =
@@ -2931,7 +3292,9 @@ implements OnInit, OnDestroy {
       }
 
 
-    } catch (error) {
+    } catch (
+      error
+    ) {
 
 
       console.error(
@@ -2979,7 +3342,8 @@ implements OnInit, OnDestroy {
     ) {
 
 
-      return this.averageRating
+      return this
+        .averageRating
         .toFixed(1);
 
 
@@ -3014,14 +3378,15 @@ implements OnInit, OnDestroy {
 
           Math.round(
             Number(
-              rating || 0
+              rating
+              ||
+              0
             )
           )
 
         )
 
       );
-
 
 
     return (
@@ -3048,9 +3413,7 @@ implements OnInit, OnDestroy {
 
 
     return this.stars(
-
       this.averageRating
-
     );
 
 
@@ -3086,13 +3449,13 @@ implements OnInit, OnDestroy {
         );
 
 
-
-      if (!date) {
+      if (
+        !date
+      ) {
 
         return '';
 
       }
-
 
 
       return date
@@ -3137,12 +3500,13 @@ implements OnInit, OnDestroy {
     Product[] {
 
 
-    if (!this.product) {
+    if (
+      !this.product
+    ) {
 
       return [];
 
     }
-
 
 
     return this.state.products
@@ -3181,35 +3545,31 @@ implements OnInit, OnDestroy {
       1;
 
 
-
     this.addedToCart =
       false;
-
 
 
     this.reviews =
       [];
 
 
-
     this.reviewCount =
       0;
-
 
 
     this.averageRating =
       0;
 
 
+    void this.router
+      .navigate(
 
-    void this.router.navigate(
+        [
+          '/product-details',
+          product.id
+        ]
 
-      [
-        '/product-details',
-        product.id
-      ]
-
-    )
+      )
       .then(
 
         async () => {
@@ -3222,10 +3582,12 @@ implements OnInit, OnDestroy {
           this.refreshProduct();
 
 
-          await this.loadReviews();
+          await this
+            .loadReviews();
 
 
-          await this.loadStockAlertState();
+          await this
+            .loadStockAlertState();
 
 
         }
@@ -3248,7 +3610,8 @@ implements OnInit, OnDestroy {
 
 
     const toast =
-      await this.toastController
+      await this
+        .toastController
         .create({
 
           message,
@@ -3260,7 +3623,6 @@ implements OnInit, OnDestroy {
             'bottom'
 
         });
-
 
 
     await toast.present();
@@ -3297,7 +3659,9 @@ implements OnInit, OnDestroy {
     )
       .format(
         Number(
-          value || 0
+          value
+          ||
+          0
         )
       );
 

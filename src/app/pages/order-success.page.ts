@@ -9,14 +9,23 @@ import {
   RouterModule
 } from '@angular/router';
 
-import { IonicModule } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
+import {
+  IonicModule
+} from '@ionic/angular';
 
-import { OrderService } from '../services/order.service';
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  OrderService
+} from '../services/order.service';
 
 
 @Component({
+
   selector: 'app-order-success',
+
   standalone: true,
 
   imports: [
@@ -25,40 +34,112 @@ import { OrderService } from '../services/order.service';
     CommonModule
   ],
 
+
   styles: [`
 
-    .success-shell {
+    /* =========================
+       PAGE
+       ========================= */
+
+    .success-page {
       min-height: 100%;
-
-      display: flex;
-      flex-direction: column;
-
-      justify-content: center;
-
-      padding: 24px 16px 34px;
-
-      text-align: center;
-    }
-
-
-    .success-icon {
-      width: 86px;
-      height: 86px;
-
-      margin: 0 auto 18px;
-
-      border-radius: 18px;
 
       display: flex;
       align-items: center;
       justify-content: center;
 
-      background: #00ce75;
+      padding:
+        28px 16px
+        38px;
+    }
 
-      color: white;
 
-      font-size: 55px;
+    .success-container {
+      width: 100%;
+      max-width: 460px;
+    }
+
+
+    /* =========================
+       SUCCESS HERO
+       ========================= */
+
+    .success-hero {
+      text-align: center;
+
+      margin-bottom: 22px;
+    }
+
+
+    .success-icon-wrap {
+      position: relative;
+
+      width: 96px;
+      height: 96px;
+
+      margin:
+        0 auto 18px;
+    }
+
+
+    .success-icon-glow {
+      position: absolute;
+
+      inset: 6px;
+
+      border-radius: 50%;
+
+      background:
+        rgba(
+          var(--ion-color-success-rgb),
+          .16
+        );
+
+      transform: scale(1.22);
+    }
+
+
+    .success-icon {
+      position: relative;
+
+      width: 96px;
+      height: 96px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 28px;
+
+      background:
+        var(--ion-color-success);
+
+      color: #ffffff;
+
+      font-size: 48px;
       font-weight: 900;
+
+      box-shadow:
+        0 14px 32px
+        rgba(
+          var(--ion-color-success-rgb),
+          .22
+        );
+    }
+
+
+    .success-kicker {
+      margin-bottom: 5px;
+
+      color:
+        var(--ion-color-success);
+
+      font-size: 9px;
+      font-weight: 900;
+
+      letter-spacing: 1px;
+
+      text-transform: uppercase;
     }
 
 
@@ -66,49 +147,175 @@ import { OrderService } from '../services/order.service';
       margin: 0;
 
       font-size: 28px;
+      line-height: 1.15;
+
       font-weight: 900;
     }
 
 
     .success-message {
-      margin: 16px auto 20px;
+      max-width: 340px;
 
-      max-width: 350px;
+      margin:
+        10px auto 0;
 
-      line-height: 1.5;
+      font-size: 11px;
+      line-height: 1.55;
+
+      color:
+        var(--ion-color-medium);
     }
 
+
+    /* =========================
+       ORDER CARD
+       ========================= */
 
     .order-card {
-      text-align: left;
+      margin-top: 20px;
 
-      margin: 16px 0 20px;
+      padding: 17px;
+
+      border-radius: 20px;
     }
 
 
-    .order-row {
+    .order-card-header {
       display: flex;
-      align-items: flex-start;
+
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 12px;
+
+      margin-bottom: 15px;
+    }
+
+
+    .order-card-title {
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+
+    .confirmed-badge {
+      display: inline-flex;
+
+      align-items: center;
+
+      gap: 5px;
+
+      padding:
+        5px 8px;
+
+      border-radius: 999px;
+
+      background:
+        rgba(
+          var(--ion-color-success-rgb),
+          .10
+        );
+
+      color:
+        var(--ion-color-success);
+
+      font-size: 8px;
+      font-weight: 900;
+    }
+
+
+    .confirmed-dot {
+      width: 6px;
+      height: 6px;
+
+      border-radius: 50%;
+
+      background:
+        var(--ion-color-success);
+    }
+
+
+    /* =========================
+       ORDER NUMBER
+       ========================= */
+
+    .order-number-box {
+      margin-bottom: 14px;
+
+      padding:
+        12px 13px;
+
+      border-radius: 14px;
+
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .08
+        );
+    }
+
+
+    .order-number-label {
+      margin-bottom: 3px;
+
+      font-size: 8px;
+
+      color:
+        var(--ion-color-medium);
+    }
+
+
+    .order-number {
+      color:
+        var(--ion-color-primary);
+
+      font-size: 15px;
+      font-weight: 900;
+
+      word-break: break-word;
+    }
+
+
+    /* =========================
+       ORDER ROWS
+       ========================= */
+
+    .order-row {
+      min-height: 38px;
+
+      display: flex;
+
+      align-items: center;
       justify-content: space-between;
 
       gap: 16px;
 
-      margin-bottom: 8px;
+      border-bottom:
+        1px solid
+        rgba(
+          120,
+          120,
+          120,
+          .10
+        );
+
+      font-size: 11px;
     }
 
 
-    .order-row:last-child {
-      margin-bottom: 0;
+    .order-row:last-of-type {
+      border-bottom: none;
     }
 
 
     .order-label {
-      color: var(--ion-color-medium);
+      color:
+        var(--ion-color-medium);
     }
 
 
     .order-value {
-      max-width: 62%;
+      max-width: 65%;
 
       text-align: right;
 
@@ -116,43 +323,62 @@ import { OrderService } from '../services/order.service';
     }
 
 
-    .order-number {
-      color: var(--ion-color-primary);
-    }
-
+    /* =========================
+       TOTAL
+       ========================= */
 
     .summary-divider {
-      margin: 14px 0;
+      margin:
+        12px 0;
 
-      opacity: .15;
+      border: none;
+
+      border-top:
+        1px solid
+        rgba(
+          120,
+          120,
+          120,
+          .15
+        );
     }
 
 
     .total-row {
       display: flex;
+
       align-items: center;
       justify-content: space-between;
 
-      font-size: 18px;
+      gap: 14px;
+    }
+
+
+    .total-label {
+      font-size: 13px;
       font-weight: 900;
     }
 
 
     .total-price {
-      color: var(--ion-color-primary);
+      color:
+        var(--ion-color-primary);
+
+      font-size: 21px;
+      font-weight: 900;
     }
 
 
-    .success-actions {
-      display: flex;
-      flex-direction: column;
-
-      gap: 8px;
-    }
-
+    /* =========================
+       LOADING
+       ========================= */
 
     .loading-order {
-      min-height: 120px;
+      min-height: 155px;
+
+      margin-top: 20px;
+
+      padding: 20px;
 
       display: flex;
       flex-direction: column;
@@ -160,257 +386,490 @@ import { OrderService } from '../services/order.service';
       align-items: center;
       justify-content: center;
 
-      gap: 10px;
+      gap: 11px;
+
+      border-radius: 20px;
+
+      text-align: center;
     }
 
 
+    .loading-order span {
+      font-size: 10px;
+
+      color:
+        var(--ion-color-medium);
+    }
+
+
+    /* =========================
+       ERROR
+       ========================= */
+
     .error-message {
-      margin: 10px 0 16px;
+      margin-top: 12px;
 
-      font-size: 12px;
+      padding:
+        10px 12px;
 
-      color: var(--ion-color-danger);
+      border-radius: 12px;
+
+      background:
+        rgba(
+          var(--ion-color-danger-rgb),
+          .08
+        );
+
+      color:
+        var(--ion-color-danger);
+
+      font-size: 10px;
+      line-height: 1.45;
+
+      text-align: center;
+    }
+
+
+    /* =========================
+       NEXT STEP NOTE
+       ========================= */
+
+    .next-step {
+      margin-top: 12px;
+
+      padding:
+        11px 12px;
+
+      border-radius: 13px;
+
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .06
+        );
+
+      color:
+        var(--ion-color-medium);
+
+      font-size: 9px;
+      line-height: 1.5;
+
+      text-align: center;
+    }
+
+
+    /* =========================
+       ACTIONS
+       ========================= */
+
+    .success-actions {
+      margin-top: 16px;
+
+      display: flex;
+      flex-direction: column;
+
+      gap: 8px;
+    }
+
+
+    .success-actions ion-button {
+      min-height: 47px;
+
+      margin: 0;
+
+      --border-radius: 14px;
+
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+
+    /* =========================
+       RESPONSIVE
+       ========================= */
+
+    @media (min-width: 700px) {
+
+      .success-page {
+        padding:
+          40px 20px;
+      }
+
+
+      .success-container {
+        max-width: 500px;
+      }
+
+
+      .order-card {
+        padding: 20px;
+      }
+
     }
 
   `],
+
 
   template: `
 
 <ion-content>
 
 
-<div class="success-shell">
+  <div class="success-page">
 
 
-  <!-- =========================
-       SUCCESS ICON
-       ========================= -->
-
-  <div class="success-icon">
-
-    ✓
-
-  </div>
+    <div class="success-container">
 
 
+      <!-- =========================
+           SUCCESS HERO
+           ========================= -->
 
-  <h1 class="success-title">
-
-    Order placed!
-
-  </h1>
-
+      <div class="success-hero">
 
 
-  <p class="muted success-message">
-
-    Thank you. Your SmileHub order
-    has been submitted successfully.
-
-  </p>
+        <div class="success-icon-wrap">
 
 
-
-  <!-- =========================
-       LOADING ORDER
-       ========================= -->
-
-  <div
-    class="app-card loading-order"
-    *ngIf="loadingOrder">
+          <div class="success-icon-glow">
+          </div>
 
 
-    <ion-spinner>
-    </ion-spinner>
+          <div class="success-icon">
+
+            ✓
+
+          </div>
 
 
-    <span class="muted">
-
-      Loading order details...
-
-    </span>
+        </div>
 
 
-  </div>
+        <div class="success-kicker">
+
+          Order Confirmed
+
+        </div>
+
+
+        <h1 class="success-title">
+
+          Order placed!
+
+        </h1>
+
+
+        <p class="success-message">
+
+          Thank you for shopping with SmileHub.
+          Your order has been submitted successfully
+          and is now being prepared for processing.
+
+        </p>
+
+
+      </div>
 
 
 
-  <!-- =========================
-       ORDER INFORMATION
-       ========================= -->
+      <!-- =========================
+           LOADING
+           ========================= -->
 
-  <div
-    class="app-card order-card"
-    *ngIf="!loadingOrder">
+      <div
 
+        class="
+          app-card
+          loading-order
+        "
 
-    <!-- ORDER NUMBER -->
-
-    <div class="order-row">
-
-
-      <span class="order-label">
-
-        Order
-
-      </span>
+        *ngIf="
+          loadingOrder
+        ">
 
 
-      <span
-        class="order-value order-number">
+        <ion-spinner
+          name="crescent">
+        </ion-spinner>
 
-        {{
-          orderNumber ||
-          'Confirmed'
-        }}
 
-      </span>
+        <span>
+
+          Loading your order details...
+
+        </span>
+
+
+      </div>
+
+
+
+      <!-- =========================
+           ORDER DETAILS
+           ========================= -->
+
+      <div
+
+        class="
+          app-card
+          order-card
+        "
+
+        *ngIf="
+          !loadingOrder
+        ">
+
+
+        <div class="order-card-header">
+
+
+          <div class="order-card-title">
+
+            Order Summary
+
+          </div>
+
+
+          <div class="confirmed-badge">
+
+
+            <span class="confirmed-dot">
+            </span>
+
+
+            Confirmed
+
+
+          </div>
+
+
+        </div>
+
+
+
+        <!-- ORDER NUMBER -->
+
+        <div class="order-number-box">
+
+
+          <div class="order-number-label">
+
+            Order Number
+
+          </div>
+
+
+          <div class="order-number">
+
+            {{
+              orderNumber
+              ||
+              'Confirmed'
+            }}
+
+          </div>
+
+
+        </div>
+
+
+
+        <!-- PAYMENT -->
+
+        <div class="order-row">
+
+
+          <span class="order-label">
+
+            Payment Method
+
+          </span>
+
+
+          <span class="order-value">
+
+            {{
+              paymentMethod
+              ||
+              '—'
+            }}
+
+          </span>
+
+
+        </div>
+
+
+
+        <!-- DELIVERY -->
+
+        <div class="order-row">
+
+
+          <span class="order-label">
+
+            Delivery Method
+
+          </span>
+
+
+          <span class="order-value">
+
+            {{
+              deliveryMethod
+              ||
+              '—'
+            }}
+
+          </span>
+
+
+        </div>
+
+
+
+        <hr class="summary-divider">
+
+
+
+        <!-- TOTAL -->
+
+        <div class="total-row">
+
+
+          <span class="total-label">
+
+            Order Total
+
+          </span>
+
+
+          <span class="total-price">
+
+            {{ money(total) }}
+
+          </span>
+
+
+        </div>
+
+
+      </div>
+
+
+
+      <!-- =========================
+           ERROR
+           ========================= -->
+
+      <div
+
+        class="error-message"
+
+        *ngIf="
+          loadError
+        ">
+
+
+        {{ loadError }}
+
+
+      </div>
+
+
+
+      <!-- =========================
+           NEXT STEP
+           ========================= -->
+
+      <div
+
+        class="next-step"
+
+        *ngIf="
+          !loadingOrder &&
+          !loadError
+        ">
+
+
+        You can track your order status
+        anytime from My Orders.
+
+      </div>
+
+
+
+      <!-- =========================
+           ACTIONS
+           ========================= -->
+
+      <div class="success-actions">
+
+
+        <ion-button
+
+          expand="block"
+
+          class="primary-btn"
+
+          (click)="viewOrder()">
+
+
+          <ion-icon
+
+            slot="start"
+
+            name="receipt-outline">
+
+          </ion-icon>
+
+
+          View My Order
+
+
+        </ion-button>
+
+
+
+        <ion-button
+
+          expand="block"
+
+          fill="outline"
+
+          class="outline-btn"
+
+          routerLink="/home">
+
+
+          <ion-icon
+
+            slot="start"
+
+            name="bag-handle-outline">
+
+          </ion-icon>
+
+
+          Continue Shopping
+
+
+        </ion-button>
+
+
+      </div>
 
 
     </div>
 
 
-
-    <!-- PAYMENT -->
-
-    <div class="order-row">
-
-
-      <span class="order-label">
-
-        Payment
-
-      </span>
-
-
-      <span class="order-value">
-
-        {{
-          paymentMethod ||
-          '—'
-        }}
-
-      </span>
-
-
-    </div>
-
-
-
-    <!-- DELIVERY -->
-
-    <div class="order-row">
-
-
-      <span class="order-label">
-
-        Delivery
-
-      </span>
-
-
-      <span class="order-value">
-
-        {{
-          deliveryMethod ||
-          '—'
-        }}
-
-      </span>
-
-
-    </div>
-
-
-
-    <hr class="summary-divider">
-
-
-
-    <!-- TOTAL -->
-
-    <div class="total-row">
-
-
-      <span>
-
-        Total
-
-      </span>
-
-
-      <span class="total-price">
-
-        {{ money(total) }}
-
-      </span>
-
-
-    </div>
-
-
   </div>
-
-
-
-  <!-- ERROR -->
-
-  <div
-    class="error-message"
-    *ngIf="loadError">
-
-    {{ loadError }}
-
-  </div>
-
-
-
-  <!-- =========================
-       ACTIONS
-       ========================= -->
-
-  <div class="success-actions">
-
-
-    <ion-button
-      expand="block"
-      class="primary-btn"
-
-      (click)="viewOrder()">
-
-
-      View My Order
-
-
-    </ion-button>
-
-
-
-    <ion-button
-      expand="block"
-
-      fill="outline"
-
-      class="outline-btn"
-
-      routerLink="/home">
-
-
-      Continue Shopping
-
-
-    </ion-button>
-
-
-  </div>
-
-
-</div>
 
 
 </ion-content>
 
 `
+
 })
 
 
@@ -418,25 +877,32 @@ export class OrderSuccessPage
 implements OnInit {
 
 
-  orderId = '';
+  orderId =
+    '';
 
 
-  orderNumber = '';
+  orderNumber =
+    '';
 
 
-  paymentMethod = '';
+  paymentMethod =
+    '';
 
 
-  deliveryMethod = '';
+  deliveryMethod =
+    '';
 
 
-  total = 0;
+  total =
+    0;
 
 
-  loadingOrder = true;
+  loadingOrder =
+    true;
 
 
-  loadError = '';
+  loadError =
+    '';
 
 
 
@@ -464,82 +930,86 @@ implements OnInit {
 
 
     const query =
-      this.route.snapshot
+      this.route
+        .snapshot
         .queryParamMap;
 
 
-
-    /*
-      Checkout already sends:
-      orderId
-      orderNumber
-    */
-
     this.orderId =
-      query.get('orderId') || '';
+      query.get(
+        'orderId'
+      )
+      ||
+      '';
 
 
     this.orderNumber =
-      query.get('orderNumber') || '';
+      query.get(
+        'orderNumber'
+      )
+      ||
+      '';
 
-
-
-    /*
-      Fallback support in case
-      these are ever passed
-      directly in the URL.
-    */
 
     this.paymentMethod =
-      query.get('paymentMethod') || '';
+      query.get(
+        'paymentMethod'
+      )
+      ||
+      '';
 
 
     this.deliveryMethod =
-      query.get('deliveryMethod') || '';
+      query.get(
+        'deliveryMethod'
+      )
+      ||
+      '';
 
 
     const queryTotal =
       Number(
-        query.get('total') || 0
+        query.get(
+          'total'
+        )
+        ||
+        0
       );
 
 
     if (
-      Number.isFinite(queryTotal)
+      Number.isFinite(
+        queryTotal
+      )
     ) {
+
 
       this.total =
         queryTotal;
 
+
     }
 
 
+    await this
+      .loadOrder();
 
-    /*
-      Get the ACTUAL order
-      from Firestore.
-    */
-
-    await this.loadOrder();
 
   }
 
 
 
   /* =========================
-     LOAD ORDER FROM FIRESTORE
+     LOAD ORDER
      ========================= */
 
   private async loadOrder():
     Promise<void> {
 
 
-    /*
-      If no ID exists, use whatever
-      information came from URL.
-    */
-
-    if (!this.orderId) {
+    if (
+      !this.orderId
+    ) {
 
 
       this.loadingOrder =
@@ -552,8 +1022,8 @@ implements OnInit {
 
       return;
 
-    }
 
+    }
 
 
     try {
@@ -566,8 +1036,9 @@ implements OnInit {
           );
 
 
-
-      if (!order) {
+      if (
+        !order
+      ) {
 
 
         this.loadError =
@@ -576,48 +1047,66 @@ implements OnInit {
 
         return;
 
+
       }
 
 
-
-      /*
-        Populate success page
-        using saved Firestore data.
-      */
-
       this.orderNumber =
+
         order.orderNumber
-        || this.orderNumber;
+
+        ||
+
+        this.orderNumber;
 
 
 
       this.paymentMethod =
+
         order.paymentMethod
-        || this.paymentMethod;
+
+        ||
+
+        this.paymentMethod;
 
 
 
       this.deliveryMethod =
+
         order.deliveryMethod
-        || this.deliveryMethod;
+
+        ||
+
+        this.deliveryMethod;
 
 
 
       const savedTotal =
         Number(
-          order.total ?? this.total
+
+          order.total
+
+          ??
+
+          this.total
+
         );
 
 
       this.total =
-        Number.isFinite(savedTotal)
+
+        Number.isFinite(
+          savedTotal
+        )
 
           ? savedTotal
 
           : 0;
 
 
-    } catch (error: any) {
+    } catch (
+      error: any
+    ) {
 
 
       console.error(
@@ -644,48 +1133,49 @@ implements OnInit {
 
     }
 
+
   }
 
 
 
   /* =========================
-     VIEW SPECIFIC ORDER
+     VIEW ORDER
      ========================= */
 
-  viewOrder(): void {
+  viewOrder():
+    void {
 
 
-    /*
-      If order ID is available,
-      diretso sa specific
-      Order Details page.
-    */
-
-    if (this.orderId) {
+    if (
+      this.orderId
+    ) {
 
 
-      this.router.navigate([
+      this.router.navigate(
 
-        '/order-details',
+        [
 
-        this.orderId
+          '/order-details',
 
-      ]);
+          this.orderId
+
+        ]
+
+      );
 
 
       return;
 
+
     }
 
 
+    this.router.navigate(
+      [
+        '/orders'
+      ]
+    );
 
-    /*
-      Fallback
-    */
-
-    this.router.navigate([
-      '/orders'
-    ]);
 
   }
 
@@ -697,7 +1187,8 @@ implements OnInit {
 
   money(
     value: number
-  ): string {
+  ):
+    string {
 
 
     return new Intl.NumberFormat(
@@ -706,13 +1197,25 @@ implements OnInit {
 
       {
 
-        style: 'currency',
+        style:
+          'currency',
 
-        currency: 'PHP'
+        currency:
+          'PHP'
 
       }
 
-    ).format(value);
+    )
+      .format(
+
+        Number(
+          value
+          ||
+          0
+        )
+
+      );
+
 
   }
 

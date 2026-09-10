@@ -36,6 +36,15 @@ import {
 } from 'rxjs';
 
 import {
+  onAuthStateChanged,
+  Unsubscribe
+} from 'firebase/auth';
+
+import {
+  firebaseAuth
+} from '../services/firebase';
+
+import {
   ChatbotService,
   ChatMessage,
   ChatDisplayMode,
@@ -1182,8 +1191,27 @@ export class ChatbotPage implements OnDestroy {
   private orders: any[] = [];
   private ordersSubscription?: Subscription;
 
-  private readonly chatStorageKey =
+  private readonly chatStoragePrefix =
     'smilehub_ai_chat_history';
+
+  private activeChatOwner =
+    'guest';
+
+  private authUnsubscribe?:
+    Unsubscribe;
+
+  private get chatStorageKey():
+    string {
+
+    return (
+      this.chatStoragePrefix
+      +
+      ':'
+      +
+      this.activeChatOwner
+    );
+
+  }
 
   readonly Number = Number;
 
@@ -1195,7 +1223,42 @@ export class ChatbotPage implements OnDestroy {
     private alertController: AlertController,
     private toastController: ToastController
   ) {
-    this.loadChatHistory();
+
+    this.clearLegacySharedChatHistory();
+
+    this.authUnsubscribe =
+      onAuthStateChanged(
+        firebaseAuth,
+        user => {
+
+          const nextOwner =
+            user?.uid
+            ||
+            'guest';
+
+          if (
+            nextOwner ===
+            this.activeChatOwner
+            &&
+            this.messages.length > 0
+          ) {
+
+            return;
+
+          }
+
+          this.activeChatOwner =
+            nextOwner;
+
+          this.messages = [];
+          this.input = '';
+
+          this.loadChatHistory();
+
+          this.scrollToBottom();
+
+        }
+      );
 
     this.ordersSubscription =
       this.orderService
@@ -1219,8 +1282,13 @@ export class ChatbotPage implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+
     this.ordersSubscription
       ?.unsubscribe();
+
+    this.authUnsubscribe
+      ?.();
+
   }
 
   askQuick(
@@ -2438,6 +2506,50 @@ export class ChatbotPage implements OnDestroy {
       }
     };
   }
+
+  /* =========================
+     REMOVE OLD SHARED HISTORY
+     ========================= */
+
+  private clearLegacySharedChatHistory():
+    void {
+
+    try {
+
+      if (
+        typeof localStorage ===
+        'undefined'
+      ) {
+
+        return;
+
+      }
+
+      /*
+       * Older versions used one shared key
+       * for every account on the device.
+       * Do not migrate it because it may
+       * contain another user's conversation.
+       */
+      localStorage.removeItem(
+        this.chatStoragePrefix
+      );
+
+    } catch (error) {
+
+      console.warn(
+        'Unable to remove legacy shared AI chat history:',
+        error
+      );
+
+    }
+
+  }
+
+
+  /* =========================
+     LOAD CHAT HISTORY
+     ========================= */
 
   private loadChatHistory(): void {
     try {

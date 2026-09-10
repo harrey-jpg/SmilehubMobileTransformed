@@ -29,31 +29,115 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
   styles: [`
 
     /* =========================
-       PROFILE
+       PAGE
        ========================= */
 
-    .profile-card {
+    .ac-page {
+      padding-bottom: 26px;
+    }
+
+
+    /* =========================
+       INTRO
+       ========================= */
+
+    .ac-intro {
+      margin-bottom: 13px;
+    }
+
+    .ac-kicker {
+      color: var(--ion-color-primary);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+    }
+
+    .ac-title {
+      margin: 4px 0 0;
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+
+    /* =========================
+       PROFILE HERO
+       ========================= */
+
+    .ac-profile {
+      position: relative;
+      overflow: hidden;
+
       display: flex;
       align-items: center;
 
       gap: 14px;
 
       padding: 18px;
+
+      border-radius: 22px;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(
+            var(--ion-color-primary-rgb),
+            .16
+          ),
+          rgba(
+            var(--ion-color-primary-rgb),
+            .05
+          )
+        );
+
+      border:
+        1px solid
+        rgba(
+          var(--ion-color-primary-rgb),
+          .10
+        );
+    }
+
+    .ac-profile::after {
+      content: '';
+
+      position: absolute;
+
+      width: 130px;
+      height: 130px;
+
+      right: -60px;
+      top: -65px;
+
+      border-radius: 50%;
+
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .06
+        );
+
+      pointer-events: none;
     }
 
 
-    .profile-avatar-shell {
+    /* =========================
+       AVATAR
+       ========================= */
+
+    .ac-avatar-shell {
       position: relative;
+      z-index: 1;
 
       flex-shrink: 0;
 
       cursor: pointer;
     }
 
-
-    .profile-avatar {
-      width: 68px;
-      height: 68px;
+    .ac-avatar {
+      width: 76px;
+      height: 76px;
 
       display: flex;
       align-items: center;
@@ -61,26 +145,31 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
       overflow: hidden;
 
-      border-radius: 50%;
+      border-radius: 22px;
 
       background:
-        rgba(var(--ion-color-primary-rgb), .14);
+        rgba(
+          var(--ion-color-primary-rgb),
+          .15
+        );
 
       color:
         var(--ion-color-primary);
 
-      font-size: 23px;
+      border:
+        2px solid
+        rgba(
+          var(--ion-color-primary-rgb),
+          .20
+        );
+
+      font-size: 24px;
       font-weight: 900;
 
       text-transform: uppercase;
-
-      border:
-        2px solid
-        rgba(var(--ion-color-primary-rgb), .18);
     }
 
-
-    .profile-avatar img {
+    .ac-avatar img {
       width: 100%;
       height: 100%;
 
@@ -89,15 +178,14 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       object-fit: cover;
     }
 
-
-    .profile-avatar-edit {
+    .ac-avatar-edit {
       position: absolute;
 
-      right: -2px;
-      bottom: -1px;
+      right: -3px;
+      bottom: -3px;
 
-      width: 24px;
-      height: 24px;
+      width: 27px;
+      height: 27px;
 
       display: flex;
       align-items: center;
@@ -112,23 +200,34 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
         var(--ion-color-primary-contrast);
 
       border:
-        2px solid
+        3px solid
         var(--ion-background-color);
 
       font-size: 13px;
     }
 
 
-    .profile-info {
+    /* =========================
+       PROFILE INFO
+       ========================= */
+
+    .ac-profile-info {
+      position: relative;
+      z-index: 1;
+
       flex: 1;
       min-width: 0;
     }
 
-
-    .profile-name {
+    .ac-profile-name {
       margin: 0;
 
-      font-size: 19px;
+      color:
+        var(--ion-text-color);
+
+      font-size: 18px;
+      line-height: 1.25;
+
       font-weight: 900;
 
       white-space: nowrap;
@@ -136,29 +235,79 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       text-overflow: ellipsis;
     }
 
-
-    .profile-email {
+    .ac-profile-email {
       margin-top: 4px;
-
-      font-size: 12px;
 
       color:
         var(--ion-color-medium);
+
+      font-size: 10px;
 
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
+    .ac-member-chip {
+      width: fit-content;
 
-    .profile-label {
-      margin-top: 5px;
+      display: inline-flex;
+      align-items: center;
 
-      font-size: 10px;
-      font-weight: 800;
+      gap: 5px;
+
+      margin-top: 7px;
+
+      padding:
+        5px 8px;
+
+      border-radius: 999px;
+
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .10
+        );
 
       color:
         var(--ion-color-primary);
+
+      font-size: 8px;
+      font-weight: 900;
+    }
+
+    .ac-member-dot {
+      width: 5px;
+      height: 5px;
+
+      border-radius: 50%;
+
+      background:
+        var(--ion-color-primary);
+    }
+
+    .ac-profile-arrow {
+      position: relative;
+      z-index: 1;
+
+      flex-shrink: 0;
+
+      color:
+        var(--ion-color-medium);
+
+      font-size: 19px;
+    }
+
+    .ac-profile-loading {
+      display: flex;
+      align-items: center;
+
+      gap: 8px;
+
+      color:
+        var(--ion-color-medium);
+
+      font-size: 10px;
     }
 
 
@@ -166,32 +315,45 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
        SECTION
        ========================= */
 
-    .account-section-title {
+    .ac-section-title {
       margin:
-        20px 2px
+        22px 2px
         9px;
 
-      font-size: 14px;
+      color:
+        var(--ion-text-color);
+
+      font-size: 13px;
       font-weight: 900;
     }
 
 
     /* =========================
-       MENU
+       MENU CARD
        ========================= */
 
-    .account-menu {
+    .ac-menu {
       overflow: hidden;
 
-      border-radius: 16px;
+      border-radius: 18px;
 
       background:
         var(--ion-card-background);
+
+      box-shadow:
+        0 8px 22px
+        rgba(
+          0,
+          0,
+          0,
+          .05
+        );
     }
 
+    .ac-item {
+      position: relative;
 
-    .account-item {
-      min-height: 58px;
+      min-height: 64px;
 
       display: flex;
       align-items: center;
@@ -199,40 +361,61 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       gap: 12px;
 
       padding:
-        10px 14px;
-
-      cursor: pointer;
+        11px 14px;
 
       border-bottom:
         1px solid
-        rgba(120, 120, 120, .10);
+        rgba(
+          120,
+          120,
+          120,
+          .09
+        );
+
+      cursor: pointer;
+
+      transition:
+        background .15s ease,
+        transform .15s ease;
     }
 
-
-    .account-item:last-child {
+    .ac-item:last-child {
       border-bottom: none;
     }
 
+    .ac-item:active {
+      transform:
+        scale(.99);
 
-    .account-item:active {
-      opacity: .8;
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .04
+        );
     }
 
 
-    .account-icon {
-      width: 38px;
-      height: 38px;
+    /* =========================
+       ICON
+       ========================= */
 
-      flex-shrink: 0;
+    .ac-icon {
+      width: 42px;
+      height: 42px;
+
+      flex: 0 0 42px;
 
       display: flex;
       align-items: center;
       justify-content: center;
 
-      border-radius: 11px;
+      border-radius: 13px;
 
       background:
-        rgba(var(--ion-color-primary-rgb), .11);
+        rgba(
+          var(--ion-color-primary-rgb),
+          .10
+        );
 
       color:
         var(--ion-color-primary);
@@ -240,30 +423,97 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       font-size: 20px;
     }
 
+    .ac-icon.orders {
+      background:
+        rgba(
+          31,
+          142,
+          255,
+          .11
+        );
 
-    .account-content {
+      color: #469cff;
+    }
+
+    .ac-icon.address {
+      background:
+        rgba(
+          0,
+          206,
+          117,
+          .10
+        );
+
+      color:
+        var(--ion-color-success);
+    }
+
+    .ac-icon.payment {
+      background:
+        rgba(
+          112,
+          84,
+          255,
+          .11
+        );
+
+      color: #9a87ff;
+    }
+
+    .ac-icon.wishlist {
+      background:
+        rgba(
+          235,
+          68,
+          90,
+          .10
+        );
+
+      color:
+        var(--ion-color-danger);
+    }
+
+    .ac-icon.support {
+      background:
+        rgba(
+          255,
+          184,
+          0,
+          .10
+        );
+
+      color: #f2ac00;
+    }
+
+
+    /* =========================
+       MENU CONTENT
+       ========================= */
+
+    .ac-item-content {
       flex: 1;
       min-width: 0;
     }
 
+    .ac-item-title {
+      color:
+        var(--ion-text-color);
 
-    .account-title {
-      font-size: 13px;
-      font-weight: 850;
+      font-size: 11px;
+      font-weight: 900;
     }
 
-
-    .account-subtitle {
-      margin-top: 2px;
-
-      font-size: 10px;
+    .ac-item-subtitle {
+      margin-top: 3px;
 
       color:
         var(--ion-color-medium);
+
+      font-size: 9px;
+      line-height: 1.35;
     }
 
-
-    .account-arrow {
+    .ac-arrow {
       flex-shrink: 0;
 
       color:
@@ -277,7 +527,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
        BADGE
        ========================= */
 
-    .menu-badge {
+    .ac-badge {
       min-width: 22px;
 
       padding:
@@ -288,59 +538,122 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       background:
         var(--ion-color-danger);
 
-      color: white;
+      color: #ffffff;
 
       text-align: center;
 
-      font-size: 9px;
+      font-size: 8px;
       font-weight: 900;
     }
 
 
     /* =========================
-       DARK MODE
+       TOGGLE
        ========================= */
 
-    .toggle-item {
+    .ac-toggle-item {
       cursor: default;
     }
 
+    .ac-toggle-item:active {
+      transform: none;
+      background: transparent;
+    }
 
-    .toggle-item:active {
-      opacity: 1;
+    .ac-toggle-item ion-toggle {
+      flex-shrink: 0;
+
+      transform:
+        scale(.88);
+
+      transform-origin:
+        right center;
     }
 
 
     /* =========================
-       LOGOUT
+       SIGN OUT
        ========================= */
 
-    .logout-button {
+    .ac-signout {
       margin-top: 22px;
-
-      --border-radius: 13px;
-
-      font-weight: 800;
     }
 
+    .ac-signout ion-button {
+      min-height: 46px;
 
-    /* =========================
-       LOADING
-       ========================= */
+      margin: 0;
 
-    .profile-loading {
-      display: flex;
-      align-items: center;
+      --border-radius: 14px;
 
-      gap: 8px;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .ac-version {
+      margin-top: 14px;
+
+      text-align: center;
 
       color:
         var(--ion-color-medium);
 
-      font-size: 12px;
+      font-size: 8px;
+    }
+
+
+    /* =========================
+       RESPONSIVE
+       ========================= */
+
+    @media (min-width: 720px) {
+
+      .ac-layout {
+        display: grid;
+
+        grid-template-columns:
+          minmax(
+            0,
+            1fr
+          )
+          minmax(
+            0,
+            1fr
+          );
+
+        gap: 18px;
+      }
+
+      .ac-layout
+      .ac-section-title {
+        margin-top: 22px;
+      }
+
+    }
+
+
+    @media (max-width: 380px) {
+
+      .ac-profile {
+        padding: 15px;
+        gap: 11px;
+      }
+
+      .ac-avatar {
+        width: 67px;
+        height: 67px;
+
+        border-radius: 19px;
+      }
+
+      .ac-profile-name {
+        font-size: 16px;
+      }
+
     }
 
   `],
+
 
   template: `
 
@@ -360,48 +673,609 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
 <ion-content>
 
-<div class="page-wrap">
+
+  <div class="page-wrap ac-page">
 
 
-  <!-- =========================
-       PROFILE CARD
-       ========================= -->
+    <!-- =========================
+         INTRO
+         ========================= -->
 
-  <div class="app-card profile-card">
+    <div class="ac-intro">
 
+
+      <div class="ac-kicker">
+
+        SmileHub Account
+
+      </div>
+
+
+      <h1 class="ac-title">
+
+        Your Account
+
+      </h1>
+
+
+    </div>
+
+
+
+    <!-- =========================
+         PROFILE
+         ========================= -->
 
     <div
-      class="profile-avatar-shell"
+      class="ac-profile"
       routerLink="/personal-information">
 
 
-      <div class="profile-avatar">
+      <div class="ac-avatar-shell">
 
 
-        <img
-          *ngIf="profilePhoto"
-
-          [src]="profilePhoto"
-
-          alt="Profile photo">
+        <div class="ac-avatar">
 
 
-        <span
-          *ngIf="!profilePhoto">
+          <img
+            *ngIf="profilePhoto"
+            [src]="profilePhoto"
+            alt="Profile photo">
 
-          {{ initials }}
 
-        </span>
+          <span
+            *ngIf="!profilePhoto">
+
+            {{ initials }}
+
+          </span>
+
+
+        </div>
+
+
+        <div class="ac-avatar-edit">
+
+          <ion-icon
+            name="create-outline">
+          </ion-icon>
+
+        </div>
 
 
       </div>
 
 
-      <div class="profile-avatar-edit">
 
-        <ion-icon
-          name="create-outline">
-        </ion-icon>
+      <div class="ac-profile-info">
+
+
+        <div
+          class="ac-profile-loading"
+          *ngIf="loadingProfile">
+
+
+          <ion-spinner
+            name="crescent"
+            style="
+              width:16px;
+              height:16px
+            ">
+          </ion-spinner>
+
+
+          Loading profile...
+
+
+        </div>
+
+
+
+        <ng-container
+          *ngIf="!loadingProfile">
+
+
+          <h2 class="ac-profile-name">
+
+            {{
+              profile.fullName
+              ||
+              'SmileHub Customer'
+            }}
+
+          </h2>
+
+
+          <div class="ac-profile-email">
+
+            {{
+              profile.email
+              ||
+              auth.currentUser?.email
+              ||
+              'Signed in customer'
+            }}
+
+          </div>
+
+
+          <div class="ac-member-chip">
+
+
+            <span class="ac-member-dot">
+            </span>
+
+
+            SmileHub Member
+
+
+          </div>
+
+
+        </ng-container>
+
+
+      </div>
+
+
+
+      <ion-icon
+        class="ac-profile-arrow"
+        name="chevron-forward-outline">
+      </ion-icon>
+
+
+    </div>
+
+
+
+    <!-- =========================
+         ACCOUNT LAYOUT
+         ========================= -->
+
+    <div class="ac-layout">
+
+
+      <!-- =========================
+           MY ACCOUNT
+           ========================= -->
+
+      <div>
+
+
+        <div class="ac-section-title">
+
+          My Account
+
+        </div>
+
+
+        <div class="ac-menu">
+
+
+          <!-- PERSONAL INFO -->
+
+          <div
+            class="ac-item"
+            routerLink="/personal-information">
+
+
+            <div class="ac-icon">
+
+              <ion-icon
+                name="person-outline">
+              </ion-icon>
+
+            </div>
+
+
+            <div class="ac-item-content">
+
+
+              <div class="ac-item-title">
+
+                Personal Information
+
+              </div>
+
+
+              <div class="ac-item-subtitle">
+
+                Manage your profile details
+
+              </div>
+
+
+            </div>
+
+
+            <ion-icon
+              class="ac-arrow"
+              name="chevron-forward-outline">
+            </ion-icon>
+
+
+          </div>
+
+
+
+          <!-- ORDERS -->
+
+          <div
+            class="ac-item"
+            routerLink="/orders">
+
+
+            <div class="ac-icon orders">
+
+              <ion-icon
+                name="receipt-outline">
+              </ion-icon>
+
+            </div>
+
+
+            <div class="ac-item-content">
+
+
+              <div class="ac-item-title">
+
+                My Orders
+
+              </div>
+
+
+              <div class="ac-item-subtitle">
+
+                Track and review your purchases
+
+              </div>
+
+
+            </div>
+
+
+            <ion-icon
+              class="ac-arrow"
+              name="chevron-forward-outline">
+            </ion-icon>
+
+
+          </div>
+
+
+
+          <!-- ADDRESSES -->
+
+          <div
+            class="ac-item"
+            routerLink="/addresses">
+
+
+            <div class="ac-icon address">
+
+              <ion-icon
+                name="location-outline">
+              </ion-icon>
+
+            </div>
+
+
+            <div class="ac-item-content">
+
+
+              <div class="ac-item-title">
+
+                Addresses
+
+              </div>
+
+
+              <div class="ac-item-subtitle">
+
+                Manage your shipping addresses
+
+              </div>
+
+
+            </div>
+
+
+            <ion-icon
+              class="ac-arrow"
+              name="chevron-forward-outline">
+            </ion-icon>
+
+
+          </div>
+
+
+
+          <!-- PAYMENT -->
+
+          <div
+            class="ac-item"
+            routerLink="/payments">
+
+
+            <div class="ac-icon payment">
+
+              <ion-icon
+                name="card-outline">
+              </ion-icon>
+
+            </div>
+
+
+            <div class="ac-item-content">
+
+
+              <div class="ac-item-title">
+
+                Payment Methods
+
+              </div>
+
+
+              <div class="ac-item-subtitle">
+
+                Manage your payment options
+
+              </div>
+
+
+            </div>
+
+
+            <ion-icon
+              class="ac-arrow"
+              name="chevron-forward-outline">
+            </ion-icon>
+
+
+          </div>
+
+
+
+          <!-- WISHLIST -->
+
+          <div
+            class="ac-item"
+            routerLink="/wishlist">
+
+
+            <div class="ac-icon wishlist">
+
+              <ion-icon
+                name="heart-outline">
+              </ion-icon>
+
+            </div>
+
+
+            <div class="ac-item-content">
+
+
+              <div class="ac-item-title">
+
+                Wishlist
+
+              </div>
+
+
+              <div class="ac-item-subtitle">
+
+                Your saved dental supplies
+
+              </div>
+
+
+            </div>
+
+
+            <span
+              class="ac-badge"
+              *ngIf="
+                state.wishlist.size > 0
+              ">
+
+              {{
+                badgeText(
+                  state.wishlist.size
+                )
+              }}
+
+            </span>
+
+
+            <ion-icon
+              class="ac-arrow"
+              name="chevron-forward-outline">
+            </ion-icon>
+
+
+          </div>
+
+
+        </div>
+
+
+      </div>
+
+
+
+      <!-- =========================
+           SETTINGS
+           ========================= -->
+
+      <div>
+
+
+        <div class="ac-section-title">
+
+          Settings & Support
+
+        </div>
+
+
+        <div class="ac-menu">
+
+
+          <!-- DARK MODE -->
+
+          <div
+            class="
+              ac-item
+              ac-toggle-item
+            ">
+
+
+            <div class="ac-icon">
+
+
+              <ion-icon
+                [name]="
+                  state.darkMode
+                    ? 'moon-outline'
+                    : 'sunny-outline'
+                ">
+              </ion-icon>
+
+
+            </div>
+
+
+            <div class="ac-item-content">
+
+
+              <div class="ac-item-title">
+
+                Dark Mode
+
+              </div>
+
+
+              <div class="ac-item-subtitle">
+
+                {{
+                  state.darkMode
+                    ? 'Dark theme enabled'
+                    : 'Light theme enabled'
+                }}
+
+              </div>
+
+
+            </div>
+
+
+            <ion-toggle
+              [checked]="state.darkMode"
+              (ionChange)="
+                state.toggleTheme(
+                  $event.detail.checked
+                )
+              ">
+            </ion-toggle>
+
+
+          </div>
+
+
+
+          <!-- HELP -->
+
+          <div
+            class="ac-item"
+            routerLink="/help">
+
+
+            <div class="ac-icon support">
+
+              <ion-icon
+                name="help-circle-outline">
+              </ion-icon>
+
+            </div>
+
+
+            <div class="ac-item-content">
+
+
+              <div class="ac-item-title">
+
+                Help & Support
+
+              </div>
+
+
+              <div class="ac-item-subtitle">
+
+                FAQs and common questions
+
+              </div>
+
+
+            </div>
+
+
+            <ion-icon
+              class="ac-arrow"
+              name="chevron-forward-outline">
+            </ion-icon>
+
+
+          </div>
+
+
+
+          <!-- CONTACT -->
+
+          <div
+            class="ac-item"
+            (click)="openContactSupport()">
+
+
+            <div class="ac-icon support">
+
+              <ion-icon
+                name="headset-outline">
+              </ion-icon>
+
+            </div>
+
+
+            <div class="ac-item-content">
+
+
+              <div class="ac-item-title">
+
+                Contact Support
+
+              </div>
+
+
+              <div class="ac-item-subtitle">
+
+                Get help from the SmileHub team
+
+              </div>
+
+
+            </div>
+
+
+            <ion-icon
+              class="ac-arrow"
+              name="chevron-forward-outline">
+            </ion-icon>
+
+
+          </div>
+
+
+        </div>
+
 
       </div>
 
@@ -409,515 +1283,58 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
     </div>
 
 
-    <div class="profile-info">
+
+    <!-- =========================
+         SIGN OUT
+         ========================= -->
+
+    <div class="ac-signout">
 
 
-      <div
-        class="profile-loading"
-        *ngIf="loadingProfile">
+      <ion-button
+        expand="block"
+        fill="outline"
+        color="danger"
+        [disabled]="loggingOut"
+        (click)="logout()">
+
 
         <ion-spinner
-          name="crescent"
-          style="width:16px;height:16px">
+          *ngIf="loggingOut"
+          slot="start"
+          name="crescent">
         </ion-spinner>
 
-        Loading profile...
-
-      </div>
-
-
-      <ng-container *ngIf="!loadingProfile">
-
-
-        <h2 class="profile-name">
-
-          {{
-            profile.fullName ||
-            'SmileHub Customer'
-          }}
-
-        </h2>
-
-
-        <div class="profile-email">
-
-          {{
-            profile.email ||
-            auth.currentUser?.email ||
-            'Signed in customer'
-          }}
-
-        </div>
-
-
-        <div class="profile-label">
-
-          SmileHub Member
-
-        </div>
-
-
-      </ng-container>
-
-
-    </div>
-
-<ion-button
-  fill="clear"
-  size="small"
-  routerLink="/personal-information">
-
-  <ion-icon
-    name="chevron-forward-outline">
-  </ion-icon>
-
-</ion-button>
-
-  </div>
-
-
-
-  <!-- =========================
-       MY ACCOUNT
-       ========================= -->
-
-  <div class="account-section-title">
-
-    My Account
-
-  </div>
-
-
-  <div class="account-menu">
-
-
-    <!-- PERSONAL INFORMATION -->
-
-    <div
-      class="account-item"
-      routerLink="/personal-information">
-
-
-      <div class="account-icon">
 
         <ion-icon
-          name="person-outline">
+          *ngIf="!loggingOut"
+          slot="start"
+          name="log-out-outline">
         </ion-icon>
 
-      </div>
+
+        {{
+          loggingOut
+            ? 'Signing Out...'
+            : 'Sign Out'
+        }}
 
 
-      <div class="account-content">
-
-        <div class="account-title">
-
-          Personal Information
-
-        </div>
-
-        <div class="account-subtitle">
-
-          Manage your profile details
-
-        </div>
-
-      </div>
-
-
-      <ion-icon
-        class="account-arrow"
-        name="chevron-forward-outline">
-      </ion-icon>
+      </ion-button>
 
 
     </div>
 
 
+    <div class="ac-version">
 
-    <!-- MY ORDERS -->
-
-    <div
-      class="account-item"
-      routerLink="/orders">
-
-
-      <div class="account-icon">
-
-        <ion-icon
-          name="cart-outline">
-        </ion-icon>
-
-      </div>
-
-
-      <div class="account-content">
-
-        <div class="account-title">
-
-          My Orders
-
-        </div>
-
-        <div class="account-subtitle">
-
-          Track and review your purchases
-
-        </div>
-
-      </div>
-
-
-      <ion-icon
-        class="account-arrow"
-        name="chevron-forward-outline">
-      </ion-icon>
-
-
-    </div>
-
-
-
-    <!-- ADDRESSES -->
-
-    <div
-      class="account-item"
-      routerLink="/addresses">
-
-
-      <div class="account-icon">
-
-        <ion-icon
-          name="location-outline">
-        </ion-icon>
-
-      </div>
-
-
-      <div class="account-content">
-
-        <div class="account-title">
-
-          Addresses
-
-        </div>
-
-        <div class="account-subtitle">
-
-          Manage shipping addresses
-
-        </div>
-
-      </div>
-
-
-      <ion-icon
-        class="account-arrow"
-        name="chevron-forward-outline">
-      </ion-icon>
-
-
-    </div>
-
-
-
-    <!-- PAYMENT METHODS -->
-
-    <div
-      class="account-item"
-      routerLink="/payments">
-
-
-      <div class="account-icon">
-
-        <ion-icon
-          name="card-outline">
-        </ion-icon>
-
-      </div>
-
-
-      <div class="account-content">
-
-        <div class="account-title">
-
-          Payment Methods
-
-        </div>
-
-        <div class="account-subtitle">
-
-          Manage your payment options
-
-        </div>
-
-      </div>
-
-
-      <ion-icon
-        class="account-arrow"
-        name="chevron-forward-outline">
-      </ion-icon>
-
-
-    </div>
-
-
-
-    <!-- WISHLIST -->
-
-    <div
-      class="account-item"
-      routerLink="/wishlist">
-
-
-      <div class="account-icon">
-
-        <ion-icon
-          name="heart-outline">
-        </ion-icon>
-
-      </div>
-
-
-      <div class="account-content">
-
-        <div class="account-title">
-
-          Wishlist
-
-        </div>
-
-        <div class="account-subtitle">
-
-          Your saved dental supplies
-
-        </div>
-
-      </div>
-
-
-      <span
-        class="menu-badge"
-        *ngIf="state.wishlist.size > 0">
-
-        {{ badgeText(state.wishlist.size) }}
-
-      </span>
-
-
-      <ion-icon
-        class="account-arrow"
-        name="chevron-forward-outline">
-      </ion-icon>
-
+      SmileHub • Dental Supplies Marketplace
 
     </div>
 
 
   </div>
 
-
-
-  <!-- =========================
-       SETTINGS & SUPPORT
-       ========================= -->
-
-  <div class="account-section-title">
-
-    Settings & Support
-
-  </div>
-
-
-  <div class="account-menu">
-
-
-    <!-- DARK MODE -->
-
-    <div class="account-item toggle-item">
-
-
-      <div class="account-icon">
-
-        <ion-icon
-          [name]="
-            state.darkMode
-              ? 'moon-outline'
-              : 'sunny-outline'
-          ">
-        </ion-icon>
-
-      </div>
-
-
-      <div class="account-content">
-
-        <div class="account-title">
-
-          Dark Mode
-
-        </div>
-
-        <div class="account-subtitle">
-
-          {{
-            state.darkMode
-              ? 'Dark theme enabled'
-              : 'Light theme enabled'
-          }}
-
-        </div>
-
-      </div>
-
-
-      <ion-toggle
-        [checked]="state.darkMode"
-
-        (ionChange)="
-          state.toggleTheme(
-            $event.detail.checked
-          )
-        ">
-      </ion-toggle>
-
-
-    </div>
-
-
-
-    <!-- HELP -->
-
-    <div
-      class="account-item"
-      routerLink="/help">
-
-
-      <div class="account-icon">
-
-        <ion-icon
-          name="help-circle-outline">
-        </ion-icon>
-
-      </div>
-
-
-      <div class="account-content">
-
-        <div class="account-title">
-
-          Help & Support
-
-        </div>
-
-        <div class="account-subtitle">
-
-          FAQs and common questions
-
-        </div>
-
-      </div>
-
-
-      <ion-icon
-        class="account-arrow"
-        name="chevron-forward-outline">
-      </ion-icon>
-
-
-    </div>
-
-
-
-    <!-- CONTACT SUPPORT -->
-
-    <div
-      class="account-item"
-      (click)="openContactSupport()">
-
-
-      <div class="account-icon">
-
-        <ion-icon
-          name="headset-outline">
-        </ion-icon>
-
-      </div>
-
-
-      <div class="account-content">
-
-        <div class="account-title">
-
-          Contact Support
-
-        </div>
-
-        <div class="account-subtitle">
-
-          Get help from SmileHub
-
-        </div>
-
-      </div>
-
-
-      <ion-icon
-        class="account-arrow"
-        name="chevron-forward-outline">
-      </ion-icon>
-
-
-    </div>
-
-
-  </div>
-
-
-
-  <!-- =========================
-       LOGOUT
-       ========================= -->
-
-  <ion-button
-    class="logout-button"
-
-    expand="block"
-
-    fill="outline"
-
-    color="danger"
-
-    [disabled]="loggingOut"
-
-    (click)="logout()">
-
-
-    <ion-spinner
-      *ngIf="loggingOut"
-      slot="start"
-      name="crescent">
-    </ion-spinner>
-
-
-    <ion-icon
-      *ngIf="!loggingOut"
-      slot="start"
-      name="log-out-outline">
-    </ion-icon>
-
-
-    {{
-      loggingOut
-        ? 'Signing Out...'
-        : 'Sign Out'
-    }}
-
-
-  </ion-button>
-
-
-</div>
 
 </ion-content>
 
@@ -932,22 +1349,28 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 </ion-footer>
 
 `
+
 })
 
 
 export class AccountPage {
 
 
-  profile: any = {};
+  profile:
+    any =
+    {};
 
 
-  loadingProfile = true;
+  loadingProfile =
+    true;
 
 
-  loggingOut = false;
+  loggingOut =
+    false;
 
 
-  profilePhoto = '';
+  profilePhoto =
+    '';
 
 
 
@@ -983,19 +1406,26 @@ export class AccountPage {
     Promise<void> {
 
 
-    this.loadingProfile = true;
+    this.loadingProfile =
+      true;
 
 
     try {
 
 
       this.profile =
-        await this.profiles.loadProfile();
+        await this.profiles
+          .loadProfile();
 
 
-      if (!this.profile) {
+      if (
+        !this.profile
+      ) {
 
-        this.profile = {};
+
+        this.profile =
+          {};
+
 
       }
 
@@ -1004,8 +1434,13 @@ export class AccountPage {
         !this.profile.email
       ) {
 
+
         this.profile.email =
-          this.auth.currentUser?.email || '';
+          this.auth.currentUser
+            ?.email
+          ||
+          '';
+
 
       }
 
@@ -1015,7 +1450,9 @@ export class AccountPage {
           .loadProfilePhoto();
 
 
-    } catch (error) {
+    } catch (
+      error
+    ) {
 
 
       console.error(
@@ -1027,20 +1464,27 @@ export class AccountPage {
       this.profile = {
 
         email:
-          this.auth.currentUser?.email || ''
+          this.auth.currentUser
+            ?.email
+          ||
+          ''
 
       };
 
 
-      this.profilePhoto = '';
+      this.profilePhoto =
+        '';
 
 
     } finally {
 
 
-      this.loadingProfile = false;
+      this.loadingProfile =
+        false;
+
 
     }
+
 
   }
 
@@ -1056,17 +1500,27 @@ export class AccountPage {
 
     const fullName =
       String(
-        this.profile?.fullName || ''
-      ).trim();
+        this.profile
+          ?.fullName
+        ||
+        ''
+      )
+        .trim();
 
 
-    if (fullName) {
+    if (
+      fullName
+    ) {
 
 
       const parts =
         fullName
-          .split(/\s+/)
-          .filter(Boolean);
+          .split(
+            /\\s+/
+          )
+          .filter(
+            Boolean
+          );
 
 
       if (
@@ -1075,31 +1529,58 @@ export class AccountPage {
 
 
         return (
-          parts[0][0] +
-          parts[parts.length - 1][0]
-        ).toUpperCase();
+
+          parts[0][0]
+
+          +
+
+          parts[
+            parts.length - 1
+          ][0]
+
+        )
+          .toUpperCase();
+
 
       }
 
 
       return fullName
-        .substring(0, 2)
+        .substring(
+          0,
+          2
+        )
         .toUpperCase();
+
 
     }
 
 
     const email =
       String(
-        this.profile?.email ||
-        this.auth.currentUser?.email ||
+
+        this.profile
+          ?.email
+
+        ||
+
+        this.auth.currentUser
+          ?.email
+
+        ||
+
         'SH'
+
       );
 
 
     return email
-      .substring(0, 2)
+      .substring(
+        0,
+        2
+      )
       .toUpperCase();
+
 
   }
 
@@ -1113,9 +1594,11 @@ export class AccountPage {
     void {
 
 
-    this.router.navigateByUrl(
-      '/contact-support'
-    );
+    void this.router
+      .navigateByUrl(
+        '/contact-support'
+      );
+
 
   }
 
@@ -1129,60 +1612,71 @@ export class AccountPage {
     Promise<void> {
 
 
-    if (this.loggingOut) {
+    if (
+      this.loggingOut
+    ) {
+
 
       return;
+
 
     }
 
 
     const alert =
-      await this.alerts.create({
+      await this.alerts
+        .create({
 
 
-        header:
-          'Sign out?',
+          header:
+            'Sign out?',
 
 
-        message:
-          'You can sign in again anytime.',
+          message:
+            'You can sign in again anytime.',
 
 
-        buttons: [
+          buttons: [
+
+            {
+
+              text:
+                'Cancel',
+
+              role:
+                'cancel'
+
+            },
 
 
-          {
-            text:
-              'Cancel',
+            {
 
-            role:
-              'cancel'
-          },
+              text:
+                'Sign Out',
 
+              role:
+                'destructive',
 
-          {
-            text:
-              'Sign Out',
-
-            role:
-              'destructive',
-
-            handler:
-              () => {
-
-                void this.performLogout();
-
-              }
-          }
+              handler:
+                () => {
 
 
-        ]
+                  void this
+                    .performLogout();
 
 
-      });
+                }
+
+            }
+
+          ]
+
+
+        });
 
 
     await alert.present();
+
 
   }
 
@@ -1196,27 +1690,32 @@ export class AccountPage {
     Promise<void> {
 
 
-    this.loggingOut = true;
+    this.loggingOut =
+      true;
 
 
     try {
 
 
-      await this.auth.signOut();
+      await this.auth
+        .signOut();
 
 
-      await this.router.navigateByUrl(
+      await this.router
+        .navigateByUrl(
 
-        '/login',
+          '/login',
 
-        {
-          replaceUrl: true
-        }
+          {
+            replaceUrl: true
+          }
 
-      );
+        );
 
 
-    } catch (error: any) {
+    } catch (
+      error: any
+    ) {
 
 
       console.error(
@@ -1226,24 +1725,26 @@ export class AccountPage {
 
 
       const alert =
-        await this.alerts.create({
+        await this.alerts
+          .create({
 
 
-          header:
-            'Unable to sign out',
+            header:
+              'Unable to sign out',
 
 
-          message:
-            error?.message ||
-            'Please try again.',
+            message:
+              error?.message
+              ||
+              'Please try again.',
 
 
-          buttons: [
-            'OK'
-          ]
+            buttons: [
+              'OK'
+            ]
 
 
-        });
+          });
 
 
       await alert.present();
@@ -1252,9 +1753,12 @@ export class AccountPage {
     } finally {
 
 
-      this.loggingOut = false;
+      this.loggingOut =
+        false;
+
 
     }
+
 
   }
 
@@ -1266,12 +1770,16 @@ export class AccountPage {
 
   badgeText(
     value: number
-  ): string {
+  ):
+    string {
 
 
     return value > 99
       ? '99+'
-      : String(value);
+      : String(
+          value
+        );
+
 
   }
 

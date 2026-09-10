@@ -50,7 +50,91 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       padding: 0;
     }
 
+.premium-banner {
+  border-radius: 20px;
 
+  padding: 18px 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f839a,
+      #25c7d9
+    );
+
+  overflow: hidden;
+
+  min-height: 190px;
+}
+
+
+.hero-content {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 16px;
+
+  min-height: 150px;
+}
+
+
+.hero-text {
+  flex: 1;
+
+  min-width: 0;
+}
+
+
+.hero-title {
+  font-size: 19px;
+
+  font-weight: 900;
+
+  line-height: 1.25;
+
+  color: white;
+}
+
+
+.hero-subtitle {
+  margin:
+    7px 0
+    12px;
+
+  font-size: 11px;
+
+  line-height: 1.4;
+
+  color: white;
+
+  opacity: .92;
+}
+
+
+.hero-image {
+  flex-shrink: 0;
+
+  font-size: 58px;
+
+  line-height: 1;
+}
+
+
+.premium-banner ion-button {
+  min-height: 32px;
+
+  margin: 0;
+
+  --padding-start: 14px;
+  --padding-end: 14px;
+
+  --border-radius: 6px;
+
+  font-size: 10px;
+}
     /* =========================
        SEARCH DROPDOWN
        ========================= */
@@ -432,6 +516,49 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
     }
 
+
+
+
+    /* =========================
+       HOME CATEGORY SVG ICONS
+       ========================= */
+
+    .category-icon {
+      color: var(--ion-color-primary);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .home-category-svg {
+      width: 27px;
+      height: 27px;
+
+      display: block;
+
+      color: var(--ion-color-primary);
+
+      fill: none !important;
+      stroke: currentColor !important;
+
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .home-category-svg path,
+    .home-category-svg rect,
+    .home-category-svg circle,
+    .home-category-svg line,
+    .home-category-svg polyline,
+    .home-category-svg polygon {
+      fill: none !important;
+      stroke: currentColor !important;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
 
     /* =========================
        AI CHAT FLOATING BUTTON
@@ -932,61 +1059,51 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
        HERO BANNER
        ================================== -->
 
-  <div class="hero-banner">
+  <div class="hero-banner premium-banner">
 
+  <div class="hero-content">
 
-    <div class="row-between">
+    <div class="hero-text">
 
+      <div class="hero-title">
 
-      <div>
-
-
-        <div
-          style="
-            font-size:22px;
-            font-weight:900
-          ">
-
-          Clinic essentials,
-          all in one place.
-
-        </div>
-
-
-        <p style="opacity:.9">
-
-          Reliable supplies for
-          everyday dental care.
-
-        </p>
-
-
-        <ion-button
-          color="light"
-          size="small"
-
-          (click)="router.navigate(['/catalog'])">
-
-          Shop now
-
-        </ion-button>
-
+        Professional dental supplies,
+        all in one place.
 
       </div>
 
 
+      <p class="hero-subtitle">
 
-      <div style="font-size:56px">
+        Quality essentials for
+        clinics and dental professionals.
 
-        🦷
+      </p>
 
-      </div>
+
+      <ion-button
+        color="light"
+        size="small"
+        (click)="router.navigate(['/catalog'])">
+
+        Shop Now
+
+      </ion-button>
 
 
     </div>
 
 
+    <div class="hero-image">
+
+      🦷
+
+    </div>
+
+
   </div>
+
+</div>
 
 
 
@@ -1030,12 +1147,123 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       (click)="openCategory(c.label)">
 
 
-      <div class="category-icon">
+<div class="category-icon">
 
-        {{ c.icon }}
+  <ng-container [ngSwitch]="c.label">
 
-      </div>
+    <!-- COSMETIC: same visual meaning as sparkles-outline -->
+    <svg
+      *ngSwitchCase="'Cosmetic'"
+      viewBox="0 0 24 24"
+      class="home-category-svg">
+      <path d="M12 2.8L13.5 7.2L18 8.7L13.5 10.2L12 14.7L10.5 10.2L6 8.7L10.5 7.2L12 2.8Z"></path>
+      <path d="M18.5 14.5L19.3 16.7L21.5 17.5L19.3 18.3L18.5 20.5L17.7 18.3L15.5 17.5L17.7 16.7L18.5 14.5Z"></path>
+      <path d="M5.5 3.5L6.1 5.1L7.7 5.7L6.1 6.3L5.5 7.9L4.9 6.3L3.3 5.7L4.9 5.1L5.5 3.5Z"></path>
+    </svg>
 
+    <!-- DISPOSABLES: same visual meaning as layers-outline -->
+    <svg
+      *ngSwitchCase="'Disposables'"
+      viewBox="0 0 24 24"
+      class="home-category-svg">
+      <path d="M12 3.5L20.5 8L12 12.5L3.5 8L12 3.5Z"></path>
+      <path d="M4.5 12L12 16L19.5 12"></path>
+      <path d="M4.5 16L12 20L19.5 16"></path>
+    </svg>
+
+    <!-- EQUIPMENT: same visual meaning as medkit-outline -->
+    <svg
+      *ngSwitchCase="'Equipment'"
+      viewBox="0 0 24 24"
+      class="home-category-svg">
+      <rect x="3" y="7" width="18" height="13" rx="2.5"></rect>
+      <path d="M8 7V5.5C8 4.7 8.7 4 9.5 4H14.5C15.3 4 16 4.7 16 5.5V7"></path>
+      <path d="M12 10V17"></path>
+      <path d="M8.5 13.5H15.5"></path>
+    </svg>
+
+    <!-- IMPRESSION: same visual meaning as scan-outline -->
+    <svg
+      *ngSwitchCase="'Impression'"
+      viewBox="0 0 24 24"
+      class="home-category-svg">
+      <path d="M8 3H5C3.9 3 3 3.9 3 5V8"></path>
+      <path d="M16 3H19C20.1 3 21 3.9 21 5V8"></path>
+      <path d="M3 16V19C3 20.1 3.9 21 5 21H8"></path>
+      <path d="M21 16V19C21 20.1 20.1 21 19 21H16"></path>
+    </svg>
+
+    <!-- INSTRUMENTS: same visual meaning as construct-outline -->
+    <svg
+      *ngSwitchCase="'Instruments'"
+      viewBox="0 0 24 24"
+      class="home-category-svg">
+      <path d="M14.5 5.5C16.1 3.9 18.3 3.4 20.3 4.1L17.2 7.2L18.8 8.8L21.9 5.7C22.6 7.7 22.1 9.9 20.5 11.5C18.9 13.1 16.6 13.6 14.6 12.8L7.2 20.2C6.4 21 5.1 21 4.3 20.2L3.8 19.7C3 18.9 3 17.6 3.8 16.8L11.2 9.4C10.4 7.4 10.9 5.1 12.5 3.5"></path>
+      <path d="M13.8 13.8L20.5 20.5"></path>
+      <path d="M5.2 5.2L9.5 9.5"></path>
+    </svg>
+
+    <!-- ORAL CARE: same visual meaning as brush-outline -->
+    <svg
+      *ngSwitchCase="'Oral Care'"
+      viewBox="0 0 24 24"
+      class="home-category-svg">
+      <path d="M14.5 4.2C15.7 3 17.7 3 18.9 4.2L19.8 5.1C21 6.3 21 8.3 19.8 9.5L10.2 19.1"></path>
+      <path d="M13.2 5.5L18.5 10.8"></path>
+      <path d="M10.2 19.1C8.6 20.7 6.2 21.1 4.2 20.1C5.2 18.1 5.6 15.7 7.2 14.1L10.2 19.1Z"></path>
+    </svg>
+
+    <!-- ORTHODONTICS: same visual meaning as link-outline -->
+    <svg
+      *ngSwitchCase="'Orthodontics'"
+      viewBox="0 0 24 24"
+      class="home-category-svg">
+      <path d="M10 13.8L8.2 15.6C6.5 17.3 3.8 17.3 2.2 15.6C0.6 14 0.6 11.3 2.2 9.7L5.2 6.7C6.9 5 9.6 5 11.2 6.7"></path>
+      <path d="M14 10.2L15.8 8.4C17.5 6.7 20.2 6.7 21.8 8.4C23.4 10 23.4 12.7 21.8 14.3L18.8 17.3C17.1 19 14.4 19 12.8 17.3"></path>
+      <path d="M8.5 12H15.5"></path>
+    </svg>
+
+    <!-- PPE: same visual meaning as shield-checkmark-outline -->
+    <svg
+      *ngSwitchCase="'PPE'"
+      viewBox="0 0 24 24"
+      class="home-category-svg">
+      <path d="M12 3L20 6V11.5C20 16.2 16.9 19.4 12 21C7.1 19.4 4 16.2 4 11.5V6L12 3Z"></path>
+      <path d="M8.2 12L10.8 14.6L16.2 9.2"></path>
+    </svg>
+
+    <!-- RESTORATIVE: same visual meaning as flask-outline -->
+    <svg
+      *ngSwitchCase="'Restorative'"
+      viewBox="0 0 24 24"
+      class="home-category-svg">
+      <path d="M9 3H15"></path>
+      <path d="M10 3V9L4.5 18.2C3.8 19.4 4.7 21 6.1 21H17.9C19.3 21 20.2 19.4 19.5 18.2L14 9V3"></path>
+      <path d="M7.4 16H16.6"></path>
+    </svg>
+
+    <!-- ROTARY: same visual meaning as settings-outline -->
+    <svg
+      *ngSwitchCase="'Rotary'"
+      viewBox="0 0 24 24"
+      class="home-category-svg">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M19.4 15A1.7 1.7 0 0 0 19.7 16.9L19.8 17C20.5 17.7 20.5 18.8 19.8 19.5L19.5 19.8C18.8 20.5 17.7 20.5 17 19.8L16.9 19.7A1.7 1.7 0 0 0 15 19.4A1.7 1.7 0 0 0 14 21V21.2C14 22.2 13.2 23 12.2 23H11.8C10.8 23 10 22.2 10 21.2V21A1.7 1.7 0 0 0 9 19.4A1.7 1.7 0 0 0 7.1 19.7L7 19.8C6.3 20.5 5.2 20.5 4.5 19.8L4.2 19.5C3.5 18.8 3.5 17.7 4.2 17L4.3 16.9A1.7 1.7 0 0 0 4.6 15A1.7 1.7 0 0 0 3 14H2.8C1.8 14 1 13.2 1 12.2V11.8C1 10.8 1.8 10 2.8 10H3A1.7 1.7 0 0 0 4.6 9A1.7 1.7 0 0 0 4.3 7.1L4.2 7C3.5 6.3 3.5 5.2 4.2 4.5L4.5 4.2C5.2 3.5 6.3 3.5 7 4.2L7.1 4.3A1.7 1.7 0 0 0 9 4.6A1.7 1.7 0 0 0 10 3V2.8C10 1.8 10.8 1 11.8 1H12.2C13.2 1 14 1.8 14 2.8V3A1.7 1.7 0 0 0 15 4.6A1.7 1.7 0 0 0 16.9 4.3L17 4.2C17.7 3.5 18.8 3.5 19.5 4.2L19.8 4.5C20.5 5.2 20.5 6.3 19.8 7L19.7 7.1A1.7 1.7 0 0 0 19.4 9A1.7 1.7 0 0 0 21 10H21.2C22.2 10 23 10.8 23 11.8V12.2C23 13.2 22.2 14 21.2 14H21A1.7 1.7 0 0 0 19.4 15Z"></path>
+    </svg>
+
+    <!-- FALLBACK -->
+    <svg
+      *ngSwitchDefault
+      viewBox="0 0 24 24"
+      class="home-category-svg">
+      <circle cx="12" cy="12" r="8"></circle>
+      <path d="M8 12H16"></path>
+      <path d="M12 8V16"></path>
+    </svg>
+
+  </ng-container>
+
+</div>
 
       <div
         style="
@@ -1691,60 +1919,25 @@ export class HomePage {
      CATEGORIES
      ================================== */
 
-  get categories() {
+get categories() {
 
+  return this.state
+    .getCategories()
 
-    const icons:
-      Record<string, string> = {
+    .filter(
+      category =>
+        category !== 'All'
+    )
 
+  
 
-      'Oral Care': '🪥',
+    .map(
+      label => ({
+        label
+      })
+    );
 
-      'Instruments': '🛠️',
-
-      'PPE': '😷',
-
-      'Restorative': '🧪',
-
-      'Disposables': '🧻',
-
-      'Impression': '😁',
-
-      'Orthodontics': '🦷',
-
-      'Rotary': '⚙️',
-
-      'Equipment': '⚕️',
-
-      'Cosmetic': '✨'
-
-    };
-
-
-    return this.state
-
-      .getCategories()
-
-      .filter(
-        category =>
-          category !== 'All'
-      )
-
-      .slice(0, 8)
-
-      .map(
-        label => ({
-
-          label,
-
-          icon:
-            icons[label] || '🦷'
-
-        })
-      );
-
-  }
-
+}
 
 
   /* ==================================

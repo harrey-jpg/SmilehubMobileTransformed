@@ -1,5 +1,9 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, ViewEncapsulation } from '@angular/core';
+
+import {
+  ActivatedRoute,
+  Router
+} from '@angular/router';
 
 import {
   IonicModule,
@@ -10,24 +14,557 @@ import {
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { AddressService } from '../services/address.service';
+import {
+  AddressService
+} from '../services/address.service';
+
 import {
   PhAddressService,
   PhPlace
 } from '../services/ph-address.service';
 
-import { ShippingAddress } from '../models/product';
+import {
+  ShippingAddress
+} from '../models/product';
 
 
 @Component({
   selector: 'app-add-address',
   standalone: true,
+  encapsulation: ViewEncapsulation.None,
 
   imports: [
     IonicModule,
     FormsModule,
     CommonModule
   ],
+
+  styles: [`
+
+    /* =========================
+       PAGE
+       ========================= */
+
+    .aa-page {
+      padding-bottom: 34px;
+    }
+
+
+    /* =========================
+       INTRO
+       ========================= */
+
+    .aa-intro {
+      margin-bottom: 18px;
+    }
+
+    .aa-kicker {
+      color: var(--ion-color-primary);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+    }
+
+    .aa-title {
+      margin: 4px 0 5px;
+      color: var(--ion-text-color);
+      font-size: 23px;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+
+    .aa-subtitle {
+      max-width: 360px;
+      margin: 0;
+      color: var(--ion-color-medium);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+
+    /* =========================
+       SECTION
+       ========================= */
+
+    .aa-section {
+      margin-top: 20px;
+    }
+
+    .aa-section-heading {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 2px 9px;
+    }
+
+    .aa-section-icon {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 11px;
+
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .10
+        );
+
+      color: var(--ion-color-primary);
+    }
+
+    .aa-section-icon ion-icon {
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
+      color: var(--ion-color-primary);
+    }
+
+    .aa-section-title {
+      color: var(--ion-text-color);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .aa-section-subtitle {
+      margin-top: 2px;
+      color: var(--ion-color-medium);
+      font-size: 9px;
+      line-height: 1.4;
+    }
+
+
+    /* =========================
+       CARD
+       ========================= */
+
+    .aa-card {
+      padding: 12px;
+
+      border-radius: 19px;
+
+      border:
+        1px solid
+        rgba(
+          120,
+          120,
+          120,
+          .09
+        );
+    }
+
+
+    /* =========================
+       FIELD
+       ========================= */
+
+    .aa-field {
+      margin-bottom: 10px;
+
+      border:
+        1px solid
+        rgba(
+          120,
+          120,
+          120,
+          .11
+        );
+
+      border-radius: 14px;
+
+      --background:
+        rgba(
+          120,
+          120,
+          120,
+          .04
+        );
+
+      --border-radius: 14px;
+
+      --padding-start: 12px;
+      --inner-padding-end: 12px;
+      --min-height: 64px;
+    }
+
+    .aa-field:last-child {
+      margin-bottom: 0;
+    }
+
+    .aa-field ion-icon[slot="start"] {
+      width: 19px;
+      height: 19px;
+      min-width: 19px;
+
+      margin-right: 12px;
+
+      color: var(--ion-color-primary);
+
+      font-size: 19px;
+    }
+
+    .aa-field ion-input,
+    .aa-field ion-select {
+      color: var(--ion-text-color);
+      font-size: 12px;
+    }
+
+
+    /* =========================
+       LOCATION LOADING
+       ========================= */
+
+    .aa-location-loading {
+      display: flex;
+      align-items: center;
+
+      gap: 8px;
+
+      margin: 4px 3px 11px;
+
+      color: var(--ion-color-medium);
+
+      font-size: 9px;
+    }
+
+    .aa-location-loading ion-spinner {
+      width: 15px;
+      height: 15px;
+    }
+
+
+    /* =========================
+       LOCATION MODE
+       ========================= */
+
+    .aa-mode-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 12px;
+
+      margin-top: 10px;
+
+      padding: 10px 2px 0;
+    }
+
+    .aa-mode-note {
+      flex: 1;
+
+      color: var(--ion-color-medium);
+
+      font-size: 9px;
+      line-height: 1.4;
+    }
+
+    .aa-mode-button {
+      flex-shrink: 0;
+
+      min-height: 33px;
+
+      margin: 0;
+
+      --border-radius: 10px;
+
+      font-size: 9px;
+      font-weight: 900;
+
+      text-transform: none;
+    }
+
+
+    /* =========================
+       INFO BOX
+       ========================= */
+
+    .aa-info-box {
+      display: flex;
+      align-items: flex-start;
+
+      gap: 9px;
+
+      margin-top: 11px;
+
+      padding: 10px 11px;
+
+      border-radius: 12px;
+
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .06
+        );
+
+      color: var(--ion-color-medium);
+
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .aa-info-box ion-icon {
+      flex-shrink: 0;
+
+      margin-top: 1px;
+
+      color: var(--ion-color-primary);
+
+      font-size: 15px;
+    }
+
+
+    /* =========================
+       DEFAULT ADDRESS
+       ========================= */
+
+    .aa-default-card {
+      display: flex;
+      align-items: center;
+
+      gap: 12px;
+
+      padding: 14px;
+
+      border-radius: 17px;
+
+      border:
+        1px solid
+        rgba(
+          120,
+          120,
+          120,
+          .09
+        );
+    }
+
+    .aa-default-icon {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 13px;
+
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .10
+        );
+
+      color: var(--ion-color-primary);
+    }
+
+    .aa-default-icon ion-icon {
+      font-size: 20px;
+    }
+
+    .aa-default-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .aa-default-title {
+      color: var(--ion-text-color);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .aa-default-text {
+      margin-top: 3px;
+
+      color: var(--ion-color-medium);
+
+      font-size: 9px;
+      line-height: 1.4;
+    }
+
+    .aa-default-card ion-toggle {
+      flex-shrink: 0;
+
+      transform: scale(.88);
+
+      transform-origin: right center;
+    }
+
+
+    /* =========================
+       SAVE
+       ========================= */
+
+    .aa-save-wrap {
+      margin-top: 22px;
+    }
+
+    .aa-save-btn {
+      min-height: 50px;
+
+      margin: 0;
+
+      --border-radius: 15px;
+
+      font-size: 11px;
+      font-weight: 900;
+
+      text-transform: none;
+    }
+
+    .aa-save-note {
+      margin-top: 8px;
+
+      color: var(--ion-color-medium);
+
+      text-align: center;
+
+      font-size: 8px;
+      line-height: 1.4;
+    }
+
+
+    /* =========================
+       LIGHT MODE
+       ========================= */
+
+    @media (prefers-color-scheme: light) {
+
+      .aa-card,
+      .aa-default-card {
+        background: #ffffff;
+
+        box-shadow:
+          0 7px 20px
+          rgba(
+            27,
+            44,
+            64,
+            .05
+          );
+      }
+
+      .aa-field {
+        --background: #ffffff;
+
+        border-color:
+          rgba(
+            40,
+            60,
+            80,
+            .10
+          );
+      }
+
+      .aa-info-box {
+        background: #f2f8fa;
+      }
+
+    }
+
+
+    /* =========================
+       RESPONSIVE
+       ========================= */
+
+    @media (min-width: 720px) {
+
+      .aa-grid {
+        display: grid;
+
+        grid-template-columns:
+          repeat(
+            2,
+            minmax(0, 1fr)
+          );
+
+        gap: 18px;
+      }
+
+      .aa-grid .aa-section {
+        margin-top: 20px;
+      }
+
+      .aa-full {
+        grid-column: 1 / -1;
+      }
+
+    }
+
+
+    /* =========================
+       ADDRESS SELECT POPOVERS
+       ========================= */
+
+    ion-popover.address-region-popover {
+      --width: min(320px, calc(100vw - 32px));
+      --max-width: calc(100vw - 32px);
+      --max-height: 330px;
+    }
+
+    ion-popover.address-region-popover::part(content) {
+      max-height: 330px;
+      border-radius: 16px;
+      overflow-y: auto !important;
+    }
+
+    ion-popover.address-region-popover ion-select-popover,
+    ion-popover.address-region-popover ion-list {
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    ion-popover.address-region-popover ion-item {
+      --min-height: 48px;
+      font-size: 14px;
+    }
+
+    ion-popover.address-select-popover {
+      --width: min(320px, calc(100vw - 32px));
+      --max-width: calc(100vw - 32px);
+      --max-height: 340px;
+    }
+
+    ion-popover.address-select-popover::part(content) {
+      max-height: 340px;
+      border-radius: 16px;
+      overflow-y: auto !important;
+    }
+
+    ion-popover.address-select-popover ion-select-popover,
+    ion-popover.address-select-popover ion-list {
+      max-height: 330px;
+      overflow-y: auto;
+    }
+
+    ion-popover.address-select-popover ion-item {
+      --min-height: 48px;
+      font-size: 14px;
+    }
+
+    @media (max-height: 650px) {
+
+      ion-popover.address-region-popover {
+        --max-height: 280px;
+      }
+
+      ion-popover.address-region-popover::part(content) {
+        max-height: 280px;
+      }
+
+      ion-popover.address-region-popover ion-select-popover,
+      ion-popover.address-region-popover ion-list {
+        max-height: 270px;
+      }
+
+    }
+
+  `],
+
 
   template: `
 
@@ -65,577 +602,982 @@ import { ShippingAddress } from '../models/product';
 <ion-content>
 
 
-<div class="page-wrap no-bottom">
+  <div class="page-wrap no-bottom aa-page">
 
 
-<form (ngSubmit)="save()">
+    <!-- =========================
+         INTRO
+         ========================= -->
 
+    <div class="aa-intro">
 
 
-  <!-- =========================
-       LABEL
-       ========================= -->
+      <div class="aa-kicker">
+        SmileHub Delivery
+      </div>
 
-  <ion-item
-    class="input-card"
-    lines="none">
 
+      <h1 class="aa-title">
 
-    <ion-select
+        {{
+          id
+            ? 'Edit Address'
+            : 'Add New Address'
+        }}
 
-      label="Label"
+      </h1>
 
-      labelPlacement="stacked"
 
-      [(ngModel)]="form.label"
+      <p class="aa-subtitle">
 
-      name="label">
+        {{
+          id
+            ? 'Update the delivery information for this saved address.'
+            : 'Enter the delivery details you want to use for your SmileHub orders.'
+        }}
 
+      </p>
 
-      <ion-select-option
-        value="Home">
 
-        Home
+    </div>
 
-      </ion-select-option>
 
 
-      <ion-select-option
-        value="Clinic">
+    <form
+      (ngSubmit)="save()">
 
-        Clinic
 
-      </ion-select-option>
 
+      <div class="aa-grid">
 
-      <ion-select-option
-        value="Office">
 
-        Office
 
-      </ion-select-option>
+        <!-- =========================
+             ADDRESS TYPE
+             ========================= -->
 
+        <div class="aa-section">
 
-      <ion-select-option
-        value="Other">
 
-        Other
+          <div class="aa-section-heading">
 
-      </ion-select-option>
 
+            <div class="aa-section-icon">
 
-    </ion-select>
+              <ion-icon
+                name="home-outline">
+              </ion-icon>
 
+            </div>
 
-  </ion-item>
 
+            <div>
 
+              <div class="aa-section-title">
+                Address Type
+              </div>
 
-  <!-- =========================
-       RECIPIENT
-       ========================= -->
+              <div class="aa-section-subtitle">
+                Choose a label for this address
+              </div>
 
-  <ion-item
-    class="input-card"
-    lines="none">
+            </div>
 
 
-    <ion-input
+          </div>
 
-      label="Recipient"
 
-      labelPlacement="stacked"
 
-      placeholder="Full name"
+          <div class="app-card aa-card">
 
-      [(ngModel)]="form.recipient"
 
-      name="recipient"
+            <ion-item
+              class="aa-field"
+              lines="none">
 
-      required>
 
-    </ion-input>
+              <ion-icon
+                slot="start"
+                name="home-outline">
+              </ion-icon>
 
 
-  </ion-item>
+              <ion-select
+                label="Label"
 
+                labelPlacement="stacked"
 
+                interface="popover"
 
-  <!-- =========================
-       PHONE
-       ========================= -->
+                [interfaceOptions]="selectPopoverOptions"
 
-  <ion-item
-    class="input-card"
-    lines="none">
+                placeholder="Select address type"
 
+                [(ngModel)]="form.label"
 
-    <ion-input
+                name="label"
 
-      label="Phone"
+                [disabled]="saving">
 
-      labelPlacement="stacked"
 
-      type="tel"
+                <ion-select-option value="Home">
+                  Home
+                </ion-select-option>
 
-      placeholder="09XXXXXXXXX"
 
-      [(ngModel)]="form.phone"
+                <ion-select-option value="Clinic">
+                  Clinic
+                </ion-select-option>
 
-      name="phone"
 
-      required>
+                <ion-select-option value="Office">
+                  Office
+                </ion-select-option>
 
-    </ion-input>
 
+                <ion-select-option value="Other">
+                  Other
+                </ion-select-option>
 
-  </ion-item>
 
+              </ion-select>
 
 
-  <!-- =========================
-       STREET
-       ========================= -->
+            </ion-item>
 
-  <ion-item
-    class="input-card"
-    lines="none">
 
+          </div>
 
-    <ion-input
 
-      label="Street / Building"
+        </div>
 
-      labelPlacement="stacked"
 
-      placeholder="House no., street, subdivision"
 
-      [(ngModel)]="form.street"
+        <!-- =========================
+             RECIPIENT
+             ========================= -->
 
-      name="street"
+        <div class="aa-section">
 
-      required>
 
-    </ion-input>
+          <div class="aa-section-heading">
 
 
-  </ion-item>
+            <div class="aa-section-icon">
 
+              <ion-icon
+                name="person-outline">
+              </ion-icon>
 
+            </div>
 
-  <!-- =========================
-       DROPDOWN LOCATION
-       ========================= -->
 
-  <ng-container *ngIf="!manualLocation">
+            <div>
 
+              <div class="aa-section-title">
+                Recipient Details
+              </div>
 
-    <!-- REGION -->
+              <div class="aa-section-subtitle">
+                Who will receive the order
+              </div>
 
-    <ion-item
-      class="input-card"
-      lines="none">
+            </div>
 
 
-      <ion-select
+          </div>
 
-        label="Region"
 
-        labelPlacement="stacked"
 
-        [(ngModel)]="regionCode"
+          <div class="app-card aa-card">
 
-        name="region"
 
-        [disabled]="loadingPlaces"
+            <ion-item
+              class="aa-field"
+              lines="none">
 
-        (ionChange)="onRegionChange()"
 
-        placeholder="Select region">
+              <ion-icon
+                slot="start"
+                name="person-outline">
+              </ion-icon>
 
 
-        <ion-select-option
+              <ion-input
+                label="Recipient"
 
-          *ngFor="let region of regions"
+                labelPlacement="stacked"
 
-          [value]="region.code">
+                placeholder="Full name"
 
+                autocomplete="name"
 
-          {{ region.name }}
+                [(ngModel)]="form.recipient"
 
+                name="recipient"
 
-        </ion-select-option>
+                [disabled]="saving"
 
+                required>
+              </ion-input>
 
-      </ion-select>
 
+            </ion-item>
 
-    </ion-item>
 
 
+            <ion-item
+              class="aa-field"
+              lines="none">
 
-    <!-- PROVINCE -->
 
-    <ion-item
+              <ion-icon
+                slot="start"
+                name="call-outline">
+              </ion-icon>
 
-      class="input-card"
 
-      lines="none"
+              <ion-input
+                label="Phone"
 
-      *ngIf="hasProvinces">
+                labelPlacement="stacked"
 
+                type="tel"
 
-      <ion-select
+                inputmode="tel"
 
-        label="Province"
+                maxlength="13"
 
-        labelPlacement="stacked"
+                placeholder="09XXXXXXXXX"
 
-        [(ngModel)]="provinceCode"
+                autocomplete="tel"
 
-        name="province"
+                [(ngModel)]="form.phone"
 
-        [disabled]="
-          !regionCode ||
-          loadingPlaces
-        "
+                name="phone"
 
-        (ionChange)="onProvinceChange()"
+                [disabled]="saving"
 
-        placeholder="Select province">
+                required>
+              </ion-input>
 
 
-        <ion-select-option
+            </ion-item>
 
-          *ngFor="let province of provinces"
 
-          [value]="province.code">
+          </div>
 
 
-          {{ province.name }}
+        </div>
 
 
-        </ion-select-option>
 
+        <!-- =========================
+             DELIVERY LOCATION
+             ========================= -->
 
-      </ion-select>
+        <div class="aa-section aa-full">
 
 
-    </ion-item>
+          <div class="aa-section-heading">
 
 
+            <div class="aa-section-icon">
 
-    <!-- CITY -->
+              <ion-icon
+                name="location-outline">
+              </ion-icon>
 
-    <ion-item
-      class="input-card"
-      lines="none">
+            </div>
 
 
-      <ion-select
+            <div>
 
-        label="City / Municipality"
+              <div class="aa-section-title">
+                Delivery Location
+              </div>
 
-        labelPlacement="stacked"
+              <div class="aa-section-subtitle">
+                Complete Philippine address
+              </div>
 
-        [(ngModel)]="cityCode"
+            </div>
 
-        name="citySelect"
 
-        [disabled]="
-          (
-            !hasProvinces &&
-            !regionCode
-          )
-          ||
-          (
-            hasProvinces &&
-            !provinceCode
-          )
-          ||
-          loadingPlaces
-        "
+          </div>
 
-        (ionChange)="onCityChange()"
 
-        placeholder="Select city / municipality">
 
+          <div class="app-card aa-card">
 
-        <ion-select-option
 
-          *ngFor="let city of cities"
+            <!-- STREET -->
 
-          [value]="city.code">
+            <ion-item
+              class="aa-field"
+              lines="none">
 
 
-          {{ city.name }}
+              <ion-icon
+                slot="start"
+                name="location-outline">
+              </ion-icon>
 
 
-        </ion-select-option>
+              <ion-input
+                label="Street / Building"
 
+                labelPlacement="stacked"
 
-      </ion-select>
+                placeholder="House no., street, subdivision"
 
+                autocomplete="street-address"
 
-    </ion-item>
+                [(ngModel)]="form.street"
 
+                name="street"
 
+                [disabled]="saving"
 
-    <!-- BARANGAY -->
+                required>
+              </ion-input>
 
-    <ion-item
-      class="input-card"
-      lines="none">
 
+            </ion-item>
 
-      <ion-select
 
-        label="Barangay"
 
-        labelPlacement="stacked"
+            <!-- =========================
+                 DROPDOWN LOCATION
+                 ========================= -->
 
-        [(ngModel)]="barangayName"
+            <ng-container
+              *ngIf="!manualLocation">
 
-        name="barangaySelect"
 
-        [disabled]="
-          !cityCode ||
-          loadingPlaces
-        "
 
-        placeholder="Select barangay">
+              <!-- REGION -->
 
+              <ion-item
+                class="aa-field"
+                lines="none">
 
-        <ion-select-option
 
-          *ngFor="let barangay of barangays"
+                <ion-icon
+                  slot="start"
+                  name="location-outline">
+                </ion-icon>
 
-          [value]="barangay.name">
 
+                <ion-select
+                  label="Region"
 
-          {{ barangay.name }}
+                  labelPlacement="stacked"
 
+                  interface="popover"
 
-        </ion-select-option>
+                  [interfaceOptions]="regionPopoverOptions"
 
+                  placeholder="Select region"
 
-      </ion-select>
+                  [(ngModel)]="regionCode"
 
+                  name="region"
 
-    </ion-item>
+                  [disabled]="
+                    loadingPlaces ||
+                    saving
+                  "
 
+                  (ionChange)="
+                    onRegionChange()
+                  ">
 
-  </ng-container>
 
+                  <ion-select-option
+                    *ngFor="
+                      let region
+                      of regions
+                    "
 
+                    [value]="region.code">
 
-  <!-- =========================
-       MANUAL LOCATION
-       ========================= -->
+                    {{ region.name }}
 
-  <ng-container *ngIf="manualLocation">
+                  </ion-select-option>
 
 
-    <ion-item
-      class="input-card"
-      lines="none">
+                </ion-select>
 
 
-      <ion-input
+              </ion-item>
 
-        label="Barangay"
 
-        labelPlacement="stacked"
 
-        placeholder="Barangay"
+              <!-- PROVINCE -->
 
-        [(ngModel)]="form.barangay"
+              <ion-item
+                class="aa-field"
 
-        name="barangay"
+                lines="none"
 
-        required>
+                *ngIf="hasProvinces">
 
-      </ion-input>
 
+                <ion-icon
+                  slot="start"
+                  name="location-outline">
+                </ion-icon>
 
-    </ion-item>
 
+                <ion-select
+                  label="Province"
 
+                  labelPlacement="stacked"
 
-    <ion-item
-      class="input-card"
-      lines="none">
+                  interface="popover"
 
+                  [interfaceOptions]="selectPopoverOptions"
 
-      <ion-input
+                  placeholder="Select province"
 
-        label="City / Municipality"
+                  [(ngModel)]="provinceCode"
 
-        labelPlacement="stacked"
+                  name="province"
 
-        placeholder="City or municipality"
+                  [disabled]="
+                    !regionCode ||
+                    loadingPlaces ||
+                    saving
+                  "
 
-        [(ngModel)]="form.city"
+                  (ionChange)="
+                    onProvinceChange()
+                  ">
 
-        name="city"
 
-        required>
+                  <ion-select-option
+                    *ngFor="
+                      let province
+                      of provinces
+                    "
 
-      </ion-input>
+                    [value]="province.code">
 
+                    {{ province.name }}
 
-    </ion-item>
+                  </ion-select-option>
 
 
-  </ng-container>
+                </ion-select>
 
 
+              </ion-item>
 
-  <!-- =========================
-       POSTAL CODE
-       ========================= -->
 
-  <ion-item
-    class="input-card"
-    lines="none">
 
+              <!-- CITY -->
 
-    <ion-input
+              <ion-item
+                class="aa-field"
+                lines="none">
 
-      label="Postal Code"
 
-      labelPlacement="stacked"
+                <ion-icon
+                  slot="start"
+                  name="location-outline">
+                </ion-icon>
 
-      type="tel"
 
-      inputmode="numeric"
+                <ion-select
+                  label="City / Municipality"
 
-      maxlength="4"
+                  labelPlacement="stacked"
 
-      placeholder="4-digit postal code"
+                  interface="popover"
 
-      [(ngModel)]="form.postalCode"
+                  [interfaceOptions]="selectPopoverOptions"
 
-      name="postalCode"
+                  placeholder="Select city / municipality"
 
-      required>
+                  [(ngModel)]="cityCode"
 
-    </ion-input>
+                  name="citySelect"
 
+                  [disabled]="
+                    (
+                      !hasProvinces &&
+                      !regionCode
+                    )
+                    ||
+                    (
+                      hasProvinces &&
+                      !provinceCode
+                    )
+                    ||
+                    loadingPlaces
+                    ||
+                    saving
+                  "
 
-  </ion-item>
+                  (ionChange)="
+                    onCityChange()
+                  ">
 
 
+                  <ion-select-option
+                    *ngFor="
+                      let city
+                      of cities
+                    "
 
-  <!-- =========================
-       LOCATION MODE
-       ========================= -->
+                    [value]="city.code">
 
-  <div
-    style="
-      text-align:right;
-      margin:2px 0 8px
-    ">
+                    {{ city.name }}
 
+                  </ion-select-option>
 
-    <ion-button
 
-      fill="clear"
+                </ion-select>
 
-      size="small"
 
-      type="button"
+              </ion-item>
 
-      (click)="toggleLocationMode()">
 
 
-      {{
-        manualLocation
-          ? 'Select location from dropdowns'
-          : 'Enter location manually'
-      }}
+              <!-- BARANGAY -->
 
+              <ion-item
+                class="aa-field"
+                lines="none">
 
-    </ion-button>
+
+                <ion-icon
+                  slot="start"
+                  name="location-outline">
+                </ion-icon>
+
+
+                <ion-select
+                  label="Barangay"
+
+                  labelPlacement="stacked"
+
+                  interface="popover"
+
+                  [interfaceOptions]="selectPopoverOptions"
+
+                  placeholder="Select barangay"
+
+                  [(ngModel)]="barangayName"
+
+                  name="barangaySelect"
+
+                  [disabled]="
+                    !cityCode ||
+                    loadingPlaces ||
+                    saving
+                  ">
+
+
+                  <ion-select-option
+                    *ngFor="
+                      let barangay
+                      of barangays
+                    "
+
+                    [value]="barangay.name">
+
+                    {{ barangay.name }}
+
+                  </ion-select-option>
+
+
+                </ion-select>
+
+
+              </ion-item>
+
+
+            </ng-container>
+
+
+
+            <!-- =========================
+                 MANUAL LOCATION
+                 ========================= -->
+
+            <ng-container
+              *ngIf="manualLocation">
+
+
+              <ion-item
+                class="aa-field"
+                lines="none">
+
+
+                <ion-icon
+                  slot="start"
+                  name="location-outline">
+                </ion-icon>
+
+
+                <ion-input
+                  label="Barangay"
+
+                  labelPlacement="stacked"
+
+                  placeholder="Barangay"
+
+                  [(ngModel)]="form.barangay"
+
+                  name="barangay"
+
+                  [disabled]="saving"
+
+                  required>
+                </ion-input>
+
+
+              </ion-item>
+
+
+
+              <ion-item
+                class="aa-field"
+                lines="none">
+
+
+                <ion-icon
+                  slot="start"
+                  name="location-outline">
+                </ion-icon>
+
+
+                <ion-input
+                  label="City / Municipality"
+
+                  labelPlacement="stacked"
+
+                  placeholder="City or municipality"
+
+                  [(ngModel)]="form.city"
+
+                  name="city"
+
+                  [disabled]="saving"
+
+                  required>
+                </ion-input>
+
+
+              </ion-item>
+
+
+            </ng-container>
+
+
+
+            <!-- POSTAL CODE -->
+
+            <ion-item
+              class="aa-field"
+              lines="none">
+
+
+              <ion-icon
+                slot="start"
+                name="location-outline">
+              </ion-icon>
+
+
+              <ion-input
+                label="Postal Code"
+
+                labelPlacement="stacked"
+
+                type="tel"
+
+                inputmode="numeric"
+
+                maxlength="4"
+
+                placeholder="4-digit postal code"
+
+                [(ngModel)]="form.postalCode"
+
+                name="postalCode"
+
+                [disabled]="saving"
+
+                required>
+              </ion-input>
+
+
+            </ion-item>
+
+
+
+            <!-- LOADING -->
+
+            <div
+              class="aa-location-loading"
+
+              *ngIf="loadingPlaces">
+
+
+              <ion-spinner
+                name="crescent">
+              </ion-spinner>
+
+
+              Loading Philippine locations...
+
+
+            </div>
+
+
+
+            <!-- LOCATION MODE -->
+
+            <div class="aa-mode-row">
+
+
+              <div class="aa-mode-note">
+
+                {{
+                  manualLocation
+                    ? 'Enter your barangay and city manually.'
+                    : 'Can’t find your location in the list?'
+                }}
+
+              </div>
+
+
+              <ion-button
+                class="aa-mode-button"
+
+                type="button"
+
+                fill="clear"
+
+                size="small"
+
+                [disabled]="saving"
+
+                (click)="
+                  toggleLocationMode()
+                ">
+
+
+                <ion-icon
+                  slot="start"
+
+                  [name]="
+                    manualLocation
+                      ? 'location-outline'
+                      : 'create-outline'
+                  ">
+                </ion-icon>
+
+
+                {{
+                  manualLocation
+                    ? 'Use Dropdowns'
+                    : 'Enter Manually'
+                }}
+
+
+              </ion-button>
+
+
+            </div>
+
+
+
+            <div class="aa-info-box">
+
+
+              <ion-icon
+                name="information-circle-outline">
+              </ion-icon>
+
+
+              <span>
+
+                Make sure your address is complete
+                so your SmileHub order can be
+                delivered without delays.
+
+              </span>
+
+
+            </div>
+
+
+          </div>
+
+
+        </div>
+
+
+
+        <!-- =========================
+             DEFAULT ADDRESS
+             ========================= -->
+
+        <div class="aa-section aa-full">
+
+
+          <div class="aa-section-heading">
+
+
+            <div class="aa-section-icon">
+
+              <ion-icon
+                name="checkmark-circle-outline">
+              </ion-icon>
+
+            </div>
+
+
+            <div>
+
+              <div class="aa-section-title">
+                Default Address
+              </div>
+
+              <div class="aa-section-subtitle">
+                Choose your primary delivery address
+              </div>
+
+            </div>
+
+
+          </div>
+
+
+
+          <div class="app-card aa-default-card">
+
+
+            <div class="aa-default-icon">
+
+              <ion-icon
+                name="home-outline">
+              </ion-icon>
+
+            </div>
+
+
+            <div class="aa-default-info">
+
+
+              <div class="aa-default-title">
+
+                Set as default address
+
+              </div>
+
+
+              <div class="aa-default-text">
+
+                SmileHub will automatically select
+                this address during checkout.
+
+              </div>
+
+
+            </div>
+
+
+            <ion-toggle
+              [(ngModel)]="form.isDefault"
+
+              name="isDefault"
+
+              [disabled]="saving">
+            </ion-toggle>
+
+
+          </div>
+
+
+        </div>
+
+
+      </div>
+
+
+
+      <!-- =========================
+           SAVE
+           ========================= -->
+
+      <div class="aa-save-wrap">
+
+
+        <ion-button
+          class="aa-save-btn"
+
+          expand="block"
+
+          type="submit"
+
+          [disabled]="saving">
+
+
+          <ion-spinner
+            *ngIf="saving"
+
+            slot="start"
+
+            name="crescent">
+          </ion-spinner>
+
+
+          <ion-icon
+            *ngIf="!saving"
+
+            slot="start"
+
+            name="checkmark-circle-outline">
+          </ion-icon>
+
+
+          {{
+            saving
+              ? 'Saving...'
+              : id
+                ? 'Save Changes'
+                : 'Add Address'
+          }}
+
+
+        </ion-button>
+
+
+        <div class="aa-save-note">
+
+          Your address will be securely saved
+          to your SmileHub account.
+
+        </div>
+
+
+      </div>
+
+
+    </form>
 
 
   </div>
 
 
-
-  <!-- =========================
-       DEFAULT ADDRESS
-       ========================= -->
-
-  <ion-item
-    class="input-card"
-    lines="none">
-
-
-    <ion-toggle
-
-      [(ngModel)]="form.isDefault"
-
-      name="isDefault">
-
-
-      Set as default address
-
-
-    </ion-toggle>
-
-
-  </ion-item>
-
-
-
-  <!-- =========================
-       SAVE
-       ========================= -->
-
-  <ion-button
-
-    expand="block"
-
-    type="submit"
-
-    class="primary-btn"
-
-    [disabled]="saving">
-
-
-    <ion-spinner
-
-      *ngIf="saving"
-
-      slot="start"
-
-      name="crescent">
-
-    </ion-spinner>
-
-
-    {{
-      saving
-        ? 'Saving...'
-        : id
-          ? 'Save Changes'
-          : 'Add Address'
-    }}
-
-
-  </ion-button>
-
-
-</form>
-
-
-</div>
-
-
 </ion-content>
 
 `
+
 })
 
 
@@ -648,30 +1590,61 @@ export class AddAddressPage {
   saving = false;
 
 
+
+  /* =========================
+     POPOVER OPTIONS
+     ========================= */
+
+  regionPopoverOptions: any = {
+    cssClass:
+      'address-region-popover'
+  };
+
+
+  selectPopoverOptions: any = {
+    cssClass:
+      'address-select-popover'
+  };
+
+
+
+  /* =========================
+     FORM
+     ========================= */
+
   form: ShippingAddress = {
 
-    label: 'Home',
+    label:
+      'Home',
 
-    recipient: '',
+    recipient:
+      '',
 
-    phone: '',
+    phone:
+      '',
 
-    city: '',
+    city:
+      '',
 
-    barangay: '',
+    barangay:
+      '',
 
-    street: '',
+    street:
+      '',
 
-    postalCode: '',
+    postalCode:
+      '',
 
-    isDefault: false
+    isDefault:
+      false
 
   };
 
 
-  /*
-   * Philippine address dropdown state
-   */
+
+  /* =========================
+     LOCATION STATE
+     ========================= */
 
   regions: PhPlace[] = [];
 
@@ -693,9 +1666,7 @@ export class AddAddressPage {
 
   hasProvinces = true;
 
-
   loadingPlaces = false;
-
 
   manualLocation = false;
 
@@ -728,7 +1699,12 @@ export class AddAddressPage {
       this.route
         .snapshot
         .queryParamMap
-        .get('id') || '';
+        .get(
+          'id'
+        )
+      ||
+      '';
+
 
   }
 
@@ -742,19 +1718,25 @@ export class AddAddressPage {
     Promise<void> {
 
 
-    this.loadingPlaces = true;
+    this.loadingPlaces =
+      true;
 
 
     try {
 
 
       this.regions =
-        await this.places.regions();
+        await this.places
+          .regions();
 
 
-      if (!this.id) {
+      if (
+        !this.id
+      ) {
+
 
         return;
+
 
       }
 
@@ -766,13 +1748,17 @@ export class AddAddressPage {
 
       const found =
         list.find(
+
           address =>
             address.addressId ===
             this.id
+
         );
 
 
-      if (!found) {
+      if (
+        !found
+      ) {
 
 
         await this.msg(
@@ -788,6 +1774,7 @@ export class AddAddressPage {
 
         return;
 
+
       }
 
 
@@ -796,10 +1783,13 @@ export class AddAddressPage {
       };
 
 
-      await this.matchSavedLocation();
+      await this
+        .matchSavedLocation();
 
 
-    } catch (error: any) {
+    } catch (
+      error: any
+    ) {
 
 
       console.error(
@@ -808,14 +1798,14 @@ export class AddAddressPage {
       );
 
 
-      /*
-       * We can still let the user edit
-       * the saved address manually.
-       */
+      if (
+        this.id
+      ) {
 
-      if (this.id) {
 
-        this.manualLocation = true;
+        this.manualLocation =
+          true;
+
 
       }
 
@@ -823,9 +1813,12 @@ export class AddAddressPage {
     } finally {
 
 
-      this.loadingPlaces = false;
+      this.loadingPlaces =
+        false;
+
 
     }
+
 
   }
 
@@ -838,35 +1831,58 @@ export class AddAddressPage {
   private findByName(
     list: PhPlace[],
     name: string
-  ): PhPlace | null {
+  ):
+    PhPlace |
+    null {
 
 
     const target =
-      String(name || '')
+      String(
+        name
+        ||
+        ''
+      )
         .trim()
         .toLowerCase();
 
 
-    if (!target) {
+    if (
+      !target
+    ) {
+
 
       return null;
+
 
     }
 
 
     const exact =
       list.find(
+
         place =>
-          String(place.name || '')
+          String(
+            place.name
+            ||
+            ''
+          )
             .trim()
             .toLowerCase()
-          === target
+
+          ===
+
+          target
+
       );
 
 
-    if (exact) {
+    if (
+      exact
+    ) {
+
 
       return exact;
+
 
     }
 
@@ -874,24 +1890,37 @@ export class AddAddressPage {
     return (
 
       list.find(
+
         place => {
 
 
           const placeName =
             String(
-              place.name || ''
+              place.name
+              ||
+              ''
             )
               .trim()
               .toLowerCase();
 
 
           return (
-            placeName.includes(target)
+
+            placeName.includes(
+              target
+            )
+
             ||
-            target.includes(placeName)
+
+            target.includes(
+              placeName
+            )
+
           );
 
+
         }
+
       )
 
       ||
@@ -900,12 +1929,13 @@ export class AddAddressPage {
 
     );
 
+
   }
 
 
 
   /* =========================
-     MATCH OLD SAVED LOCATION
+     MATCH SAVED LOCATION
      ========================= */
 
   private async matchSavedLocation():
@@ -914,46 +1944,49 @@ export class AddAddressPage {
 
     const savedCity =
       String(
-        this.form.city || ''
-      ).trim();
+        this.form.city
+        ||
+        ''
+      )
+        .trim();
 
 
     const savedBarangay =
       String(
-        this.form.barangay || ''
-      ).trim();
+        this.form.barangay
+        ||
+        ''
+      )
+        .trim();
 
-
-    /*
-     * Older addresses only saved city
-     * and barangay, not region/province.
-     */
 
     if (
-      !savedCity ||
+      !savedCity
+      ||
       this.regions.length === 0
     ) {
 
 
-      this.manualLocation = true;
+      this.manualLocation =
+        true;
+
 
       return;
+
 
     }
 
 
-    this.loadingPlaces = true;
+    this.loadingPlaces =
+      true;
 
-    this.manualLocation = false;
+
+    this.manualLocation =
+      false;
 
 
     try {
 
-
-      /*
-       * Search every region until
-       * the saved city is found.
-       */
 
       for (
         const region
@@ -962,7 +1995,8 @@ export class AddAddressPage {
 
 
         let provinces:
-          PhPlace[] = [];
+          PhPlace[] =
+          [];
 
 
         try {
@@ -973,22 +2007,24 @@ export class AddAddressPage {
               .provinces(
                 region.code
               )
-            || [];
+            ||
+            [];
 
 
         } catch {
 
 
-          provinces = [];
+          provinces =
+            [];
+
 
         }
 
 
 
-        /*
-         * Regions such as NCR may have
-         * cities directly under region.
-         */
+        /* =========================
+           NCR / NO PROVINCES
+           ========================= */
 
         if (
           provinces.length === 0
@@ -996,7 +2032,8 @@ export class AddAddressPage {
 
 
           let regionCities:
-            PhPlace[] = [];
+            PhPlace[] =
+            [];
 
 
           try {
@@ -1007,13 +2044,16 @@ export class AddAddressPage {
                 .regionCities(
                   region.code
                 )
-              || [];
+              ||
+              [];
 
 
           } catch {
 
 
-            regionCities = [];
+            regionCities =
+              [];
+
 
           }
 
@@ -1025,9 +2065,13 @@ export class AddAddressPage {
             );
 
 
-          if (!city) {
+          if (
+            !city
+          ) {
+
 
             continue;
+
 
           }
 
@@ -1064,13 +2108,16 @@ export class AddAddressPage {
                 .barangays(
                   city.code
                 )
-              || [];
+              ||
+              [];
 
 
           } catch {
 
 
-            this.barangays = [];
+            this.barangays =
+              [];
+
 
           }
 
@@ -1082,7 +2129,9 @@ export class AddAddressPage {
             );
 
 
-          if (barangay) {
+          if (
+            barangay
+          ) {
 
 
             this.barangayName =
@@ -1099,19 +2148,20 @@ export class AddAddressPage {
             this.manualLocation =
               true;
 
+
           }
 
 
           return;
 
+
         }
 
 
 
-        /*
-         * Standard:
-         * Region -> Province -> City
-         */
+        /* =========================
+           STANDARD REGION
+           ========================= */
 
         for (
           const province
@@ -1120,7 +2170,8 @@ export class AddAddressPage {
 
 
           let provinceCities:
-            PhPlace[] = [];
+            PhPlace[] =
+            [];
 
 
           try {
@@ -1131,13 +2182,16 @@ export class AddAddressPage {
                 .cities(
                   province.code
                 )
-              || [];
+              ||
+              [];
 
 
           } catch {
 
 
-            provinceCities = [];
+            provinceCities =
+              [];
+
 
           }
 
@@ -1149,9 +2203,13 @@ export class AddAddressPage {
             );
 
 
-          if (!city) {
+          if (
+            !city
+          ) {
+
 
             continue;
+
 
           }
 
@@ -1188,13 +2246,16 @@ export class AddAddressPage {
                 .barangays(
                   city.code
                 )
-              || [];
+              ||
+              [];
 
 
           } catch {
 
 
-            this.barangays = [];
+            this.barangays =
+              [];
+
 
           }
 
@@ -1206,7 +2267,9 @@ export class AddAddressPage {
             );
 
 
-          if (barangay) {
+          if (
+            barangay
+          ) {
 
 
             this.barangayName =
@@ -1220,34 +2283,29 @@ export class AddAddressPage {
           } else {
 
 
-            /*
-             * City found but barangay
-             * could not be matched.
-             */
-
             this.manualLocation =
               true;
+
 
           }
 
 
           return;
 
+
         }
+
 
       }
 
 
-
-      /*
-       * No dropdown match.
-       * Keep old values editable.
-       */
-
-      this.manualLocation = true;
+      this.manualLocation =
+        true;
 
 
-    } catch (error) {
+    } catch (
+      error
+    ) {
 
 
       console.error(
@@ -1256,15 +2314,19 @@ export class AddAddressPage {
       );
 
 
-      this.manualLocation = true;
+      this.manualLocation =
+        true;
 
 
     } finally {
 
 
-      this.loadingPlaces = false;
+      this.loadingPlaces =
+        false;
+
 
     }
+
 
   }
 
@@ -1276,7 +2338,8 @@ export class AddAddressPage {
 
   async onRegionChange(
     silent = false
-  ): Promise<void> {
+  ):
+    Promise<void> {
 
 
     this.provinceCode = '';
@@ -1293,19 +2356,29 @@ export class AddAddressPage {
     this.barangays = [];
 
 
-    this.hasProvinces = true;
+    this.hasProvinces =
+      true;
 
 
-    if (!this.regionCode) {
+    if (
+      !this.regionCode
+    ) {
+
 
       return;
+
 
     }
 
 
-    if (!silent) {
+    if (
+      !silent
+    ) {
 
-      this.loadingPlaces = true;
+
+      this.loadingPlaces =
+        true;
+
 
     }
 
@@ -1321,7 +2394,8 @@ export class AddAddressPage {
 
 
       if (
-        provinces &&
+        provinces
+        &&
         provinces.length
       ) {
 
@@ -1337,26 +2411,25 @@ export class AddAddressPage {
       } else {
 
 
-        /*
-         * NCR and similar regions:
-         * cities directly under region.
-         */
-
         this.cities =
           await this.places
             .regionCities(
               this.regionCode
             )
-          || [];
+          ||
+          [];
 
 
         this.hasProvinces =
           false;
 
+
       }
 
 
-    } catch (error) {
+    } catch (
+      error
+    ) {
 
 
       console.error(
@@ -1377,14 +2450,20 @@ export class AddAddressPage {
     } finally {
 
 
-      if (!silent) {
+      if (
+        !silent
+      ) {
+
 
         this.loadingPlaces =
           false;
 
+
       }
 
+
     }
+
 
   }
 
@@ -1396,7 +2475,8 @@ export class AddAddressPage {
 
   async onProvinceChange(
     silent = false
-  ): Promise<void> {
+  ):
+    Promise<void> {
 
 
     this.cityCode = '';
@@ -1409,16 +2489,25 @@ export class AddAddressPage {
     this.barangays = [];
 
 
-    if (!this.provinceCode) {
+    if (
+      !this.provinceCode
+    ) {
+
 
       return;
+
 
     }
 
 
-    if (!silent) {
+    if (
+      !silent
+    ) {
 
-      this.loadingPlaces = true;
+
+      this.loadingPlaces =
+        true;
+
 
     }
 
@@ -1431,10 +2520,13 @@ export class AddAddressPage {
           .cities(
             this.provinceCode
           )
-        || [];
+        ||
+        [];
 
 
-    } catch (error) {
+    } catch (
+      error
+    ) {
 
 
       console.error(
@@ -1451,14 +2543,20 @@ export class AddAddressPage {
     } finally {
 
 
-      if (!silent) {
+      if (
+        !silent
+      ) {
+
 
         this.loadingPlaces =
           false;
 
+
       }
 
+
     }
+
 
   }
 
@@ -1470,7 +2568,8 @@ export class AddAddressPage {
 
   async onCityChange(
     silent = false
-  ): Promise<void> {
+  ):
+    Promise<void> {
 
 
     this.barangayName = '';
@@ -1478,16 +2577,25 @@ export class AddAddressPage {
     this.barangays = [];
 
 
-    if (!this.cityCode) {
+    if (
+      !this.cityCode
+    ) {
+
 
       return;
+
 
     }
 
 
-    if (!silent) {
+    if (
+      !silent
+    ) {
 
-      this.loadingPlaces = true;
+
+      this.loadingPlaces =
+        true;
+
 
     }
 
@@ -1500,10 +2608,13 @@ export class AddAddressPage {
           .barangays(
             this.cityCode
           )
-        || [];
+        ||
+        [];
 
 
-    } catch (error) {
+    } catch (
+      error
+    ) {
 
 
       console.error(
@@ -1520,37 +2631,40 @@ export class AddAddressPage {
     } finally {
 
 
-      if (!silent) {
+      if (
+        !silent
+      ) {
+
 
         this.loadingPlaces =
           false;
 
+
       }
 
+
     }
+
 
   }
 
 
 
   /* =========================
-     TOGGLE LOCATION MODE
+     LOCATION MODE
      ========================= */
 
-  toggleLocationMode(): void {
+  toggleLocationMode():
+    void {
 
 
     this.manualLocation =
       !this.manualLocation;
 
 
-    /*
-     * When going back to dropdown mode,
-     * clear dropdown selection so user
-     * can select a valid location.
-     */
-
-    if (!this.manualLocation) {
+    if (
+      !this.manualLocation
+    ) {
 
 
       this.regionCode = '';
@@ -1572,7 +2686,9 @@ export class AddAddressPage {
       this.hasProvinces =
         true;
 
+
     }
+
 
   }
 
@@ -1586,48 +2702,65 @@ export class AddAddressPage {
     boolean {
 
 
-    if (this.manualLocation) {
+    if (
+      this.manualLocation
+    ) {
 
 
       return (
 
         !!String(
-          this.form.barangay || ''
-        ).trim()
+          this.form.barangay
+          ||
+          ''
+        )
+          .trim()
 
         &&
 
         !!String(
-          this.form.city || ''
-        ).trim()
+          this.form.city
+          ||
+          ''
+        )
+          .trim()
 
       );
 
+
     }
 
 
     if (
-      !this.regionCode ||
-      !this.cityCode ||
+      !this.regionCode
+      ||
+      !this.cityCode
+      ||
       !this.barangayName
     ) {
 
+
       return false;
+
 
     }
 
 
     if (
-      this.hasProvinces &&
+      this.hasProvinces
+      &&
       !this.provinceCode
     ) {
 
+
       return false;
+
 
     }
 
 
     return true;
+
 
   }
 
@@ -1643,16 +2776,22 @@ export class AddAddressPage {
 
     const city =
       this.cities.find(
+
         item =>
           item.code ===
           this.cityCode
+
       );
 
 
-    if (city) {
+    if (
+      city
+    ) {
+
 
       this.form.city =
         city.name;
+
 
     }
 
@@ -1660,59 +2799,76 @@ export class AddAddressPage {
     this.form.barangay =
       this.barangayName;
 
+
   }
 
 
 
   /* =========================
-     SAVE ADDRESS
+     SAVE
      ========================= */
 
   async save():
     Promise<void> {
 
 
-    if (this.saving) {
+    if (
+      this.saving
+    ) {
+
 
       return;
+
 
     }
 
 
-    /*
-     * Trim fields
-     */
-
     this.form.recipient =
       String(
-        this.form.recipient || ''
-      ).trim();
+        this.form.recipient
+        ||
+        ''
+      )
+        .trim();
 
 
     this.form.phone =
       String(
-        this.form.phone || ''
-      ).trim();
+        this.form.phone
+        ||
+        ''
+      )
+        .trim();
 
 
     this.form.street =
       String(
-        this.form.street || ''
-      ).trim();
+        this.form.street
+        ||
+        ''
+      )
+        .trim();
 
 
     this.form.postalCode =
       String(
-        this.form.postalCode || ''
-      ).trim();
+        this.form.postalCode
+        ||
+        ''
+      )
+        .trim();
 
 
 
     if (
-      !this.form.recipient ||
-      !this.form.phone ||
-      !this.form.street ||
-      !this.form.postalCode ||
+      !this.form.recipient
+      ||
+      !this.form.phone
+      ||
+      !this.form.street
+      ||
+      !this.form.postalCode
+      ||
       !this.locationValid()
     ) {
 
@@ -1724,13 +2880,14 @@ export class AddAddressPage {
 
       return;
 
+
     }
 
 
 
-    /*
-     * Basic Philippine phone validation
-     */
+    /* =========================
+       PHONE VALIDATION
+       ========================= */
 
     const cleanPhone =
       this.form.phone
@@ -1742,7 +2899,9 @@ export class AddAddressPage {
 
     if (
       !/^(\+63|0)9\d{9}$/
-        .test(cleanPhone)
+        .test(
+          cleanPhone
+        )
     ) {
 
 
@@ -1753,13 +2912,14 @@ export class AddAddressPage {
 
       return;
 
+
     }
 
 
 
-    /*
-     * Postal codes are 4 digits.
-     */
+    /* =========================
+       POSTAL CODE
+       ========================= */
 
     if (
       !/^\d{4}$/
@@ -1776,22 +2936,28 @@ export class AddAddressPage {
 
       return;
 
+
     }
 
 
 
     const loader =
-      await this.loading.create({
+      await this.loading
+        .create({
 
-        message:
-          this.id
-            ? 'Saving changes...'
-            : 'Adding address...'
+          message:
+            this.id
+              ? 'Saving changes...'
+              : 'Adding address...',
 
-      });
+          spinner:
+            'crescent'
+
+        });
 
 
-    this.saving = true;
+    this.saving =
+      true;
 
 
     await loader.present();
@@ -1800,30 +2966,42 @@ export class AddAddressPage {
     try {
 
 
-      if (!this.manualLocation) {
+      if (
+        !this.manualLocation
+      ) {
 
 
         this.applyDropdownLocation();
+
 
       } else {
 
 
         this.form.city =
           String(
-            this.form.city || ''
-          ).trim();
+            this.form.city
+            ||
+            ''
+          )
+            .trim();
 
 
         this.form.barangay =
           String(
-            this.form.barangay || ''
-          ).trim();
+            this.form.barangay
+            ||
+            ''
+          )
+            .trim();
+
 
       }
 
 
 
-      if (this.id) {
+      if (
+        this.id
+      ) {
 
 
         await this.service
@@ -1844,8 +3022,8 @@ export class AddAddressPage {
             this.form
           );
 
-      }
 
+      }
 
 
       await this.router
@@ -1854,7 +3032,9 @@ export class AddAddressPage {
         );
 
 
-    } catch (error: any) {
+    } catch (
+      error: any
+    ) {
 
 
       console.error(
@@ -1865,7 +3045,9 @@ export class AddAddressPage {
 
       await this.msg(
 
-        error?.message ||
+        error?.message
+
+        ||
 
         'Unable to save address.'
 
@@ -1875,12 +3057,21 @@ export class AddAddressPage {
     } finally {
 
 
-      this.saving = false;
+      this.saving =
+        false;
 
 
-      await loader.dismiss();
+      try {
+
+
+        await loader.dismiss();
+
+
+      } catch (_) {}
+
 
     }
+
 
   }
 
@@ -1892,30 +3083,28 @@ export class AddAddressPage {
 
   private async msg(
     message: string
-  ): Promise<void> {
+  ):
+    Promise<void> {
 
 
     const alert =
       await this.alerts
         .create({
 
-
           header:
             'SmileHub',
 
-
           message,
-
 
           buttons: [
             'OK'
           ]
 
-
         });
 
 
     await alert.present();
+
 
   }
 

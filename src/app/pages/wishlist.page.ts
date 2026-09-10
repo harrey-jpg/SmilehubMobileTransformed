@@ -1,14 +1,24 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+
 import {
   IonicModule,
   AlertController
 } from '@ionic/angular';
+
 import { CommonModule } from '@angular/common';
 
-import { AppStateService } from '../services/app-state.service';
-import { ProductCardComponent } from '../shared/product-card.component';
-import { Product } from '../models/product';
+import {
+  AppStateService
+} from '../services/app-state.service';
+
+import {
+  ProductCardComponent
+} from '../shared/product-card.component';
+
+import {
+  Product
+} from '../models/product';
 
 
 @Component({
@@ -25,40 +35,211 @@ import { Product } from '../models/product';
   styles: [`
 
     /* =========================
-       HEADER INFO
+       PAGE
        ========================= */
 
-    .wishlist-heading {
+    .wl-page {
+      padding-bottom: 34px;
+    }
+
+
+    /* =========================
+       INTRO
+       ========================= */
+
+    .wl-intro {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+
+      gap: 14px;
+
+      margin-bottom: 18px;
+    }
+
+    .wl-kicker {
+      color:
+        var(--ion-color-primary);
+
+      font-size: 10px;
+      font-weight: 900;
+
+      letter-spacing: .8px;
+
+      text-transform: uppercase;
+    }
+
+    .wl-title {
+      margin:
+        4px 0 4px;
+
+      color:
+        var(--ion-text-color);
+
+      font-size: 23px;
+      line-height: 1.2;
+
+      font-weight: 900;
+    }
+
+    .wl-subtitle {
+      margin: 0;
+
+      color:
+        var(--ion-color-medium);
+
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+
+    /* =========================
+       CLEAR BUTTON
+       ========================= */
+
+    .wl-clear {
+      flex-shrink: 0;
+
+      min-height: 34px;
+
+      margin: 0;
+
+      --border-radius: 10px;
+
+      font-size: 9px;
+      font-weight: 900;
+
+      text-transform: none;
+    }
+
+
+    /* =========================
+       SUMMARY CARD
+       ========================= */
+
+    .wl-summary {
       display: flex;
       align-items: center;
       justify-content: space-between;
 
       gap: 12px;
 
-      margin-bottom: 14px;
+      margin-bottom: 15px;
+
+      padding: 13px 14px;
+
+      border-radius: 17px;
+
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .06
+        );
+
+      border:
+        1px solid
+        rgba(
+          var(--ion-color-primary-rgb),
+          .08
+        );
     }
 
-    .wishlist-heading h2 {
-      margin: 0;
+    .wl-summary-left {
+      display: flex;
+      align-items: center;
 
-      font-size: 20px;
+      gap: 11px;
+
+      min-width: 0;
+    }
+
+    .wl-summary-icon {
+      width: 38px;
+      height: 38px;
+
+      flex: 0 0 38px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 12px;
+
+      background:
+        rgba(
+          var(--ion-color-danger-rgb),
+          .10
+        );
+
+      color:
+        var(--ion-color-danger);
+    }
+
+    .wl-summary-icon ion-icon {
+      font-size: 19px;
+    }
+
+    .wl-summary-title {
+      color:
+        var(--ion-text-color);
+
+      font-size: 11px;
       font-weight: 900;
     }
 
-    .wishlist-heading p {
-      margin: 3px 0 0;
-
-      font-size: 11px;
+    .wl-summary-text {
+      margin-top: 2px;
 
       color:
         var(--ion-color-medium);
+
+      font-size: 9px;
+      line-height: 1.4;
     }
 
-    .clear-button {
+    .wl-count {
       flex-shrink: 0;
 
-      font-size: 11px;
-      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      min-width: 30px;
+      height: 30px;
+
+      padding:
+        0 9px;
+
+      border-radius: 999px;
+
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .11
+        );
+
+      color:
+        var(--ion-color-primary);
+
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+
+    /* =========================
+       PRODUCT GRID
+       ========================= */
+
+    .wl-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(0, 1fr)
+        );
+
+      gap: 12px;
     }
 
 
@@ -66,8 +247,8 @@ import { Product } from '../models/product';
        EMPTY STATE
        ========================= */
 
-    .wishlist-empty {
-      min-height: 65vh;
+    .wl-empty {
+      min-height: 67vh;
 
       display: flex;
       flex-direction: column;
@@ -75,57 +256,172 @@ import { Product } from '../models/product';
       align-items: center;
       justify-content: center;
 
-      text-align: center;
+      padding:
+        30px 20px;
 
-      padding: 30px 20px;
+      text-align: center;
     }
 
-    .wishlist-empty-icon {
-      width: 74px;
-      height: 74px;
+    .wl-empty-icon {
+      width: 82px;
+      height: 82px;
 
       display: flex;
       align-items: center;
       justify-content: center;
 
-      border-radius: 50%;
+      margin-bottom: 16px;
 
-      margin-bottom: 14px;
+      border-radius: 24px;
 
       background:
-        rgba(var(--ion-color-primary-rgb), .12);
+        rgba(
+          var(--ion-color-danger-rgb),
+          .09
+        );
+
+      color:
+        var(--ion-color-danger);
+    }
+
+    .wl-empty-icon ion-icon {
+      font-size: 38px;
+    }
+
+    .wl-empty-kicker {
+      margin-bottom: 5px;
 
       color:
         var(--ion-color-primary);
 
-      font-size: 34px;
+      font-size: 9px;
+      font-weight: 900;
+
+      letter-spacing: .7px;
+
+      text-transform: uppercase;
     }
 
-    .wishlist-empty h2 {
+    .wl-empty h2 {
       margin: 0;
 
-      font-size: 20px;
+      color:
+        var(--ion-text-color);
+
+      font-size: 21px;
       font-weight: 900;
     }
 
-    .wishlist-empty p {
-      max-width: 260px;
+    .wl-empty p {
+      max-width: 275px;
 
       margin:
-        7px auto
+        8px auto
         18px;
 
-      font-size: 12px;
-      line-height: 1.5;
+      color:
+        var(--ion-color-medium);
+
+      font-size: 11px;
+      line-height: 1.55;
     }
 
-    .browse-button {
-      --border-radius: 12px;
+    .wl-browse {
+      min-height: 44px;
 
-      font-weight: 800;
+      margin: 0;
+
+      --border-radius: 13px;
+
+      font-size: 10px;
+      font-weight: 900;
+
+      text-transform: none;
+    }
+
+
+    /* =========================
+       LIGHT MODE
+       ========================= */
+
+    @media (prefers-color-scheme: light) {
+
+      .wl-summary {
+        background: #ffffff;
+
+        border-color:
+          rgba(
+            40,
+            60,
+            80,
+            .08
+          );
+
+        box-shadow:
+          0 7px 18px
+          rgba(
+            27,
+            44,
+            64,
+            .04
+          );
+      }
+
+    }
+
+
+    /* =========================
+       RESPONSIVE
+       ========================= */
+
+    @media (min-width: 720px) {
+
+      .wl-grid {
+        grid-template-columns:
+          repeat(
+            3,
+            minmax(0, 1fr)
+          );
+
+        gap: 14px;
+      }
+
+    }
+
+
+    @media (min-width: 1050px) {
+
+      .wl-grid {
+        grid-template-columns:
+          repeat(
+            4,
+            minmax(0, 1fr)
+          );
+      }
+
+    }
+
+
+    @media (max-width: 370px) {
+
+      .wl-intro {
+        align-items: flex-start;
+
+        flex-direction: column;
+      }
+
+      .wl-clear {
+        align-self: flex-end;
+      }
+
+      .wl-grid {
+        gap: 9px;
+      }
+
     }
 
   `],
+
 
   template: `
 
@@ -148,23 +444,6 @@ import { Product } from '../models/product';
     </ion-title>
 
 
-    <ion-buttons
-      slot="end"
-      *ngIf="products.length > 0">
-
-      <ion-button
-        color="danger"
-        (click)="clearWishlist()">
-
-        <ion-icon
-          slot="icon-only"
-          name="trash-outline">
-        </ion-icon>
-
-      </ion-button>
-
-    </ion-buttons>
-
 
   </ion-toolbar>
 
@@ -175,23 +454,34 @@ import { Product } from '../models/product';
 <ion-content>
 
 
-  <div class="page-wrap no-bottom">
+  <div class="page-wrap no-bottom wl-page">
+
 
 
     <!-- =========================
-         EMPTY WISHLIST
+         EMPTY
          ========================= -->
 
     <div
-      class="wishlist-empty"
-      *ngIf="products.length === 0">
+      class="wl-empty"
+
+      *ngIf="
+        products.length === 0
+      ">
 
 
-      <div class="wishlist-empty-icon">
+      <div class="wl-empty-icon">
 
         <ion-icon
           name="heart-outline">
         </ion-icon>
+
+      </div>
+
+
+      <div class="wl-empty-kicker">
+
+        SmileHub Wishlist
 
       </div>
 
@@ -203,24 +493,30 @@ import { Product } from '../models/product';
       </h2>
 
 
-      <p class="muted">
+      <p>
 
-        Save dental supplies you like
-        and come back to them anytime.
+        Save dental supplies you're
+        interested in so you can easily
+        find them again later.
 
       </p>
 
 
       <ion-button
-        class="browse-button"
+        class="wl-browse"
+
         routerLink="/catalog">
+
 
         <ion-icon
           slot="start"
+
           name="search-outline">
         </ion-icon>
 
+
         Browse Products
+
 
       </ion-button>
 
@@ -230,38 +526,52 @@ import { Product } from '../models/product';
 
 
     <!-- =========================
-         WISHLIST PRODUCTS
+         CONTENT
          ========================= -->
 
     <ng-container
-      *ngIf="products.length > 0">
+      *ngIf="
+        products.length > 0
+      ">
 
 
-      <div class="wishlist-heading">
+
+      <!-- INTRO -->
+
+      <div class="wl-intro">
 
 
         <div>
 
-          <h2>
+
+          <div class="wl-kicker">
+
+            SmileHub Wishlist
+
+          </div>
+
+
+          <h1 class="wl-title">
+
             Saved Products
-          </h2>
 
-          <p>
+          </h1>
 
-            {{ products.length }}
-            product{{
-              products.length === 1
-                ? ''
-                : 's'
-            }}
+
+          <p class="wl-subtitle">
+
+            Keep track of dental supplies
+            you may want to order later.
 
           </p>
+
 
         </div>
 
 
+
         <ion-button
-          class="clear-button"
+          class="wl-clear"
 
           fill="clear"
 
@@ -269,9 +579,20 @@ import { Product } from '../models/product';
 
           size="small"
 
-          (click)="clearWishlist()">
+          (click)="
+            clearWishlist()
+          ">
+
+
+          <ion-icon
+            slot="start"
+
+            name="trash-outline">
+          </ion-icon>
+
 
           Clear All
+
 
         </ion-button>
 
@@ -280,13 +601,72 @@ import { Product } from '../models/product';
 
 
 
-      <div class="product-grid">
+      <!-- =========================
+           SUMMARY
+           ========================= -->
+
+      <div class="wl-summary">
+
+
+        <div class="wl-summary-left">
+
+
+          <div class="wl-summary-icon">
+
+            <ion-icon
+              name="heart-outline">
+            </ion-icon>
+
+          </div>
+
+
+          <div>
+
+
+            <div class="wl-summary-title">
+
+              Your saved items
+
+            </div>
+
+
+            <div class="wl-summary-text">
+
+              Tap a product to view
+              details or add it to cart.
+
+            </div>
+
+
+          </div>
+
+
+        </div>
+
+
+        <div class="wl-count">
+
+          {{ products.length }}
+
+        </div>
+
+
+      </div>
+
+
+
+      <!-- =========================
+           PRODUCTS
+           ========================= -->
+
+      <div class="wl-grid">
 
 
         <app-product-card
 
           *ngFor="
-            let product of products;
+            let product
+            of products;
             trackBy: trackProduct
           "
 
@@ -307,6 +687,7 @@ import { Product } from '../models/product';
 </ion-content>
 
 `
+
 })
 
 
@@ -329,7 +710,8 @@ export class WishlistPage {
      WISHLIST PRODUCTS
      ========================= */
 
-  get products(): Product[] {
+  get products():
+    Product[] {
 
 
     return [
@@ -337,16 +719,24 @@ export class WishlistPage {
     ]
 
       .map(
+
         id =>
-          this.state.productById(id)
+          this.state
+            .productById(
+              id
+            )
+
       )
 
       .filter(
+
         (
           product
         ): product is Product =>
           !!product
+
       );
+
 
   }
 
@@ -361,74 +751,91 @@ export class WishlistPage {
 
 
     if (
-      this.products.length === 0
+      this.products.length ===
+      0
     ) {
 
+
       return;
+
 
     }
 
 
     const alert =
-      await this.alerts.create({
+      await this.alerts
+        .create({
 
 
-        header:
-          'Clear wishlist?',
+          header:
+            'Clear wishlist?',
 
 
-        message:
-          'All saved products will be removed from your wishlist.',
+          message:
+            'All saved products will be removed from your wishlist.',
 
 
-        buttons: [
+          buttons: [
 
 
-          {
-            text:
-              'Cancel',
+            {
 
-            role:
-              'cancel'
-          },
+              text:
+                'Keep Items',
 
+              role:
+                'cancel'
 
-          {
-            text:
-              'Clear All',
-
-            role:
-              'destructive',
-
-            handler:
-              () => {
+            },
 
 
-                const ids = [
-                  ...this.state.wishlist
-                ];
+            {
+
+              text:
+                'Clear All',
+
+              role:
+                'destructive',
+
+              handler:
+                () => {
 
 
-                ids.forEach(
-                  id => {
-
-                    this.state
-                      .toggleWishlist(id);
-
-                  }
-                );
-
-              }
-          }
+                  const ids =
+                    [
+                      ...this.state.wishlist
+                    ];
 
 
-        ]
+                  ids.forEach(
+
+                    id => {
 
 
-      });
+                      this.state
+                        .toggleWishlist(
+                          id
+                        );
+
+
+                    }
+
+                  );
+
+
+                }
+
+            }
+
+
+          ]
+
+
+        });
 
 
     await alert.present();
+
 
   }
 
@@ -441,13 +848,16 @@ export class WishlistPage {
   trackProduct(
     index: number,
     product: Product
-  ): number {
+  ):
+    number {
 
 
     return (
-      product?.id ||
+      product?.id
+      ||
       index
     );
+
 
   }
 

@@ -44,6 +44,168 @@ import {
     CommonModule
   ],
 
+  styles: [`
+
+    .product-card {
+
+      padding: 14px;
+
+      border-radius: 20px;
+
+      overflow: hidden;
+
+    }
+
+
+    /* BIGGER PRODUCT IMAGE */
+
+    .product-art {
+
+      height: 170px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      position: relative;
+
+      border-radius: 16px;
+
+      overflow: hidden;
+
+      background:
+        rgba(120,120,120,.08);
+
+      margin-bottom: 12px;
+
+    }
+
+
+    .product-art img {
+
+      width: 135px;
+
+      height: 135px;
+
+      object-fit: contain;
+
+      transition:
+        transform .2s ease;
+
+    }
+
+
+    .product-art:hover img {
+
+      transform:
+        scale(1.06);
+
+    }
+
+
+    /* BRAND */
+
+    .brand {
+
+      font-size: 10px;
+
+      font-weight: 900;
+
+      text-transform:
+        uppercase;
+
+      color:
+        var(--ion-color-primary);
+
+      margin-bottom: 4px;
+
+    }
+
+
+    /* PRODUCT NAME */
+
+    .product-name {
+
+      min-height: 38px;
+
+      font-size: 13px;
+
+      line-height: 1.35;
+
+      font-weight: 900;
+
+    }
+
+
+    /* PRICE */
+
+    .price {
+
+      font-size: 16px;
+
+      font-weight: 900;
+
+      color:
+        var(--ion-color-primary);
+
+    }
+
+
+    /* BUTTON */
+
+    ion-button {
+
+      --border-radius:
+        14px;
+
+      font-weight:
+        900;
+
+      margin-top:
+        12px;
+
+    }
+
+
+    /* STOCK BADGE */
+
+    .stock-pill {
+
+      border-radius:
+        999px;
+
+      padding:
+        5px 9px;
+
+      font-size:
+        9px;
+
+      font-weight:
+        900;
+
+    }
+
+
+    /* WISHLIST BUTTON */
+
+    .wish-btn {
+
+      --border-radius:
+        50%;
+
+      width:
+        34px;
+
+      height:
+        34px;
+
+    }
+
+
+  `],
+
   template: `
 
   <div class="product-card">

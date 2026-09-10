@@ -20,6 +20,27 @@ import {
 } from '@angular/common';
 
 import {
+  addIcons
+} from 'ionicons';
+
+import {
+  gridOutline,
+  brushOutline,
+  constructOutline,
+  shieldCheckmarkOutline,
+  flaskOutline,
+  layersOutline,
+  scanOutline,
+  linkOutline,
+  settingsOutline,
+  sparklesOutline,
+  medkitOutline,
+  medicalOutline,
+  searchOutline,
+  swapVerticalOutline
+} from 'ionicons/icons';
+
+import {
   Product
 } from '../models/product';
 
@@ -36,21 +57,14 @@ import {
 } from '../services/review.service';
 
 
-
 interface ProductRatingSummary {
-
   average: number;
-
   count: number;
-
 }
 
 
-
 @Component({
-
   selector: 'app-catalog',
-
   standalone: true,
 
   imports: [
@@ -63,86 +77,119 @@ interface ProductRatingSummary {
   styles: [`
 
     /* =========================
-       SEARCH
+       PAGE
        ========================= */
 
-    .catalog-search {
-
-      padding: 0;
-
-      margin-bottom: 10px;
-
-      --border-radius: 14px;
-
-      --box-shadow: none;
-
+    .catalog-page {
+      padding-bottom: 24px;
     }
-
 
 
     /* =========================
-       SEARCH INFORMATION
+       INTRO
+       ========================= */
+
+    .catalog-intro {
+      margin-bottom: 14px;
+    }
+
+    .catalog-kicker {
+      color: var(--ion-color-primary);
+
+      font-size: 10px;
+      font-weight: 900;
+
+      letter-spacing: .8px;
+      text-transform: uppercase;
+    }
+
+    .catalog-heading {
+      margin: 4px 0 3px;
+
+      font-size: 22px;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+
+    .catalog-subtitle {
+      margin: 0;
+
+      font-size: 12px;
+      line-height: 1.45;
+
+      color: var(--ion-color-medium);
+    }
+
+
+    /* =========================
+       SEARCH
+       ========================= */
+
+    .search-wrap {
+      margin-bottom: 14px;
+    }
+
+    .catalog-search {
+      padding: 0;
+
+      --border-radius: 16px;
+      --box-shadow: none;
+
+      --background:
+        var(--ion-card-background);
+    }
+
+
+    /* =========================
+       SEARCH INFO
        ========================= */
 
     .search-info {
+      margin-top: 9px;
 
-      margin: 4px 2px 14px;
+      padding: 11px 13px;
 
       display: flex;
-
       align-items: center;
-
       justify-content: space-between;
 
-      gap: 10px;
+      gap: 12px;
 
+      border-radius: 14px;
+
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .08
+        );
     }
-
-
 
     .search-info-text {
-
       min-width: 0;
-
     }
 
-
-
     .search-label {
-
-      font-size: 12px;
+      font-size: 10px;
 
       color:
         var(--ion-color-medium);
-
     }
-
-
 
     .search-term {
-
       margin-top: 2px;
 
-      font-size: 14px;
-
-      font-weight: 800;
+      font-size: 13px;
+      font-weight: 900;
 
       white-space: nowrap;
-
       overflow: hidden;
-
       text-overflow: ellipsis;
-
     }
 
-
-
     .clear-filter {
-
       flex-shrink: 0;
 
       border: none;
-
       outline: none;
 
       background: transparent;
@@ -150,92 +197,100 @@ interface ProductRatingSummary {
       color:
         var(--ion-color-primary);
 
-      font-size: 12px;
-
-      font-weight: 800;
+      font-size: 11px;
+      font-weight: 900;
 
       cursor: pointer;
-
     }
-
 
 
     /* =========================
-       CATEGORY PILLS
+       CATEGORY FILTER
        ========================= */
 
+    .filter-section {
+      margin-bottom: 18px;
+    }
+
+    .filter-label {
+      margin-bottom: 9px;
+
+      font-size: 12px;
+      font-weight: 900;
+    }
+
     .cat-scroll {
-
       overflow-x: auto;
+      overflow-y: hidden;
 
-      margin: 4px -2px 16px;
+      margin: 0 -2px;
 
-      padding: 2px;
+      padding: 2px 2px 6px;
 
       scrollbar-width: none;
-
     }
-
-
 
     .cat-scroll::-webkit-scrollbar {
-
       display: none;
-
     }
 
-
-
     .cat-pills {
-
       display: flex;
 
       gap: 8px;
 
       width: max-content;
-
     }
 
-
-
     .cat-pill {
+      min-height: 38px;
+
+      display: flex;
+      align-items: center;
+
+      gap: 7px;
+
+      padding: 7px 12px;
 
       border:
         1px solid
-        rgba(120,120,120,.18);
+        rgba(
+          120,
+          120,
+          120,
+          .18
+        );
 
       border-radius: 999px;
 
       background:
         var(
           --ion-card-background,
-          #fff
+          #ffffff
         );
 
       color:
         var(--ion-text-color);
 
-      font-size: 12px;
-
-      font-weight: 700;
-
-      padding: 8px 13px;
-
-      cursor: pointer;
+      font-size: 11px;
+      font-weight: 800;
 
       white-space: nowrap;
+
+      cursor: pointer;
 
       transition:
         background .15s ease,
         color .15s ease,
-        border .15s ease;
-
+        border-color .15s ease,
+        transform .15s ease;
     }
 
-
+    .cat-pill:active {
+      transform: scale(.96);
+    }
 
     .cat-pill.active {
-
       background:
         var(--ion-color-primary);
 
@@ -243,147 +298,314 @@ interface ProductRatingSummary {
         var(--ion-color-primary);
 
       color: #ffffff;
-
     }
 
+    .cat-pill-icon {
+      width: 17px;
+      height: 17px;
 
+      flex: 0 0 17px;
 
-    /* =========================
-       RESULTS HEADER
-       ========================= */
-
-    .results-header {
-
-      margin-bottom: 13px;
-
-    }
-
-
-
-    .results-title {
-
-      margin: 0;
-
-      font-size: 18px;
-
-      font-weight: 900;
-
-    }
-
-
-
-    .results-count {
-
-      margin: 3px 0 0;
-
-      font-size: 12px;
+      font-size: 17px;
 
       color:
-        var(--ion-color-medium);
-
+        var(--ion-color-primary);
     }
 
-
-
-    .sort-select {
-
-      max-width: 145px;
-
-      font-size: 12px;
-
-      font-weight: 700;
-
+    .cat-pill.active
+    .cat-pill-icon {
+      color: #ffffff;
     }
-
 
 
     /* =========================
-       RATING LOAD
+       RESULTS TOOLBAR
        ========================= */
 
-    .rating-load {
+    .results-toolbar {
+      margin-bottom: 14px;
+
+      padding: 13px 14px;
 
       display: flex;
-
       align-items: center;
+      justify-content: space-between;
 
-      gap: 7px;
+      gap: 12px;
 
-      margin: -4px 2px 12px;
+      border-radius: 16px;
+
+      background:
+        var(--ion-card-background);
+    }
+
+    .results-text {
+      min-width: 0;
+    }
+
+    .results-title {
+      margin: 0;
+
+      font-size: 17px;
+      line-height: 1.25;
+
+      font-weight: 900;
+    }
+
+    .results-count {
+      margin: 3px 0 0;
 
       font-size: 10px;
 
       color:
         var(--ion-color-medium);
-
     }
 
+    .sort-wrap {
+      min-width: 116px;
 
+      display: flex;
+      align-items: center;
 
-    .rating-load ion-spinner {
+      border:
+        1px solid
+        rgba(
+          120,
+          120,
+          120,
+          .14
+        );
 
-      width: 14px;
+      border-radius: 12px;
 
-      height: 14px;
-
+      padding: 0 4px;
     }
 
+    .sort-wrap ion-icon {
+      margin-left: 7px;
+
+      font-size: 15px;
+
+      color:
+        var(--ion-color-primary);
+    }
+
+    .sort-select {
+      min-height: 38px;
+
+      width: 100%;
+      max-width: 145px;
+
+      font-size: 11px;
+      font-weight: 800;
+    }
 
 
     /* =========================
-       EMPTY
+       RATING LOADING
+       ========================= */
+
+    .rating-load {
+      margin: -4px 2px 12px;
+
+      display: flex;
+      align-items: center;
+
+      gap: 7px;
+
+      font-size: 10px;
+
+      color:
+        var(--ion-color-medium);
+    }
+
+    .rating-load ion-spinner {
+      width: 14px;
+      height: 14px;
+    }
+
+
+    /* =========================
+       PRODUCT GRID
+       ========================= */
+
+    .product-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(0, 1fr)
+        );
+
+      gap: 12px;
+
+      align-items: stretch;
+    }
+
+    app-product-card {
+      display: block;
+
+      min-width: 0;
+    }
+
+
+    /* =========================
+       EMPTY STATE
        ========================= */
 
     .empty {
-
-      min-height: 280px;
+      min-height: 310px;
 
       display: flex;
-
       flex-direction: column;
 
       align-items: center;
-
       justify-content: center;
 
       text-align: center;
 
-      padding: 30px 20px;
-
+      padding: 35px 24px;
     }
 
+    .empty-icon {
+      width: 74px;
+      height: 74px;
 
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-    .empty .emoji {
+      margin-bottom: 14px;
 
-      font-size: 48px;
+      border-radius: 22px;
 
-      margin-bottom: 10px;
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .10
+        );
 
+      color:
+        var(--ion-color-primary);
     }
 
+    .empty-icon ion-icon {
+      width: 34px;
+      height: 34px;
 
+      font-size: 34px;
+
+      color:
+        var(--ion-color-primary);
+    }
 
     .empty h2 {
-
-      margin:
-        0 0 5px;
+      margin: 0 0 6px;
 
       font-size: 18px;
+      font-weight: 900;
+    }
+
+    .empty p {
+      max-width: 260px;
+
+      margin: 0 0 17px;
+
+      font-size: 11px;
+      line-height: 1.5;
+
+      color:
+        var(--ion-color-medium);
+    }
+
+    .empty ion-button {
+      --border-radius: 13px;
+
+      font-weight: 800;
+    }
+
+
+    /* =========================
+       LIGHT MODE
+       ========================= */
+
+    @media (prefers-color-scheme: light) {
+
+      .results-toolbar {
+        background: #ffffff;
+
+        box-shadow:
+          0 6px 18px
+          rgba(
+            27,
+            44,
+            64,
+            .04
+          );
+      }
+
+      .cat-pill {
+        background: #ffffff;
+      }
+
+      .cat-pill.active {
+        background:
+          var(--ion-color-primary);
+      }
 
     }
 
 
+    /* =========================
+       RESPONSIVE
+       ========================= */
 
-    .empty p {
+    @media (min-width: 720px) {
 
-      margin:
-        0 0 16px;
+      .product-grid {
+        grid-template-columns:
+          repeat(
+            3,
+            minmax(0, 1fr)
+          );
+
+        gap: 16px;
+      }
+
+    }
+
+
+    @media (min-width: 1050px) {
+
+      .product-grid {
+        grid-template-columns:
+          repeat(
+            4,
+            minmax(0, 1fr)
+          );
+      }
+
+    }
+
+
+    @media (max-width: 380px) {
+
+      .results-toolbar {
+        align-items: flex-start;
+      }
+
+      .sort-wrap {
+        min-width: 105px;
+      }
+
+      .product-grid {
+        gap: 9px;
+      }
 
     }
 
   `],
-
 
 
   template: `
@@ -402,11 +624,8 @@ interface ProductRatingSummary {
     </ion-buttons>
 
 
-
     <ion-title>
-
       Catalog
-
     </ion-title>
 
 
@@ -416,59 +635,108 @@ interface ProductRatingSummary {
 
 
 
-
 <ion-content>
 
 
-<div class="page-wrap no-bottom">
+  <div class="page-wrap no-bottom catalog-page">
 
 
 
-  <!-- =========================
-       SEARCH
-       ========================= -->
+    <!-- =========================
+         INTRO
+         ========================= -->
 
-  <ion-searchbar
-    class="catalog-search"
-
-    [(ngModel)]="search"
-
-    placeholder="Search dental supplies..."
-
-    [debounce]="0"
-
-    showClearButton="focus">
-
-  </ion-searchbar>
+    <div class="catalog-intro">
 
 
+      <div class="catalog-kicker">
 
-
-  <!-- =========================
-       SEARCH INFORMATION
-       ========================= -->
-
-  <div
-    class="search-info"
-
-    *ngIf="
-      search.trim()
-    ">
-
-
-    <div class="search-info-text">
-
-
-      <div class="search-label">
-
-        Showing results for
+        SmileHub Store
 
       </div>
 
 
-      <div class="search-term">
+      <h1 class="catalog-heading">
 
-        "{{ search }}"
+        Find what you need.
+
+      </h1>
+
+
+      <p class="catalog-subtitle">
+
+        Browse reliable dental supplies
+        for clinics and professionals.
+
+      </p>
+
+
+    </div>
+
+
+
+    <!-- =========================
+         SEARCH
+         ========================= -->
+
+    <div class="search-wrap">
+
+
+      <ion-searchbar
+        class="catalog-search"
+
+        [(ngModel)]="search"
+
+        placeholder="Search products, brands or categories..."
+
+        [debounce]="0"
+
+        showClearButton="focus">
+      </ion-searchbar>
+
+
+
+      <div
+        class="search-info"
+
+        *ngIf="
+          search.trim()
+        ">
+
+
+        <div class="search-info-text">
+
+
+          <div class="search-label">
+
+            Showing results for
+
+          </div>
+
+
+          <div class="search-term">
+
+            "{{ search }}"
+
+          </div>
+
+
+        </div>
+
+
+        <button
+          type="button"
+
+          class="clear-filter"
+
+          (click)="
+            clearSearch()
+          ">
+
+          Clear
+
+        </button>
+
 
       </div>
 
@@ -477,259 +745,279 @@ interface ProductRatingSummary {
 
 
 
-    <button
-      type="button"
+    <!-- =========================
+         CATEGORY FILTER
+         ========================= -->
 
-      class="clear-filter"
+    <div class="filter-section">
 
-      (click)="
-        clearSearch()
+
+      <div class="filter-label">
+
+        Browse by Category
+
+      </div>
+
+
+      <div class="cat-scroll">
+
+
+        <div class="cat-pills">
+
+
+          <button
+            type="button"
+
+            class="cat-pill"
+
+            *ngFor="
+              let c
+              of categories
+            "
+
+            [class.active]="
+              category === c
+            "
+
+            (click)="
+              selectCategory(c)
+            ">
+
+
+            <ion-icon
+              class="cat-pill-icon"
+
+              [name]="
+                categoryIcon(c)
+              ">
+            </ion-icon>
+
+
+            <span>
+
+              {{ c }}
+
+            </span>
+
+
+          </button>
+
+
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+
+
+    <!-- =========================
+         RESULTS TOOLBAR
+         ========================= -->
+
+    <div class="results-toolbar">
+
+
+      <div class="results-text">
+
+
+        <h2 class="results-title">
+
+          {{ resultTitle }}
+
+        </h2>
+
+
+        <p class="results-count">
+
+          {{ filtered.length }}
+
+          product{{
+            filtered.length === 1
+              ? ''
+              : 's'
+          }}
+
+          found
+
+        </p>
+
+
+      </div>
+
+
+
+      <div class="sort-wrap">
+
+
+        <ion-icon
+          name="swap-vertical-outline">
+        </ion-icon>
+
+
+        <ion-select
+          [(ngModel)]="sort"
+
+          interface="popover"
+
+          placeholder="Sort"
+
+          class="sort-select">
+
+
+          <ion-select-option
+            value="featured">
+
+            Featured
+
+          </ion-select-option>
+
+
+          <ion-select-option
+            value="low">
+
+            Price: Low to High
+
+          </ion-select-option>
+
+
+          <ion-select-option
+            value="high">
+
+            Price: High to Low
+
+          </ion-select-option>
+
+
+          <ion-select-option
+            value="rating">
+
+            Top Rated
+
+          </ion-select-option>
+
+
+        </ion-select>
+
+
+      </div>
+
+
+    </div>
+
+
+
+    <!-- =========================
+         RATING LOADING
+         ========================= -->
+
+    <div
+      class="rating-load"
+
+      *ngIf="
+        loadingRatings &&
+        sort === 'rating'
       ">
 
-      Clear
 
-    </button>
-
-
-  </div>
+      <ion-spinner
+        name="crescent">
+      </ion-spinner>
 
 
+      Loading latest customer ratings...
 
 
-  <!-- =========================
-       CATEGORY FILTERS
-       ========================= -->
-
-  <div class="cat-scroll">
+    </div>
 
 
-    <div class="cat-pills">
+
+    <!-- =========================
+         PRODUCTS
+         ========================= -->
+
+    <div
+      class="product-grid"
+
+      *ngIf="
+        filtered.length;
+        else emptyTpl
+      ">
 
 
-      <button
-        type="button"
-
-        class="cat-pill"
-
+      <app-product-card
         *ngFor="
-          let c of categories
+          let p
+          of filtered;
+          trackBy: trackProduct
         "
 
-        [class.active]="
-          category === c
-        "
-
-        (click)="
-          selectCategory(c)
-        ">
-
-        {{ c }}
-
-      </button>
-
-
-    </div>
-
-
-  </div>
-
-
-
-
-  <!-- =========================
-       RESULTS HEADER
-       ========================= -->
-
-  <div
-    class="section-row results-header">
-
-
-    <div>
-
-
-      <h2 class="results-title">
-
-        {{ resultTitle }}
-
-      </h2>
-
-
-      <p class="results-count">
-
-        {{ filtered.length }}
-
-        item{{
-          filtered.length === 1
-            ? ''
-            : 's'
-        }}
-
-        found
-
-      </p>
+        [product]="p">
+      </app-product-card>
 
 
     </div>
 
 
 
-    <!-- SORT -->
+    <!-- =========================
+         EMPTY STATE
+         ========================= -->
 
-    <ion-select
-      [(ngModel)]="sort"
-
-      interface="popover"
-
-      placeholder="Sort"
-
-      class="sort-select">
+    <ng-template #emptyTpl>
 
 
-      <ion-select-option
-        value="featured">
-
-        Featured
-
-      </ion-select-option>
+      <div class="empty">
 
 
-      <ion-select-option
-        value="low">
-
-        Price: Low to High
-
-      </ion-select-option>
+        <div class="empty-icon">
 
 
-      <ion-select-option
-        value="high">
-
-        Price: High to Low
-
-      </ion-select-option>
+          <ion-icon
+            name="search-outline">
+          </ion-icon>
 
 
-      <ion-select-option
-        value="rating">
-
-        Top Rated
-
-      </ion-select-option>
+        </div>
 
 
-    </ion-select>
+        <h2>
+
+          No products found
+
+        </h2>
 
 
-  </div>
+        <p>
+
+          We couldn't find any products
+          matching your current search
+          or category.
+
+        </p>
 
 
+        <ion-button
+          fill="outline"
 
+          (click)="
+            resetFilters()
+          ">
 
-  <!-- RATING LOADING -->
+          View All Products
 
-  <div
-    class="rating-load"
+        </ion-button>
 
-    *ngIf="
-      loadingRatings &&
-      sort === 'rating'
-    ">
-
-
-    <ion-spinner
-      name="crescent">
-    </ion-spinner>
-
-
-    Loading latest customer ratings...
-
-
-  </div>
-
-
-
-
-  <!-- =========================
-       PRODUCTS
-       ========================= -->
-
-  <div
-    class="product-grid"
-
-    *ngIf="
-      filtered.length;
-      else emptyTpl
-    ">
-
-
-    <app-product-card
-
-      *ngFor="
-        let p of filtered;
-        trackBy: trackProduct
-      "
-
-      [product]="p">
-
-    </app-product-card>
-
-
-  </div>
-
-
-
-
-  <!-- =========================
-       EMPTY STATE
-       ========================= -->
-
-  <ng-template #emptyTpl>
-
-
-    <div class="empty">
-
-
-      <div class="emoji">
-
-        🔍
 
       </div>
 
 
-      <h2>
-
-        No products found
-
-      </h2>
+    </ng-template>
 
 
-      <p class="muted">
-
-        We couldn't find products
-        matching your search.
-
-      </p>
-
-
-      <ion-button
-        fill="outline"
-
-        (click)="
-          resetFilters()
-        ">
-
-        View All Products
-
-      </ion-button>
-
-
-    </div>
-
-
-  </ng-template>
-
-
-</div>
+  </div>
 
 
 </ion-content>
@@ -743,7 +1031,6 @@ export class CatalogPage
 implements OnInit {
 
 
-
   /* =========================
      FILTER STATE
      ========================= */
@@ -752,10 +1039,8 @@ implements OnInit {
     'All';
 
 
-
   search =
     '';
-
 
 
   sort:
@@ -782,10 +1067,8 @@ implements OnInit {
     >();
 
 
-
   loadingRatings =
     false;
-
 
 
   private ratingsLoaded =
@@ -804,7 +1087,49 @@ implements OnInit {
     private reviewService:
       ReviewService
 
-  ) {}
+  ) {
+
+
+    /*
+     * Register all icons used by
+     * this page so the category
+     * pills do not appear blank.
+     */
+
+    addIcons({
+
+      gridOutline,
+
+      brushOutline,
+
+      constructOutline,
+
+      shieldCheckmarkOutline,
+
+      flaskOutline,
+
+      layersOutline,
+
+      scanOutline,
+
+      linkOutline,
+
+      settingsOutline,
+
+      sparklesOutline,
+
+      medkitOutline,
+
+      medicalOutline,
+
+      searchOutline,
+
+      swapVerticalOutline
+
+    });
+
+
+  }
 
 
 
@@ -816,15 +1141,10 @@ implements OnInit {
     void {
 
 
-    /*
-     * Products are already handled
-     * centrally by AppStateService.
-     */
-
-
     this.route
       .queryParamMap
       .subscribe(
+
         params => {
 
 
@@ -836,7 +1156,6 @@ implements OnInit {
             'All';
 
 
-
           this.search =
             params.get(
               'search'
@@ -846,14 +1165,9 @@ implements OnInit {
 
 
         }
+
       );
 
-
-
-    /*
-     * Load actual customer
-     * review summaries.
-     */
 
     void this
       .loadProductRatings();
@@ -871,19 +1185,9 @@ implements OnInit {
     Promise<void> {
 
 
-    /*
-     * Refresh products so stock
-     * is current.
-     */
-
     await this.state
       .loadProductsFromFirestore();
 
-
-
-    /*
-     * Refresh customer ratings.
-     */
 
     await this
       .loadProductRatings(
@@ -916,7 +1220,6 @@ implements OnInit {
     }
 
 
-
     if (
       this.ratingsLoaded
       &&
@@ -930,18 +1233,17 @@ implements OnInit {
     }
 
 
-
     this.loadingRatings =
       true;
-
 
 
     try {
 
 
       const products =
-        [...this.state.products];
-
+        [
+          ...this.state.products
+        ];
 
 
       const results =
@@ -950,7 +1252,9 @@ implements OnInit {
 
           products.map(
 
-            async product => {
+            async (
+              product
+            ) => {
 
 
               try {
@@ -962,7 +1266,6 @@ implements OnInit {
                     .getProductReviews(
                       product.id
                     );
-
 
 
                 if (
@@ -987,26 +1290,35 @@ implements OnInit {
                 }
 
 
-
                 const total =
                   reviews.reduce(
 
                     (
                       sum,
                       review
-                    ) =>
+                    ) => {
 
-                      sum
-                      +
-                      Number(
-                        review.rating ||
-                        0
-                      ),
+
+                      return (
+
+                        sum
+
+                        +
+
+                        Number(
+                          review.rating
+                          ||
+                          0
+                        )
+
+                      );
+
+
+                    },
 
                     0
 
                   );
-
 
 
                 return {
@@ -1031,12 +1343,15 @@ implements OnInit {
 
                 console.error(
 
-                  `Unable to load rating for product ${product.id}:`,
+                  'Unable to load rating for product '
+                  +
+                  product.id
+                  +
+                  ':',
 
                   error
 
                 );
-
 
 
                 return {
@@ -1064,13 +1379,11 @@ implements OnInit {
         );
 
 
-
       const nextMap =
         new Map<
           number,
           ProductRatingSummary
         >();
-
 
 
       for (
@@ -1099,14 +1412,23 @@ implements OnInit {
       }
 
 
-
       this.productRatings =
         nextMap;
 
 
-
       this.ratingsLoaded =
         true;
+
+
+    } catch (
+      error
+    ) {
+
+
+      console.error(
+        'Unable to load product ratings:',
+        error
+      );
 
 
     } finally {
@@ -1140,21 +1462,21 @@ implements OnInit {
         );
 
 
-
     if (
-      summary &&
+      summary
+      &&
       summary.count > 0
     ) {
 
 
       return Number(
-        summary.average ||
+        summary.average
+        ||
         0
       );
 
 
     }
-
 
 
     return 0;
@@ -1210,6 +1532,78 @@ implements OnInit {
 
 
   /* =========================
+     CATEGORY ICON
+     ========================= */
+
+  categoryIcon(
+    category: string
+  ):
+    string {
+
+
+    const icons:
+      Record<string, string> = {
+
+
+        'All':
+          'grid-outline',
+
+
+        'Oral Care':
+          'brush-outline',
+
+
+        'Instruments':
+          'construct-outline',
+
+
+        'PPE':
+          'shield-checkmark-outline',
+
+
+        'Restorative':
+          'flask-outline',
+
+
+        'Disposables':
+          'layers-outline',
+
+
+        'Impression':
+          'scan-outline',
+
+
+        'Orthodontics':
+          'link-outline',
+
+
+        'Rotary':
+          'settings-outline',
+
+
+        'Cosmetic':
+          'sparkles-outline',
+
+
+        'Equipment':
+          'medkit-outline'
+
+
+      };
+
+
+    return (
+      icons[category]
+      ||
+      'medical-outline'
+    );
+
+
+  }
+
+
+
+  /* =========================
      RESULT TITLE
      ========================= */
 
@@ -1222,11 +1616,6 @@ implements OnInit {
         .trim();
 
 
-
-    /*
-     * Search + category
-     */
-
     if (
       term
       &&
@@ -1236,17 +1625,14 @@ implements OnInit {
 
 
       return (
-        `${this.category} Results`
+        this.category
+        +
+        ' Results'
       );
 
 
     }
 
-
-
-    /*
-     * Search only
-     */
 
     if (
       term
@@ -1259,11 +1645,6 @@ implements OnInit {
     }
 
 
-
-    /*
-     * Category only
-     */
-
     if (
       this.category !==
         'All'
@@ -1274,7 +1655,6 @@ implements OnInit {
 
 
     }
-
 
 
     return 'All Products';
@@ -1298,17 +1678,12 @@ implements OnInit {
         .toLowerCase();
 
 
-
     let products =
       this.state.products
         .filter(
 
           product => {
 
-
-            /*
-             * CATEGORY FILTER
-             */
 
             const matchesCategory =
 
@@ -1321,24 +1696,30 @@ implements OnInit {
                 this.category;
 
 
+            const productText =
+              [
 
-            /*
-             * SEARCH FILTER
-             */
+                product.name
+                ||
+                '',
 
-            const productText = `
+                product.brand
+                ||
+                '',
 
-              ${product.name || ''}
+                product.category
+                ||
+                '',
 
-              ${product.brand || ''}
+                product.sku
+                ||
+                ''
 
-              ${product.category || ''}
-
-              ${product.sku || ''}
-
-            `
-              .toLowerCase();
-
+              ]
+                .join(
+                  ' '
+                )
+                .toLowerCase();
 
 
             const matchesSearch =
@@ -1351,7 +1732,6 @@ implements OnInit {
                 .includes(
                   term
                 );
-
 
 
             return (
@@ -1376,7 +1756,9 @@ implements OnInit {
        ========================= */
 
     products =
-      [...products]
+      [
+        ...products
+      ]
         .sort(
 
           (
@@ -1439,14 +1821,7 @@ implements OnInit {
 
 
 
-            /* =========================
-               TOP RATED
-
-               Uses actual customer
-               review ratings only.
-               Products with no reviews
-               are treated as 0.
-               ========================= */
+            /* TOP RATED */
 
             if (
               this.sort ===
@@ -1455,13 +1830,15 @@ implements OnInit {
 
 
               const ratingA =
-                this.ratingFor(a);
-
+                this.ratingFor(
+                  a
+                );
 
 
               const ratingB =
-                this.ratingFor(b);
-
+                this.ratingFor(
+                  b
+                );
 
 
               if (
@@ -1471,7 +1848,8 @@ implements OnInit {
 
 
                 return (
-                  ratingB -
+                  ratingB
+                  -
                   ratingA
                 );
 
@@ -1479,25 +1857,16 @@ implements OnInit {
               }
 
 
-
-              /*
-               * Same average rating:
-               * product with more reviews
-               * ranks higher.
-               */
-
               const countA =
                 this.reviewCountFor(
                   a
                 );
 
 
-
               const countB =
                 this.reviewCountFor(
                   b
                 );
-
 
 
               if (
@@ -1507,7 +1876,8 @@ implements OnInit {
 
 
                 return (
-                  countB -
+                  countB
+                  -
                   countA
                 );
 
@@ -1515,15 +1885,18 @@ implements OnInit {
               }
 
 
-
-              /*
-               * Final stable fallback.
-               */
-
               return (
-                Number(a.id)
+
+                Number(
+                  a.id
+                )
+
                 -
-                Number(b.id)
+
+                Number(
+                  b.id
+                )
+
               );
 
 
@@ -1531,17 +1904,19 @@ implements OnInit {
 
 
 
-            /*
-             * FEATURED / DEFAULT
-             */
+            /* FEATURED */
 
             return (
 
-              Number(a.id)
+              Number(
+                a.id
+              )
 
               -
 
-              Number(b.id)
+              Number(
+                b.id
+              )
 
             );
 
@@ -1549,7 +1924,6 @@ implements OnInit {
           }
 
         );
-
 
 
     return products;
@@ -1594,7 +1968,7 @@ implements OnInit {
 
 
   /* =========================
-     RESET EVERYTHING
+     RESET FILTERS
      ========================= */
 
   resetFilters():
@@ -1605,10 +1979,8 @@ implements OnInit {
       '';
 
 
-
     this.category =
       'All';
-
 
 
     this.sort =
@@ -1626,7 +1998,8 @@ implements OnInit {
   trackProduct(
     _index: number,
     product: Product
-  ) {
+  ):
+    number {
 
 
     return product.id;

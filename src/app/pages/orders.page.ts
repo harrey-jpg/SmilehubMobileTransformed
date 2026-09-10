@@ -16,6 +16,10 @@ import {
 } from '@angular/common';
 
 import {
+  FormsModule
+} from '@angular/forms';
+
+import {
   OrderService
 } from '../services/order.service';
 
@@ -25,39 +29,89 @@ import {
 
 
 @Component({
+
   selector: 'app-orders',
+
   standalone: true,
 
   imports: [
     RouterModule,
     IonicModule,
-    CommonModule
+    CommonModule,
+    FormsModule
   ],
+
 
   styles: [`
 
     /* =========================
-       PAGE HEADER
+       PAGE
        ========================= */
 
-    .orders-heading {
-      margin-bottom: 14px;
+    .orders-page {
+      padding-bottom: 30px;
     }
 
-    .orders-heading h2 {
-      margin: 0;
+
+    /* =========================
+       INTRO
+       ========================= */
+
+    .orders-intro {
+      margin-bottom: 15px;
+    }
+
+
+    .orders-kicker {
+      color:
+        var(--ion-color-primary);
+
+      font-size: 9px;
+      font-weight: 900;
+
+      letter-spacing: .8px;
+
+      text-transform: uppercase;
+    }
+
+
+    .orders-title {
+      margin:
+        4px 0 4px;
 
       font-size: 22px;
+      line-height: 1.2;
+
       font-weight: 900;
     }
 
-    .orders-heading p {
-      margin: 4px 0 0;
 
-      font-size: 12px;
+    .orders-subtitle {
+      margin: 0;
+
+      font-size: 11px;
+      line-height: 1.5;
 
       color:
         var(--ion-color-medium);
+    }
+
+
+    /* =========================
+       SEARCH
+       ========================= */
+
+    .order-search {
+      padding: 0;
+
+      margin-bottom: 13px;
+
+      --border-radius: 16px;
+
+      --box-shadow: none;
+
+      --background:
+        var(--ion-card-background);
     }
 
 
@@ -67,20 +121,22 @@ import {
 
     .status-scroll {
       overflow-x: auto;
+      overflow-y: hidden;
 
       margin:
-        0 -4px
-        16px;
+        0 -2px 18px;
 
       padding:
-        2px 4px;
+        2px 2px 6px;
 
       scrollbar-width: none;
     }
 
+
     .status-scroll::-webkit-scrollbar {
       display: none;
     }
+
 
     .status-filters {
       display: flex;
@@ -90,10 +146,26 @@ import {
       width: max-content;
     }
 
+
     .status-filter {
+      min-height: 38px;
+
+      display: inline-flex;
+      align-items: center;
+
+      gap: 6px;
+
+      padding:
+        7px 12px;
+
       border:
         1px solid
-        rgba(120, 120, 120, .16);
+        rgba(
+          120,
+          120,
+          120,
+          .16
+        );
 
       border-radius: 999px;
 
@@ -103,16 +175,25 @@ import {
       color:
         var(--ion-text-color);
 
-      padding:
-        8px 14px;
-
-      font-size: 12px;
+      font-size: 10px;
       font-weight: 800;
 
       white-space: nowrap;
 
       cursor: pointer;
+
+      transition:
+        transform .15s ease,
+        border-color .15s ease,
+        background .15s ease;
     }
+
+
+    .status-filter:active {
+      transform:
+        scale(.96);
+    }
+
 
     .status-filter.active {
       border-color:
@@ -125,36 +206,153 @@ import {
     }
 
 
+    .filter-count {
+      min-width: 20px;
+
+      padding:
+        2px 6px;
+
+      border-radius: 999px;
+
+      text-align: center;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          .12
+        );
+
+      font-size: 8px;
+      font-weight: 900;
+    }
+
+
+    .status-filter:not(.active)
+    .filter-count {
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .09
+        );
+
+      color:
+        var(--ion-color-primary);
+    }
+
+
     /* =========================
-       ORDER CARD
+       SEARCH RESULT INFO
        ========================= */
 
-    .order-card {
-      padding: 16px;
+    .search-info {
+      margin:
+        -5px 2px 14px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 10px;
+
+      font-size: 9px;
+
+      color:
+        var(--ion-color-medium);
+    }
+
+
+    .search-info strong {
+      color:
+        var(--ion-text-color);
+    }
+
+
+    .clear-search {
+      border: none;
+
+      background: transparent;
+
+      color:
+        var(--ion-color-primary);
+
+      font-size: 9px;
+      font-weight: 900;
 
       cursor: pointer;
     }
 
+
+    /* =========================
+       ORDER LIST
+       ========================= */
+
+    .orders-list {
+      display: flex;
+      flex-direction: column;
+
+      gap: 12px;
+    }
+
+
+    .order-card {
+      padding: 15px;
+
+      border-radius: 20px;
+
+      cursor: pointer;
+
+      transition:
+        transform .15s ease;
+    }
+
+
+    .order-card:active {
+      transform:
+        scale(.99);
+    }
+
+
+    /* =========================
+       ORDER TOP
+       ========================= */
+
     .order-top {
       display: flex;
+
       align-items: flex-start;
       justify-content: space-between;
 
       gap: 12px;
     }
 
-    .order-number {
-      font-size: 14px;
-      font-weight: 900;
+
+    .order-number-label {
+      margin-bottom: 3px;
+
+      font-size: 8px;
 
       color:
-        var(--ion-text-color);
+        var(--ion-color-medium);
     }
+
+
+    .order-number {
+      color:
+        var(--ion-text-color);
+
+      font-size: 13px;
+      font-weight: 900;
+
+      word-break: break-word;
+    }
+
 
     .order-date {
       margin-top: 4px;
 
-      font-size: 11px;
+      font-size: 9px;
 
       color:
         var(--ion-color-medium);
@@ -162,7 +360,7 @@ import {
 
 
     /* =========================
-       STATUS BADGES
+       STATUS
        ========================= */
 
     .order-status {
@@ -173,43 +371,73 @@ import {
 
       border-radius: 999px;
 
-      font-size: 10px;
+      font-size: 8px;
       font-weight: 900;
 
       text-transform: capitalize;
     }
 
+
     .status-pending {
       background:
-        rgba(255, 184, 0, .17);
+        rgba(
+          255,
+          184,
+          0,
+          .15
+        );
 
       color: #f2ac00;
     }
 
+
     .status-processing {
       background:
-        rgba(31, 142, 255, .16);
+        rgba(
+          31,
+          142,
+          255,
+          .14
+        );
 
       color: #469cff;
     }
 
+
     .status-shipped {
       background:
-        rgba(112, 84, 255, .16);
+        rgba(
+          112,
+          84,
+          255,
+          .14
+        );
 
       color: #9a87ff;
     }
 
+
     .status-delivered {
       background:
-        rgba(0, 206, 117, .16);
+        rgba(
+          0,
+          206,
+          117,
+          .14
+        );
 
       color: #00ce75;
     }
 
+
     .status-cancelled {
       background:
-        rgba(235, 68, 90, .16);
+        rgba(
+          235,
+          68,
+          90,
+          .14
+        );
 
       color:
         var(--ion-color-danger);
@@ -221,28 +449,39 @@ import {
        ========================= */
 
     .order-product {
+      margin-top: 13px;
+
+      padding:
+        12px 0;
+
       display: flex;
       align-items: center;
 
       gap: 12px;
 
-      margin-top: 14px;
-
-      padding:
-        12px 0;
-
       border-top:
         1px solid
-        rgba(120, 120, 120, .10);
+        rgba(
+          120,
+          120,
+          120,
+          .10
+        );
 
       border-bottom:
         1px solid
-        rgba(120, 120, 120, .10);
+        rgba(
+          120,
+          120,
+          120,
+          .10
+        );
     }
 
+
     .order-image-wrap {
-      width: 58px;
-      height: 58px;
+      width: 68px;
+      height: 68px;
 
       flex-shrink: 0;
 
@@ -250,22 +489,30 @@ import {
       align-items: center;
       justify-content: center;
 
-      border-radius: 12px;
+      border-radius: 15px;
+
+      overflow: hidden;
 
       background:
-        rgba(120, 120, 120, .08);
+        rgba(
+          var(--ion-color-primary-rgb),
+          .07
+        );
     }
 
+
     .order-image {
-      width: 46px;
-      height: 46px;
+      width: 55px;
+      height: 55px;
 
       object-fit: contain;
     }
 
+
     .order-placeholder {
-      font-size: 28px;
+      font-size: 29px;
     }
+
 
     .order-product-info {
       flex: 1;
@@ -273,33 +520,66 @@ import {
       min-width: 0;
     }
 
-    .order-product-name {
-      font-size: 13px;
+
+    .order-product-brand {
+      margin-bottom: 3px;
+
+      color:
+        var(--ion-color-primary);
+
+      font-size: 8px;
       font-weight: 900;
 
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      text-transform: uppercase;
     }
 
-    .order-product-meta {
-      margin-top: 3px;
 
+    .order-product-name {
       font-size: 11px;
+      line-height: 1.35;
+
+      font-weight: 900;
+
+      overflow: hidden;
+
+      display: -webkit-box;
+
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+
+    .order-product-meta {
+      margin-top: 5px;
+
+      font-size: 9px;
 
       color:
         var(--ion-color-medium);
     }
 
-    .more-items {
-      margin-top: 4px;
 
-      font-size: 10px;
+    .more-items {
+      display: inline-flex;
+
+      margin-top: 6px;
+
+      padding:
+        3px 7px;
+
+      border-radius: 999px;
+
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .08
+        );
 
       color:
         var(--ion-color-primary);
 
-      font-weight: 800;
+      font-size: 8px;
+      font-weight: 900;
     }
 
 
@@ -308,66 +588,95 @@ import {
        ========================= */
 
     .order-footer {
+      padding-top: 13px;
+
       display: flex;
+
       align-items: flex-end;
       justify-content: space-between;
 
       gap: 14px;
-
-      padding-top: 13px;
     }
 
+
+    .order-meta {
+      flex: 1;
+
+      min-width: 0;
+    }
+
+
     .item-count {
-      font-size: 11px;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+
+    .delivery-method {
+      margin-top: 4px;
+
+      font-size: 9px;
 
       color:
         var(--ion-color-medium);
     }
 
+
     .order-total {
+      flex-shrink: 0;
+
       text-align: right;
     }
 
+
     .order-total-label {
-      font-size: 10px;
+      font-size: 8px;
 
       color:
         var(--ion-color-medium);
     }
+
 
     .order-total-price {
       margin-top: 2px;
 
-      font-size: 17px;
-      font-weight: 900;
-
       color:
         var(--ion-color-primary);
+
+      font-size: 17px;
+      font-weight: 900;
     }
 
+
     .view-order {
-      margin-top: 4px;
+      margin-top: 5px;
 
       display: flex;
+
       align-items: center;
       justify-content: flex-end;
 
       gap: 3px;
 
-      font-size: 10px;
-      font-weight: 800;
-
       color:
         var(--ion-color-medium);
+
+      font-size: 8px;
+      font-weight: 800;
+    }
+
+
+    .view-order ion-icon {
+      font-size: 13px;
     }
 
 
     /* =========================
-       EMPTY
+       EMPTY STATE
        ========================= */
 
     .orders-empty {
-      min-height: 55vh;
+      min-height: 52vh;
 
       display: flex;
       flex-direction: column;
@@ -377,23 +686,60 @@ import {
 
       text-align: center;
 
-      padding: 30px 20px;
+      padding: 30px 22px;
     }
 
-    .orders-empty .emoji {
-      font-size: 52px;
 
-      margin-bottom: 8px;
+    .empty-icon {
+      width: 82px;
+      height: 82px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      margin-bottom: 15px;
+
+      border-radius: 24px;
+
+      background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .10
+        );
+
+      font-size: 36px;
     }
+
 
     .orders-empty h2 {
       margin:
-        0 0 5px;
+        0 0 6px;
+
+      font-size: 19px;
+      font-weight: 900;
     }
 
+
     .orders-empty p {
+      max-width: 270px;
+
       margin:
-        0 0 16px;
+        0 0 17px;
+
+      color:
+        var(--ion-color-medium);
+
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+
+    .orders-empty ion-button {
+      --border-radius: 13px;
+
+      font-weight: 900;
     }
 
 
@@ -402,7 +748,7 @@ import {
        ========================= */
 
     .orders-loading {
-      min-height: 45vh;
+      min-height: 55vh;
 
       display: flex;
       flex-direction: column;
@@ -411,9 +757,41 @@ import {
       justify-content: center;
 
       gap: 10px;
+
+      text-align: center;
+    }
+
+
+    .orders-loading span {
+      color:
+        var(--ion-color-medium);
+
+      font-size: 10px;
+    }
+
+
+    /* =========================
+       RESPONSIVE
+       ========================= */
+
+    @media (min-width: 720px) {
+
+      .orders-list {
+        display: grid;
+
+        grid-template-columns:
+          repeat(
+            2,
+            minmax(0, 1fr)
+          );
+
+        gap: 14px;
+      }
+
     }
 
   `],
+
 
   template: `
 
@@ -455,171 +833,51 @@ import {
 <ion-content>
 
 
-<div class="page-wrap no-bottom">
-
-
-  <!-- =========================
-       LOADING
-       ========================= -->
-
-  <div
-    class="orders-loading"
-
-    *ngIf="loading">
-
-
-    <ion-spinner>
-    </ion-spinner>
-
-
-    <span class="muted">
-
-      Loading your orders...
-
-    </span>
-
-
-  </div>
-
-
-
-  <!-- =========================
-       NO ORDERS AT ALL
-       ========================= -->
-
-  <div
-    class="orders-empty"
-
-    *ngIf="
-      !loading &&
-      orders.length === 0
-    ">
-
-
-    <div class="emoji">
-
-      📦
-
-    </div>
-
-
-    <h2>
-
-      No orders yet
-
-    </h2>
-
-
-    <p class="muted">
-
-      Your placed orders
-      will appear here.
-
-    </p>
-
-
-    <ion-button
-      routerLink="/catalog">
-
-      Shop Now
-
-    </ion-button>
-
-
-  </div>
-
-
-
-  <!-- =========================
-       ORDERS
-       ========================= -->
-
-  <ng-container
-    *ngIf="
-      !loading &&
-      orders.length > 0
-    ">
-
-
-    <!-- HEADING -->
-
-    <div class="orders-heading">
-
-
-      <h2>
-
-        Order History
-
-      </h2>
-
-
-      <p>
-
-        {{ orders.length }}
-        order{{ orders.length === 1 ? '' : 's' }}
-
-      </p>
-
-
-    </div>
-
+  <div class="page-wrap no-bottom orders-page">
 
 
     <!-- =========================
-         STATUS FILTER
-         ========================= -->
-
-    <div class="status-scroll">
-
-
-      <div class="status-filters">
-
-
-        <button
-          type="button"
-
-          class="status-filter"
-
-          *ngFor="
-            let status
-            of statuses
-          "
-
-          [class.active]="
-            selectedStatus === status
-          "
-
-          (click)="
-            selectedStatus = status
-          ">
-
-
-          {{ status }}
-
-
-        </button>
-
-
-      </div>
-
-
-    </div>
-
-
-
-    <!-- =========================
-         EMPTY FILTER RESULT
+         LOADING
          ========================= -->
 
     <div
+
+      class="orders-loading"
+
+      *ngIf="loading">
+
+
+      <ion-spinner
+        name="crescent">
+      </ion-spinner>
+
+
+      <span>
+
+        Loading your orders...
+
+      </span>
+
+
+    </div>
+
+
+
+    <!-- =========================
+         NO ORDERS AT ALL
+         ========================= -->
+
+    <div
+
       class="orders-empty"
 
       *ngIf="
-        filteredOrders.length === 0
+        !loading &&
+        orders.length === 0
       ">
 
 
-      <div class="emoji">
+      <div class="empty-icon">
 
         📦
 
@@ -628,26 +886,24 @@ import {
 
       <h2>
 
-        No {{ selectedStatus.toLowerCase() }}
-        orders
+        No orders yet
 
       </h2>
 
 
-      <p class="muted">
+      <p>
 
-        Orders with this status
-        will appear here.
+        Your SmileHub purchases
+        will appear here after
+        you place your first order.
 
       </p>
 
 
       <ion-button
-        fill="outline"
+        routerLink="/catalog">
 
-        (click)="selectedStatus = 'All'">
-
-        View All Orders
+        Shop Now
 
       </ion-button>
 
@@ -657,121 +913,334 @@ import {
 
 
     <!-- =========================
-         ORDER LIST
+         ORDERS CONTENT
          ========================= -->
 
-    <div
-      class="list-stack"
+    <ng-container
 
       *ngIf="
-        filteredOrders.length > 0
+        !loading &&
+        orders.length > 0
       ">
 
 
-      <div
-        class="app-card order-card"
+      <!-- =========================
+           INTRO
+           ========================= -->
 
-        *ngFor="
-          let order of filteredOrders;
-          trackBy: trackOrder
-        "
-
-        [routerLink]="[
-          '/order-details',
-          order.id
-        ]">
+      <div class="orders-intro">
 
 
-        <!-- TOP -->
+        <div class="orders-kicker">
 
-        <div class="order-top">
+          SmileHub Purchases
 
-
-          <div>
-
-
-            <div class="order-number">
-
-              {{
-                order.orderNumber ||
-                order.id
-              }}
-
-            </div>
+        </div>
 
 
-            <div class="order-date">
+        <h1 class="orders-title">
 
-              {{ date(order.createdAt) }}
+          Order History
 
-            </div>
+        </h1>
 
 
-          </div>
+        <p class="orders-subtitle">
+
+          Track your current orders
+          and review your previous
+          SmileHub purchases.
+
+        </p>
+
+
+      </div>
 
 
 
-          <span
-            class="order-status"
+      <!-- =========================
+           SEARCH
+           ========================= -->
 
-            [ngClass]="
-              statusClass(order.status)
+      <ion-searchbar
+
+        class="order-search"
+
+        [(ngModel)]="search"
+
+        placeholder="Search orders or products..."
+
+        [debounce]="150"
+
+        showClearButton="focus">
+
+      </ion-searchbar>
+
+
+
+      <!-- =========================
+           STATUS FILTERS
+           ========================= -->
+
+      <div class="status-scroll">
+
+
+        <div class="status-filters">
+
+
+          <button
+
+            type="button"
+
+            class="status-filter"
+
+            *ngFor="
+              let status
+              of statuses
+            "
+
+            [class.active]="
+              selectedStatus === status
+            "
+
+            (click)="
+              selectedStatus = status
             ">
 
 
-            {{
-              order.status ||
-              'Pending'
-            }}
+            <span>
+
+              {{ status }}
+
+            </span>
 
 
-          </span>
+            <span class="filter-count">
+
+              {{ statusCount(status) }}
+
+            </span>
+
+
+          </button>
 
 
         </div>
 
 
+      </div>
 
-        <!-- =====================
-             FIRST PRODUCT
-             ===================== -->
+
+
+      <!-- =========================
+           SEARCH INFO
+           ========================= -->
+
+      <div
+
+        class="search-info"
+
+        *ngIf="
+          search.trim()
+        ">
+
+
+        <span>
+
+          <strong>
+            {{ filteredOrders.length }}
+          </strong>
+
+          result{{
+            filteredOrders.length === 1
+              ? ''
+              : 's'
+          }}
+
+          for "{{ search }}"
+
+        </span>
+
+
+        <button
+
+          type="button"
+
+          class="clear-search"
+
+          (click)="clearSearch()">
+
+          Clear
+
+        </button>
+
+
+      </div>
+
+
+
+      <!-- =========================
+           EMPTY FILTER / SEARCH
+           ========================= -->
+
+      <div
+
+        class="orders-empty"
+
+        *ngIf="
+          filteredOrders.length === 0
+        ">
+
+
+        <div class="empty-icon">
+
+          🔍
+
+        </div>
+
+
+        <h2>
+
+
+          {{
+            search.trim()
+
+              ? 'No matching orders'
+
+              : selectedStatus === 'All'
+
+                ? 'No orders found'
+
+                : 'No '
+                  +
+                  selectedStatus.toLowerCase()
+                  +
+                  ' orders'
+          }}
+
+
+        </h2>
+
+
+        <p>
+
+
+          {{
+            search.trim()
+
+              ? 'Try another order number, product name, brand, or keyword.'
+
+              : 'Orders with this status will appear here when available.'
+          }}
+
+
+        </p>
+
+
+        <ion-button
+
+          fill="outline"
+
+          (click)="resetFilters()">
+
+          View All Orders
+
+        </ion-button>
+
+
+      </div>
+
+
+
+      <!-- =========================
+           ORDER LIST
+           ========================= -->
+
+      <div
+
+        class="orders-list"
+
+        *ngIf="
+          filteredOrders.length > 0
+        ">
+
 
         <div
-          class="order-product"
-          *ngIf="
-            firstItem(order)
-            as item
-          ">
+
+          class="
+            app-card
+            order-card
+          "
+
+          *ngFor="
+            let order
+            of filteredOrders;
+            trackBy: trackOrder
+          "
+
+          [routerLink]="[
+            '/order-details',
+            order.id
+          ]">
 
 
-          <!-- IMAGE -->
 
-          <div class="order-image-wrap">
+          <!-- =====================
+               ORDER TOP
+               ===================== -->
+
+          <div class="order-top">
 
 
-            <img
-              *ngIf="
-                productImage(item.productId)
-                as image
-              "
+            <div>
 
-              class="order-image"
 
-              [src]="image"
+              <div class="order-number-label">
 
-              [alt]="item.name">
+                Order Number
+
+              </div>
+
+
+              <div class="order-number">
+
+                {{
+                  order.orderNumber
+                  ||
+                  order.id
+                }}
+
+              </div>
+
+
+              <div class="order-date">
+
+                {{ date(order.createdAt) }}
+
+              </div>
+
+
+            </div>
+
 
 
             <span
-              class="order-placeholder"
 
-              *ngIf="
-                !productImage(
-                  item.productId
+              class="order-status"
+
+              [ngClass]="
+                statusClass(
+                  order.status
                 )
               ">
 
-              🦷
+
+              {{
+                order.status
+                ||
+                'Pending'
+              }}
+
 
             </span>
 
@@ -780,50 +1249,132 @@ import {
 
 
 
-          <!-- INFO -->
+          <!-- =====================
+               FIRST PRODUCT
+               ===================== -->
 
-          <div class="order-product-info">
+          <div
+
+            class="order-product"
+
+            *ngIf="
+              firstItem(order)
+              as item
+            ">
 
 
-            <div class="order-product-name">
+            <!-- IMAGE -->
 
-              {{
-                item.name ||
-                'Product'
-              }}
+            <div class="order-image-wrap">
+
+
+              <img
+
+                *ngIf="
+                  productImage(
+                    item.productId
+                  )
+                  as image
+                "
+
+                class="order-image"
+
+                [src]="image"
+
+                [alt]="
+                  item.name
+                  ||
+                  'Product'
+                ">
+
+
+              <span
+
+                class="order-placeholder"
+
+                *ngIf="
+                  !productImage(
+                    item.productId
+                  )
+                ">
+
+                🦷
+
+              </span>
+
 
             </div>
 
 
-            <div class="order-product-meta">
 
-              {{
-                item.brand ||
-                item.category ||
-                'SmileHub'
-              }}
+            <!-- PRODUCT INFO -->
 
-              •
-
-              Qty {{ item.quantity || 1 }}
-
-            </div>
+            <div class="order-product-info">
 
 
-            <div
-              class="more-items"
+              <div class="order-product-brand">
 
-              *ngIf="
-                additionalItemCount(order) > 0
-              ">
+                {{
+                  item.brand
+                  ||
+                  item.category
+                  ||
+                  'SmileHub'
+                }}
+
+              </div>
 
 
-              +{{ additionalItemCount(order) }}
-              more item{{
-                additionalItemCount(order) === 1
-                  ? ''
-                  : 's'
-              }}
+              <div class="order-product-name">
+
+                {{
+                  item.name
+                  ||
+                  'Product'
+                }}
+
+              </div>
+
+
+              <div class="order-product-meta">
+
+                Qty {{ item.quantity || 1 }}
+
+
+                <ng-container
+                  *ngIf="
+                    item.price
+                  ">
+
+                  • {{ money(item.price) }}
+
+                </ng-container>
+
+
+              </div>
+
+
+              <div
+
+                class="more-items"
+
+                *ngIf="
+                  additionalItemCount(order)
+                  > 0
+                ">
+
+
+                +{{ additionalItemCount(order) }}
+
+                more item{{
+                  additionalItemCount(order)
+                    === 1
+                    ? ''
+                    : 's'
+                }}
+
+
+              </div>
 
 
             </div>
@@ -832,71 +1383,80 @@ import {
           </div>
 
 
-        </div>
+
+          <!-- =====================
+               FOOTER
+               ===================== -->
+
+          <div class="order-footer">
 
 
-
-        <!-- =====================
-             FOOTER
-             ===================== -->
-
-        <div class="order-footer">
+            <div class="order-meta">
 
 
-          <div class="item-count">
+              <div class="item-count">
+
+                {{ itemCount(order) }}
+
+                item{{
+                  itemCount(order) === 1
+                    ? ''
+                    : 's'
+                }}
+
+              </div>
 
 
-            {{
-              order.itemCount ||
-              calculateItemCount(order)
-            }}
+              <div
 
-            item{{
-              (
-                order.itemCount ||
-                calculateItemCount(order)
-              ) === 1
-                ? ''
-                : 's'
-            }}
+                class="delivery-method"
 
+                *ngIf="
+                  order.deliveryMethod
+                ">
 
-            <div
-              *ngIf="order.deliveryMethod">
+                {{ order.deliveryMethod }}
 
-              {{ order.deliveryMethod }}
+              </div>
+
 
             </div>
 
 
-          </div>
+
+            <div class="order-total">
 
 
+              <div class="order-total-label">
 
-          <div class="order-total">
+                Order Total
 
-
-            <div class="order-total-label">
-
-              Order Total
-
-            </div>
+              </div>
 
 
-            <div class="order-total-price">
+              <div class="order-total-price">
 
-              {{ money(order.total || 0) }}
+                {{
+                  money(
+                    order.total
+                    ||
+                    0
+                  )
+                }}
 
-            </div>
+              </div>
 
 
-            <div class="view-order">
+              <div class="view-order">
 
-              View Details
+                View Details
 
-              <ion-icon
-                name="chevron-forward-outline">
-              </ion-icon>
+                <ion-icon
+                  name="chevron-forward-outline">
+                </ion-icon>
+
+              </div>
+
 
             </div>
 
@@ -910,18 +1470,16 @@ import {
       </div>
 
 
-    </div>
+    </ng-container>
 
 
-  </ng-container>
-
-
-</div>
+  </div>
 
 
 </ion-content>
 
 `
+
 })
 
 
@@ -929,13 +1487,21 @@ export class OrdersPage
 implements OnDestroy {
 
 
-  orders: any[] = [];
+  orders:
+    any[] =
+    [];
 
 
-  loading = true;
+  loading =
+    true;
 
 
-  selectedStatus = 'All';
+  selectedStatus =
+    'All';
+
+
+  search =
+    '';
 
 
   statuses = [
@@ -943,7 +1509,8 @@ implements OnDestroy {
     'Pending',
     'Processing',
     'Shipped',
-    'Delivered'
+    'Delivered',
+    'Cancelled'
   ];
 
 
@@ -955,9 +1522,11 @@ implements OnDestroy {
 
   constructor(
 
-    private service: OrderService,
+    private service:
+      OrderService,
 
-    private state: AppStateService
+    private state:
+      AppStateService
 
   ) {}
 
@@ -967,13 +1536,20 @@ implements OnDestroy {
      PAGE ENTER
      ========================= */
 
-  ionViewWillEnter(): void {
+  ionViewWillEnter():
+    void {
 
 
-    this.loading = true;
+    this.loading =
+      true;
 
 
-    this.sub?.unsubscribe();
+    this.sub
+      ?.unsubscribe();
+
+
+    void this.state
+      .loadProductsFromFirestore();
 
 
     try {
@@ -985,43 +1561,50 @@ implements OnDestroy {
           .subscribe({
 
 
-            next: rows => {
+            next:
+              rows => {
 
 
-              this.orders =
-                rows || [];
+                this.orders =
+                  rows
+                  ||
+                  [];
 
 
-              this.loading =
-                false;
+                this.loading =
+                  false;
 
 
-            },
+              },
 
 
-            error: error => {
+            error:
+              error => {
 
 
-              console.error(
-                'Unable to load orders:',
-                error
-              );
+                console.error(
+                  'Unable to load orders:',
+                  error
+                );
 
 
-              this.orders = [];
+                this.orders =
+                  [];
 
 
-              this.loading =
-                false;
+                this.loading =
+                  false;
 
 
-            }
+              }
 
 
           });
 
 
-    } catch (error) {
+    } catch (
+      error
+    ) {
 
 
       console.error(
@@ -1030,7 +1613,8 @@ implements OnDestroy {
       );
 
 
-      this.orders = [];
+      this.orders =
+        [];
 
 
       this.loading =
@@ -1038,6 +1622,7 @@ implements OnDestroy {
 
 
     }
+
 
   }
 
@@ -1047,10 +1632,13 @@ implements OnDestroy {
      PAGE LEAVE
      ========================= */
 
-  ionViewWillLeave(): void {
+  ionViewWillLeave():
+    void {
 
 
-    this.sub?.unsubscribe();
+    this.sub
+      ?.unsubscribe();
+
 
   }
 
@@ -1060,10 +1648,13 @@ implements OnDestroy {
      DESTROY
      ========================= */
 
-  ngOnDestroy(): void {
+  ngOnDestroy():
+    void {
 
 
-    this.sub?.unsubscribe();
+    this.sub
+      ?.unsubscribe();
+
 
   }
 
@@ -1073,17 +1664,14 @@ implements OnDestroy {
      FILTERED ORDERS
      ========================= */
 
-  get filteredOrders(): any[] {
+  get filteredOrders():
+    any[] {
 
 
-    if (
-      this.selectedStatus === 'All'
-    ) {
-
-
-      return this.orders;
-
-    }
+    const searchTerm =
+      this.search
+        .trim()
+        .toLowerCase();
 
 
     const selected =
@@ -1092,51 +1680,340 @@ implements OnDestroy {
         .toLowerCase();
 
 
-    return this.orders.filter(
-      order => {
+    return this.orders
+      .filter(
+
+        order => {
 
 
-        const status =
-          String(
-            order.status ||
-            'Pending'
-          )
-            .trim()
-            .toLowerCase();
+          /* =====================
+             STATUS FILTER
+             ===================== */
+
+          const currentStatus =
+            String(
+              order.status
+              ||
+              'Pending'
+            )
+              .trim()
+              .toLowerCase();
 
 
-        return (
-          status === selected
-        );
+          let matchesStatus =
+            true;
 
-      }
-    );
+
+          if (
+            selected !==
+            'all'
+          ) {
+
+
+            if (
+              selected ===
+              'cancelled'
+            ) {
+
+
+              matchesStatus =
+
+                currentStatus ===
+                  'cancelled'
+
+                ||
+
+                currentStatus ===
+                  'canceled';
+
+
+            } else {
+
+
+              matchesStatus =
+                currentStatus ===
+                selected;
+
+
+            }
+
+
+          }
+
+
+          if (
+            !matchesStatus
+          ) {
+
+
+            return false;
+
+
+          }
+
+
+
+          /* =====================
+             NO SEARCH
+             ===================== */
+
+          if (
+            !searchTerm
+          ) {
+
+
+            return true;
+
+
+          }
+
+
+
+          /* =====================
+             SEARCH ORDER ITEMS
+             ===================== */
+
+          const itemText =
+
+            Array.isArray(
+              order?.items
+            )
+
+              ? order.items
+                  .map(
+
+                    (
+                      item: any
+                    ) => {
+
+
+                      return [
+
+                        item?.name
+                        ||
+                        '',
+
+                        item?.brand
+                        ||
+                        '',
+
+                        item?.category
+                        ||
+                        ''
+
+                      ]
+                        .join(
+                          ' '
+                        );
+
+
+                    }
+
+                  )
+                  .join(
+                    ' '
+                  )
+
+              : '';
+
+
+
+          /* =====================
+             ALL SEARCHABLE DATA
+             ===================== */
+
+          const searchableText =
+            [
+
+              order.orderNumber
+              ||
+              '',
+
+              order.id
+              ||
+              '',
+
+              order.status
+              ||
+              '',
+
+              order.deliveryMethod
+              ||
+              '',
+
+              order.paymentMethod
+              ||
+              '',
+
+              itemText
+
+            ]
+              .join(
+                ' '
+              )
+              .toLowerCase();
+
+
+          return searchableText
+            .includes(
+              searchTerm
+            );
+
+
+        }
+
+      );
+
 
   }
 
 
 
   /* =========================
-     FIRST ORDER ITEM
+     CLEAR SEARCH
+     ========================= */
+
+  clearSearch():
+    void {
+
+
+    this.search =
+      '';
+
+
+  }
+
+
+
+  /* =========================
+     RESET FILTERS
+     ========================= */
+
+  resetFilters():
+    void {
+
+
+    this.search =
+      '';
+
+
+    this.selectedStatus =
+      'All';
+
+
+  }
+
+
+
+  /* =========================
+     STATUS COUNT
+     ========================= */
+
+  statusCount(
+    status: string
+  ):
+    number {
+
+
+    if (
+      status ===
+      'All'
+    ) {
+
+
+      return this.orders.length;
+
+
+    }
+
+
+    const selected =
+      status
+        .trim()
+        .toLowerCase();
+
+
+    return this.orders
+      .filter(
+
+        order => {
+
+
+          const current =
+            String(
+              order.status
+              ||
+              'Pending'
+            )
+              .trim()
+              .toLowerCase();
+
+
+          if (
+            selected ===
+            'cancelled'
+          ) {
+
+
+            return (
+
+              current ===
+                'cancelled'
+
+              ||
+
+              current ===
+                'canceled'
+
+            );
+
+
+          }
+
+
+          return (
+            current ===
+            selected
+          );
+
+
+        }
+
+      )
+      .length;
+
+
+  }
+
+
+
+  /* =========================
+     FIRST ITEM
      ========================= */
 
   firstItem(
     order: any
-  ): any | null {
+  ):
+    any | null {
 
 
     if (
-      !Array.isArray(order?.items) ||
+      !Array.isArray(
+        order?.items
+      )
+      ||
       order.items.length === 0
     ) {
 
 
       return null;
 
+
     }
 
 
     return order.items[0];
+
 
   }
 
@@ -1148,73 +2025,133 @@ implements OnDestroy {
 
   additionalItemCount(
     order: any
-  ): number {
+  ):
+    number {
 
 
     if (
-      !Array.isArray(order?.items)
+      !Array.isArray(
+        order?.items
+      )
     ) {
 
 
       return 0;
 
+
     }
 
 
     return Math.max(
+
       0,
-      order.items.length - 1
+
+      order.items.length
+      -
+      1
+
     );
+
 
   }
 
 
 
   /* =========================
-     CALCULATE ITEM COUNT
+     ITEM COUNT
      ========================= */
 
-  calculateItemCount(
+  itemCount(
     order: any
-  ): number {
+  ):
+    number {
+
+
+    const saved =
+      Number(
+        order?.itemCount
+        ||
+        0
+      );
 
 
     if (
-      !Array.isArray(order?.items)
+      Number.isFinite(
+        saved
+      )
+      &&
+      saved > 0
+    ) {
+
+
+      return saved;
+
+
+    }
+
+
+    return this
+      .calculateItemCount(
+        order
+      );
+
+
+  }
+
+
+
+  calculateItemCount(
+    order: any
+  ):
+    number {
+
+
+    if (
+      !Array.isArray(
+        order?.items
+      )
     ) {
 
 
       return 0;
 
+
     }
 
 
-    return order.items.reduce(
+    return order.items
+      .reduce(
 
-      (
-        total: number,
-        item: any
-      ) => {
+        (
+          total:
+            number,
 
-
-        return (
-
-          total
-
-          +
-
-          Number(
-            item?.quantity || 0
-          )
-
-        );
+          item:
+            any
+        ) => {
 
 
-      },
+          return (
 
-      0
+            total
 
-    );
+            +
+
+            Number(
+              item?.quantity
+              ||
+              0
+            )
+
+          );
+
+
+        },
+
+        0
+
+      );
+
 
   }
 
@@ -1226,13 +2163,17 @@ implements OnDestroy {
 
   productImage(
     productId: number
-  ): string | null {
+  ):
+    string | null {
 
 
-    if (!productId) {
+    if (
+      !productId
+    ) {
 
 
       return null;
+
 
     }
 
@@ -1243,13 +2184,24 @@ implements OnDestroy {
       const product =
         this.state
           .productById(
-            Number(productId)
+            Number(
+              productId
+            )
           );
 
 
       return (
-        product?.imageAsset ||
+
+        product?.image
+
+        ||
+
+        product?.imageAsset
+
+        ||
+
         null
+
       );
 
 
@@ -1258,7 +2210,9 @@ implements OnDestroy {
 
       return null;
 
+
     }
+
 
   }
 
@@ -1270,19 +2224,23 @@ implements OnDestroy {
 
   statusClass(
     status: string
-  ): string {
+  ):
+    string {
 
 
     const value =
       String(
-        status ||
+        status
+        ||
         'Pending'
       )
         .trim()
         .toLowerCase();
 
 
-    switch (value) {
+    switch (
+      value
+    ) {
 
 
       case 'processing':
@@ -1311,48 +2269,78 @@ implements OnDestroy {
 
         return 'status-pending';
 
+
     }
+
 
   }
 
 
 
   /* =========================
-     ORDER DATE
+     DATE
      ========================= */
 
   date(
     value: any
-  ): string {
+  ):
+    string {
 
 
     try {
 
 
-      const date =
-        value?.toDate?.();
+      const parsed =
+
+        value?.toDate?.()
+
+        ??
+
+        (
+          value instanceof Date
+
+            ? value
+
+            : value
+
+              ? new Date(
+                  value
+                )
+
+              : null
+        );
 
 
-      if (!date) {
+      if (
+        !parsed
+        ||
+        Number.isNaN(
+          parsed.getTime()
+        )
+      ) {
 
 
         return 'Recent';
 
+
       }
 
 
-      return date
+      return parsed
         .toLocaleDateString(
 
           'en-PH',
 
           {
 
-            year: 'numeric',
+            year:
+              'numeric',
 
-            month: 'short',
+            month:
+              'short',
 
-            day: 'numeric'
+            day:
+              'numeric'
 
           }
 
@@ -1364,7 +2352,9 @@ implements OnDestroy {
 
       return 'Recent';
 
+
     }
+
 
   }
 
@@ -1377,13 +2367,20 @@ implements OnDestroy {
   trackOrder(
     index: number,
     order: any
-  ): string | number {
+  ):
+    string | number {
 
 
     return (
-      order?.id ||
+
+      order?.id
+
+      ||
+
       index
+
     );
+
 
   }
 
@@ -1395,7 +2392,8 @@ implements OnDestroy {
 
   money(
     value: number
-  ): string {
+  ):
+    string {
 
 
     return new Intl.NumberFormat(
@@ -1404,15 +2402,25 @@ implements OnDestroy {
 
       {
 
-        style: 'currency',
+        style:
+          'currency',
 
-        currency: 'PHP'
+        currency:
+          'PHP'
 
       }
 
-    ).format(
-      Number(value || 0)
-    );
+    )
+      .format(
+
+        Number(
+          value
+          ||
+          0
+        )
+
+      );
+
 
   }
 
