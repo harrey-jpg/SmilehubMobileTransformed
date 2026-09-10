@@ -3,6 +3,7 @@ import {
 } from '@angular/core';
 
 import {
+  Router,
   RouterModule
 } from '@angular/router';
 
@@ -111,6 +112,71 @@ import {
 
 
     /* =========================
+       ITEM SELECTION
+       ========================= */
+
+    .selection-bar {
+      margin-bottom: 11px;
+
+      padding: 11px 13px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 12px;
+
+      border-radius: 16px;
+    }
+
+
+    .selection-left {
+      min-width: 0;
+
+      display: flex;
+      align-items: center;
+
+      gap: 10px;
+    }
+
+
+    .selection-left ion-checkbox {
+      --size: 20px;
+
+      --border-radius: 6px;
+
+      flex-shrink: 0;
+    }
+
+
+    .selection-title {
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+
+    .selection-subtitle {
+      margin-top: 2px;
+
+      color:
+        var(--ion-color-medium);
+
+      font-size: 9px;
+    }
+
+
+    .selection-total {
+      flex-shrink: 0;
+
+      color:
+        var(--ion-color-primary);
+
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+
+    /* =========================
        CART ITEMS
        ========================= */
 
@@ -134,6 +200,58 @@ import {
       padding: 13px;
 
       border-radius: 18px;
+
+      transition:
+        transform .16s ease,
+        box-shadow .16s ease,
+        opacity .16s ease;
+    }
+
+
+    .cart-item.selected {
+      box-shadow:
+        0 0 0 1px
+        rgba(
+          var(--ion-color-primary-rgb),
+          .20
+        );
+    }
+
+
+    .cart-item:not(.selected) {
+      opacity: .88;
+    }
+
+
+    .item-select-wrap {
+      position: absolute;
+
+      left: 8px;
+      top: 8px;
+
+      z-index: 4;
+
+      width: 29px;
+      height: 29px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 10px;
+
+      background:
+        var(--ion-card-background);
+
+      box-shadow:
+        0 3px 10px
+        rgba(0,0,0,.08);
+    }
+
+
+    .item-select-wrap ion-checkbox {
+      --size: 19px;
+      --border-radius: 6px;
     }
 
 
@@ -860,6 +978,57 @@ import {
         <div>
 
 
+          <!-- =========================
+               SELECT ALL
+               ========================= -->
+
+          <div
+            class="app-card selection-bar">
+
+
+            <div class="selection-left">
+
+
+              <ion-checkbox
+                aria-label="Select all cart items"
+
+                [checked]="allSelected"
+
+                [indeterminate]="someSelected"
+
+                (ionChange)="
+                  toggleAll(
+                    $event.detail.checked
+                  )
+                ">
+              </ion-checkbox>
+
+
+              <div>
+
+                <div class="selection-title">
+                  Select All
+                </div>
+
+                <div class="selection-subtitle">
+                  {{ selectedItemCount }} of
+                  {{ items.length }} selected
+                </div>
+
+              </div>
+
+
+            </div>
+
+
+            <div class="selection-total">
+              {{ money(selectedSubtotal) }}
+            </div>
+
+
+          </div>
+
+
           <div class="cart-list">
 
 
@@ -867,10 +1036,39 @@ import {
 
               class="app-card cart-item"
 
+              [class.selected]="
+                isSelected(item)
+              "
+
               *ngFor="
                 let item of items;
                 trackBy: trackItem
               ">
+
+
+              <!-- SELECT ITEM -->
+
+              <div class="item-select-wrap">
+
+                <ion-checkbox
+                  [attr.aria-label]="
+                    'Select ' +
+                    item.product.name
+                  "
+
+                  [checked]="
+                    isSelected(item)
+                  "
+
+                  (ionChange)="
+                    setSelected(
+                      item,
+                      $event.detail.checked
+                    )
+                  ">
+                </ion-checkbox>
+
+              </div>
 
 
               <!-- REMOVE -->
@@ -1130,6 +1328,8 @@ import {
                   !coupon.trim()
                   ||
                   state.couponApplied
+                  ||
+                  selectedItemCount === 0
                 ">
 
 
@@ -1206,7 +1406,7 @@ import {
 
               <span class="summary-value">
 
-                {{ money(state.subtotal) }}
+                {{ money(selectedSubtotal) }}
 
               </span>
 
@@ -1222,7 +1422,7 @@ import {
               class="summary-row"
 
               *ngIf="
-                state.discount > 0
+                selectedDiscount > 0
               ">
 
 
@@ -1239,7 +1439,7 @@ import {
                   discount-value
                 ">
 
-                −{{ money(state.discount) }}
+                −{{ money(selectedDiscount) }}
 
               </span>
 
@@ -1265,16 +1465,20 @@ import {
                 class="summary-value"
 
                 [class.free-shipping]="
-                  state.shippingFee === 0
+                  selectedShippingFee === 0
+                  &&
+                  selectedItemCount > 0
                 ">
 
 
                 {{
-                  state.shippingFee === 0
-                    ? 'Free'
-                    : money(
-                        state.shippingFee
-                      )
+                  selectedItemCount === 0
+                    ? money(0)
+                    : selectedShippingFee === 0
+                      ? 'Free'
+                      : money(
+                          selectedShippingFee
+                        )
                 }}
 
 
@@ -1303,7 +1507,7 @@ import {
 
               <span class="total-value">
 
-                {{ money(state.total) }}
+                {{ money(selectedTotal) }}
 
               </span>
 
@@ -1323,10 +1527,22 @@ import {
                 checkout-btn
               "
 
-              routerLink="/checkout">
+              [disabled]="
+                selectedItemCount === 0
+              "
+
+              (click)="
+                proceedToCheckout()
+              ">
 
 
-              Proceed to Checkout
+              {{
+                selectedItemCount === 0
+                  ? 'Select Items to Checkout'
+                  : 'Proceed to Checkout ('
+                    + selectedItemCount
+                    + ')'
+              }}
 
 
             </ion-button>
@@ -1395,7 +1611,10 @@ export class CartPage {
       AlertController,
 
     private toastController:
-      ToastController
+      ToastController,
+
+    private router:
+      Router
 
   ) {}
 
@@ -1448,6 +1667,352 @@ export class CartPage {
 
   }
 
+
+
+  /* =========================
+     ITEM SELECTION
+     ========================= */
+
+  private readonly unselectedIds =
+    new Set<number>();
+
+
+  isSelected(
+    item: any
+  ):
+    boolean {
+
+
+    const id =
+      Number(
+        item?.product?.id
+      );
+
+
+    return (
+      Number.isFinite(id)
+      &&
+      !this.unselectedIds.has(id)
+    );
+
+
+  }
+
+
+  setSelected(
+    item: any,
+    checked: boolean
+  ):
+    void {
+
+
+    const id =
+      Number(
+        item?.product?.id
+      );
+
+
+    if (
+      !Number.isFinite(id)
+    ) {
+
+      return;
+
+    }
+
+
+    if (
+      checked
+    ) {
+
+      this.unselectedIds.delete(id);
+
+    } else {
+
+      this.unselectedIds.add(id);
+
+    }
+
+
+  }
+
+
+  toggleAll(
+    checked: boolean
+  ):
+    void {
+
+
+    if (
+      checked
+    ) {
+
+      this.unselectedIds.clear();
+
+      return;
+
+    }
+
+
+    for (
+      const item
+      of this.items
+    ) {
+
+
+      const id =
+        Number(
+          item.product.id
+        );
+
+
+      if (
+        Number.isFinite(id)
+      ) {
+
+        this.unselectedIds.add(id);
+
+      }
+
+
+    }
+
+
+  }
+
+
+  get selectedItems() {
+
+
+    return this.items.filter(
+      item =>
+        this.isSelected(item)
+    );
+
+
+  }
+
+
+  get selectedItemCount():
+    number {
+
+
+    return this.selectedItems.length;
+
+
+  }
+
+
+  get selectedQuantity():
+    number {
+
+
+    return this.selectedItems
+      .reduce(
+
+        (
+          total,
+          item
+        ) =>
+
+          total
+          +
+          Number(
+            item.qty
+            ||
+            0
+          ),
+
+        0
+
+      );
+
+
+  }
+
+
+  get allSelected():
+    boolean {
+
+
+    return (
+      this.items.length > 0
+      &&
+      this.selectedItemCount ===
+        this.items.length
+    );
+
+
+  }
+
+
+  get someSelected():
+    boolean {
+
+
+    return (
+      this.selectedItemCount > 0
+      &&
+      !this.allSelected
+    );
+
+
+  }
+
+
+  get selectedSubtotal():
+    number {
+
+
+    return this.selectedItems
+      .reduce(
+
+        (
+          total,
+          item
+        ) =>
+
+          total
+          +
+          Number(
+            item.product.price
+            ||
+            0
+          )
+          *
+          Number(
+            item.qty
+            ||
+            0
+          ),
+
+        0
+
+      );
+
+
+  }
+
+
+  get selectedDiscount():
+    number {
+
+
+    if (
+      !this.state.couponApplied
+      ||
+      this.selectedItemCount === 0
+    ) {
+
+      return 0;
+
+    }
+
+
+    return Math.min(
+
+      this.selectedSubtotal
+      *
+      0.10,
+
+      349.90
+
+    );
+
+
+  }
+
+
+  get selectedShippingFee():
+    number {
+
+
+    if (
+      this.selectedItemCount === 0
+    ) {
+
+      return 0;
+
+    }
+
+
+    return (
+      this.selectedSubtotal >= 3000
+        ? 0
+        : 120
+    );
+
+
+  }
+
+
+  get selectedTotal():
+    number {
+
+
+    return (
+      this.selectedSubtotal
+      +
+      this.selectedShippingFee
+      -
+      this.selectedDiscount
+    );
+
+
+  }
+
+
+  async proceedToCheckout():
+    Promise<void> {
+
+
+    if (
+      this.selectedItemCount === 0
+    ) {
+
+
+      await this.showToast(
+        'Select at least one item to checkout.'
+      );
+
+
+      return;
+
+
+    }
+
+
+    const selected =
+      this.selectedItems
+        .map(
+          item =>
+            Number(
+              item.product.id
+            )
+        )
+        .filter(
+          id =>
+            Number.isFinite(id)
+        )
+        .join(',');
+
+
+    await this.router.navigate(
+
+      [
+        '/checkout'
+      ],
+
+      {
+        queryParams: {
+          selected
+        }
+      }
+
+    );
+
+
+  }
 
 
   /* =========================
@@ -1794,6 +2359,13 @@ export class CartPage {
                   );
 
 
+                this.unselectedIds.delete(
+                  Number(
+                    item.product.id
+                  )
+                );
+
+
                 void this.showToast(
                   'Item removed from cart.'
                 );
@@ -1892,6 +2464,9 @@ export class CartPage {
 
 
                 }
+
+
+                this.unselectedIds.clear();
 
 
                 void this.showToast(

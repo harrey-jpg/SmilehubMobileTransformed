@@ -2196,6 +2196,12 @@ implements OnInit {
     1;
 
 
+  selectedCartIds:
+    number[] |
+    null =
+    null;
+
+
   readonly expressShipping =
     220;
 
@@ -2268,6 +2274,48 @@ implements OnInit {
 
 
       }
+
+
+    }
+
+
+    const selectedParam =
+      this.route
+        .snapshot
+        .queryParamMap
+        .get(
+          'selected'
+        );
+
+
+    if (
+      selectedParam !== null
+      &&
+      this.buyNowProductId === null
+    ) {
+
+
+      const selectedIds =
+        selectedParam
+          .split(',')
+          .map(
+            value =>
+              Number(
+                value.trim()
+              )
+          )
+          .filter(
+            id =>
+              Number.isFinite(id)
+              &&
+              id > 0
+          );
+
+
+      this.selectedCartIds =
+        Array.from(
+          new Set(selectedIds)
+        );
 
 
     }
@@ -2456,13 +2504,41 @@ implements OnInit {
     }
 
 
-    return [
+    const cartEntries = [
 
       ...this.state
         .cart
         .entries()
 
     ];
+
+
+    if (
+      this.selectedCartIds === null
+    ) {
+
+
+      return cartEntries;
+
+
+    }
+
+
+    const selected =
+      new Set(
+        this.selectedCartIds
+      );
+
+
+    return cartEntries
+      .filter(
+
+        ([id]) =>
+          selected.has(
+            Number(id)
+          )
+
+      );
 
 
   }
@@ -3397,18 +3473,17 @@ implements OnInit {
       ) {
 
 
-        const cartIds = [
-
-          ...this.state
-            .cart
-            .keys()
-
-        ];
+        const purchasedIds =
+          this.checkoutItems
+            .map(
+              ([id]) =>
+                id
+            );
 
 
         for (
           const id
-          of cartIds
+          of purchasedIds
         ) {
 
 
