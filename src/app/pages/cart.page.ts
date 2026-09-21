@@ -807,6 +807,36 @@ import {
 
     }
 
+
+    /* =========================
+       DESKTOP + PINNED SIDE MENU
+       ========================= */
+
+    @media (min-width: 992px) {
+
+      /*
+       * Global .page-wrap is max-width: 600px. That is good for
+       * normal pages, but too narrow for the cart's two-column
+       * desktop layout. Widen only the Cart page.
+       */
+      .page-wrap.cart-page {
+        width: 100%;
+        max-width: 1120px;
+
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+
+      .cart-layout {
+        grid-template-columns:
+          minmax(0, 1.55fr)
+          minmax(320px, .75fr);
+
+        gap: 24px;
+      }
+
+    }
+
   `],
 
 
@@ -819,6 +849,16 @@ import {
 <ion-header>
 
   <ion-toolbar>
+
+
+    <ion-buttons slot="start">
+
+      <ion-menu-button
+        menu="main-menu"
+        aria-label="Open navigation menu">
+      </ion-menu-button>
+
+    </ion-buttons>
 
 
     <ion-title>

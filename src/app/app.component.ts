@@ -108,6 +108,268 @@ import {
 
   styles: [`
 
+
+    /* =========================
+       SIDE MENU
+       ========================= */
+
+    ion-split-pane {
+      --side-width: 292px;
+      --side-max-width: 292px;
+    }
+
+    ion-menu {
+      --width: 292px;
+      --min-width: 292px;
+      --max-width: 292px;
+    }
+
+    .side-menu-toolbar {
+      --background:
+        linear-gradient(
+          135deg,
+          #087e95 0%,
+          #0f9fb4 55%,
+          #29c5d4 100%
+        );
+
+      --color: #ffffff;
+
+      min-height: 118px;
+    }
+
+    .side-menu-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      padding: 22px 18px 18px;
+    }
+
+    .side-menu-logo {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 15px;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          .17
+        );
+
+      border:
+        1px solid
+        rgba(
+          255,
+          255,
+          255,
+          .19
+        );
+
+      font-size: 27px;
+
+      box-shadow:
+        0 8px 20px
+        rgba(
+          0,
+          0,
+          0,
+          .09
+        );
+    }
+
+    .side-menu-brand-copy {
+      min-width: 0;
+    }
+
+    .side-menu-name {
+      color: #ffffff;
+      font-size: 20px;
+      line-height: 1.1;
+      font-weight: 950;
+      letter-spacing: -.25px;
+    }
+
+    .side-menu-tagline {
+      margin-top: 5px;
+
+      color:
+        rgba(
+          255,
+          255,
+          255,
+          .82
+        );
+
+      font-size: 9px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .side-menu-content {
+      --background:
+        var(
+          --ion-background-color
+        );
+    }
+
+    .side-menu-scroll {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 12px 0 14px;
+    }
+
+    .side-menu-section {
+      margin-top: 4px;
+    }
+
+    .side-menu-section-title {
+      padding: 9px 20px 6px;
+
+      color:
+        var(
+          --ion-color-medium
+        );
+
+      font-size: 9px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+    }
+
+    .side-menu-item {
+      margin: 3px 10px;
+
+      --min-height: 47px;
+      --padding-start: 12px;
+      --padding-end: 11px;
+      --inner-padding-end: 0;
+      --border-radius: 13px;
+      --background: transparent;
+
+      --color:
+        var(
+          --ion-text-color
+        );
+
+      font-size: 12px;
+      font-weight: 800;
+
+      transition:
+        transform .16s ease;
+    }
+
+    .side-menu-item::part(native) {
+      border-radius: 13px;
+
+      transition:
+        background .18s ease,
+        color .18s ease,
+        box-shadow .18s ease;
+    }
+
+    .side-menu-item:active {
+      transform:
+        scale(.985);
+    }
+
+    .side-menu-item ion-icon {
+      margin-right: 12px;
+
+      color:
+        var(
+          --ion-color-medium
+        );
+
+      font-size: 20px;
+
+      transition:
+        color .18s ease,
+        transform .18s ease;
+    }
+
+    .side-menu-item.menu-active {
+      --background:
+        rgba(
+          var(--ion-color-primary-rgb),
+          .11
+        );
+
+      --color:
+        var(
+          --ion-color-primary
+        );
+    }
+
+    .side-menu-item.menu-active::part(native) {
+      box-shadow:
+        inset
+        3px
+        0
+        0
+        var(
+          --ion-color-primary
+        );
+    }
+
+    .side-menu-item.menu-active ion-icon {
+      color:
+        var(
+          --ion-color-primary
+        );
+
+      transform:
+        scale(1.04);
+    }
+
+    .side-menu-divider {
+      height: 1px;
+      margin: 10px 18px 7px;
+
+      background:
+        rgba(
+          120,
+          120,
+          120,
+          .12
+        );
+    }
+
+    .side-menu-spacer {
+      flex: 1;
+      min-height: 18px;
+    }
+
+    .side-menu-footer {
+      padding: 12px 20px 2px;
+
+      color:
+        var(
+          --ion-color-medium
+        );
+
+      font-size: 8px;
+      line-height: 1.5;
+      font-weight: 700;
+    }
+
+    @media (max-width: 991px) {
+      ion-menu {
+        --width: min(84vw, 304px);
+        --min-width: 0;
+        --max-width: 304px;
+      }
+    }
+
+
     /* =========================
        APP SPLASH
        ========================= */
@@ -720,11 +982,247 @@ import {
 
 
       <!-- =====================
-           MAIN APP
+           RESPONSIVE SIDE MENU
            ===================== -->
 
-      <ion-router-outlet>
-      </ion-router-outlet>
+      <ion-split-pane
+        contentId="main-content"
+        when="lg">
+
+
+        <ion-menu
+          *ngIf="menuEnabled"
+          menuId="main-menu"
+          contentId="main-content"
+          side="start"
+          type="overlay">
+
+
+          <ion-header>
+
+            <ion-toolbar class="side-menu-toolbar">
+
+              <div class="side-menu-brand">
+
+                <div
+                  class="side-menu-logo"
+                  aria-hidden="true">
+                  🦷
+                </div>
+
+                <div class="side-menu-brand-copy">
+
+                  <div class="side-menu-name">
+                    SmileHub
+                  </div>
+
+                  <div class="side-menu-tagline">
+                    Dental supplies made simple
+                  </div>
+
+                </div>
+
+              </div>
+
+            </ion-toolbar>
+
+          </ion-header>
+
+
+          <ion-content class="side-menu-content">
+
+            <div class="side-menu-scroll">
+
+
+              <div class="side-menu-section">
+
+                <div class="side-menu-section-title">
+                  Modules
+                </div>
+
+
+                <ion-menu-toggle [autoHide]="false">
+                  <ion-item
+                    button
+                    detail="false"
+                    lines="none"
+                    routerLink="/home"
+                    class="side-menu-item"
+                    [class.menu-active]="isMenuActive('/home')">
+                    <ion-icon slot="start" name="home-outline"></ion-icon>
+                    <ion-label>Home</ion-label>
+                  </ion-item>
+                </ion-menu-toggle>
+
+
+                <ion-menu-toggle [autoHide]="false">
+                  <ion-item
+                    button
+                    detail="false"
+                    lines="none"
+                    routerLink="/catalog"
+                    class="side-menu-item"
+                    [class.menu-active]="isMenuActive('/catalog')">
+                    <ion-icon slot="start" name="search-outline"></ion-icon>
+                    <ion-label>Catalog</ion-label>
+                  </ion-item>
+                </ion-menu-toggle>
+
+
+                <ion-menu-toggle [autoHide]="false">
+                  <ion-item
+                    button
+                    detail="false"
+                    lines="none"
+                    routerLink="/categories"
+                    class="side-menu-item"
+                    [class.menu-active]="isMenuActive('/categories')">
+                    <ion-icon slot="start" name="grid-outline"></ion-icon>
+                    <ion-label>Categories</ion-label>
+                  </ion-item>
+                </ion-menu-toggle>
+
+
+                <ion-menu-toggle [autoHide]="false">
+                  <ion-item
+                    button
+                    detail="false"
+                    lines="none"
+                    routerLink="/cart"
+                    class="side-menu-item"
+                    [class.menu-active]="isMenuActive('/cart')">
+                    <ion-icon slot="start" name="cart-outline"></ion-icon>
+                    <ion-label>Cart</ion-label>
+                    <ion-badge
+                      color="danger"
+                      *ngIf="state.cartCount > 0">
+                      {{ menuBadgeText(state.cartCount) }}
+                    </ion-badge>
+                  </ion-item>
+                </ion-menu-toggle>
+
+
+                <ion-menu-toggle [autoHide]="false">
+                  <ion-item
+                    button
+                    detail="false"
+                    lines="none"
+                    routerLink="/orders"
+                    class="side-menu-item"
+                    [class.menu-active]="isMenuActive('/orders')">
+                    <ion-icon slot="start" name="receipt-outline"></ion-icon>
+                    <ion-label>My Orders</ion-label>
+                  </ion-item>
+                </ion-menu-toggle>
+
+
+                <ion-menu-toggle [autoHide]="false">
+                  <ion-item
+                    button
+                    detail="false"
+                    lines="none"
+                    routerLink="/wishlist"
+                    class="side-menu-item"
+                    [class.menu-active]="isMenuActive('/wishlist')">
+                    <ion-icon slot="start" name="heart-outline"></ion-icon>
+                    <ion-label>Wishlist</ion-label>
+                  </ion-item>
+                </ion-menu-toggle>
+
+
+                <ion-menu-toggle [autoHide]="false">
+                  <ion-item
+                    button
+                    detail="false"
+                    lines="none"
+                    routerLink="/chatbot"
+                    class="side-menu-item"
+                    [class.menu-active]="isMenuActive('/chatbot')">
+                    <ion-icon slot="start" name="chatbubble-ellipses-outline"></ion-icon>
+                    <ion-label>AI Assistant</ion-label>
+                  </ion-item>
+                </ion-menu-toggle>
+
+
+                <ion-menu-toggle [autoHide]="false">
+                  <ion-item
+                    button
+                    detail="false"
+                    lines="none"
+                    routerLink="/account"
+                    class="side-menu-item"
+                    [class.menu-active]="isMenuActive('/account')">
+                    <ion-icon slot="start" name="person-outline"></ion-icon>
+                    <ion-label>Account</ion-label>
+                  </ion-item>
+                </ion-menu-toggle>
+
+              </div>
+
+
+              <div class="side-menu-divider"></div>
+
+
+              <div class="side-menu-section">
+
+                <div class="side-menu-section-title">
+                  SmileHub
+                </div>
+
+
+                <ion-menu-toggle [autoHide]="false">
+                  <ion-item
+                    button
+                    detail="false"
+                    lines="none"
+                    routerLink="/about"
+                    class="side-menu-item"
+                    [class.menu-active]="isMenuActive('/about')">
+                    <ion-icon slot="start" name="information-circle-outline"></ion-icon>
+                    <ion-label>About the App</ion-label>
+                  </ion-item>
+                </ion-menu-toggle>
+
+
+                <ion-menu-toggle [autoHide]="false">
+                  <ion-item
+                    button
+                    detail="false"
+                    lines="none"
+                    routerLink="/developers"
+                    class="side-menu-item"
+                    [class.menu-active]="isMenuActive('/developers')">
+                    <ion-icon slot="start" name="person-add-outline"></ion-icon>
+                    <ion-label>Developers</ion-label>
+                  </ion-item>
+                </ion-menu-toggle>
+
+              </div>
+
+
+              <div class="side-menu-spacer"></div>
+
+
+              <div class="side-menu-footer">
+                SmileHub v1.0.0
+                <br>
+                Ionic Angular • Firebase
+              </div>
+
+
+            </div>
+
+          </ion-content>
+
+
+        </ion-menu>
+
+
+        <ion-router-outlet id="main-content">
+        </ion-router-outlet>
+
+
+      </ion-split-pane>
 
 
 
@@ -889,7 +1387,7 @@ implements OnInit {
 
   constructor(
 
-    private state:
+    public state:
       AppStateService,
 
     private router:
@@ -993,6 +1491,168 @@ implements OnInit {
       notificationsOutline
 
     });
+
+
+  }
+
+
+
+  /* =========================
+     SIDE MENU HELPERS
+     ========================= */
+
+  get menuEnabled():
+    boolean {
+
+
+    const currentPath =
+
+      this.router.url
+        .split('?')[0];
+
+
+    return (
+
+      currentPath !== '/'
+
+      &&
+
+      currentPath !== '/login'
+
+      &&
+
+      currentPath !== '/signup'
+
+    );
+
+
+  }
+
+
+  isMenuActive(
+    path: string
+  ):
+    boolean {
+
+
+    const currentPath =
+
+      this.router.url
+        .split('?')[0];
+
+
+    if (
+      path === '/catalog'
+    ) {
+
+
+      return (
+
+        currentPath === '/catalog'
+
+        ||
+
+        currentPath.startsWith(
+          '/product-details/'
+        )
+
+      );
+
+
+    }
+
+
+    if (
+      path === '/cart'
+    ) {
+
+
+      return (
+
+        currentPath === '/cart'
+
+        ||
+
+        currentPath === '/checkout'
+
+        ||
+
+        currentPath === '/order-success'
+
+      );
+
+
+    }
+
+
+    if (
+      path === '/orders'
+    ) {
+
+
+      return (
+
+        currentPath === '/orders'
+
+        ||
+
+        currentPath.startsWith(
+          '/order-details/'
+        )
+
+      );
+
+
+    }
+
+
+    if (
+      path === '/account'
+    ) {
+
+
+      return [
+
+        '/account',
+        '/personal-information',
+        '/addresses',
+        '/add-address',
+        '/payments',
+        '/add-payment',
+        '/help',
+        '/contact-support',
+        '/notifications',
+        '/verify-phone'
+
+      ].includes(
+        currentPath
+      );
+
+
+    }
+
+
+    return (
+      currentPath === path
+    );
+
+
+  }
+
+
+  menuBadgeText(
+    value: number
+  ):
+    string {
+
+
+    return value > 99
+
+      ? '99+'
+
+      : String(
+          value
+        );
 
 
   }

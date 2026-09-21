@@ -687,8 +687,10 @@ interface UiChatMessage extends ChatMessage {
 <ion-header class="chat-header">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home">
-      </ion-back-button>
+      <ion-menu-button
+        menu="main-menu"
+        aria-label="Open navigation menu">
+      </ion-menu-button>
     </ion-buttons>
 
     <ion-title>

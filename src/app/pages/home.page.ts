@@ -588,6 +588,15 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
   <ion-toolbar>
 
+    <ion-buttons slot="start">
+
+      <ion-menu-button
+        menu="main-menu"
+        aria-label="Open navigation menu">
+      </ion-menu-button>
+
+    </ion-buttons>
+
     <ion-title>
 
       <div class="logo">

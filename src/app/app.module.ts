@@ -39,6 +39,8 @@ import { ContactSupportPage } from './pages/contact-support.page';
 import { VerifyPhonePage } from './pages/verify-phone.page';
 import { NotificationsPage } from './pages/notifications.page';
 import { ChatbotPage } from './pages/chatbot.page';
+import { AboutPage } from './pages/about.page';
+import { DevelopersPage } from './pages/developers.page';
 
 @NgModule({
   declarations: [
@@ -82,7 +84,9 @@ import { ChatbotPage } from './pages/chatbot.page';
     ContactSupportPage,
     VerifyPhonePage,
     NotificationsPage,
-    ChatbotPage
+    ChatbotPage,
+    AboutPage,
+    DevelopersPage
   ],
 
   providers: [

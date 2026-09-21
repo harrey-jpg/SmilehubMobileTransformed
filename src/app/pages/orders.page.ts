@@ -806,9 +806,10 @@ import {
 
     <ion-buttons slot="start">
 
-      <ion-back-button
-        defaultHref="/account">
-      </ion-back-button>
+      <ion-menu-button
+        menu="main-menu"
+        aria-label="Open navigation menu">
+      </ion-menu-button>
 
     </ion-buttons>
 
