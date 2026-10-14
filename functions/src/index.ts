@@ -14,6 +14,7 @@ import {
 
 
 initializeApp();
+export { mobilePlaceOrder, mobileCancelOrder, restoreCancelledOrderInventory } from './customer-orders';
 
 
 

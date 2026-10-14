@@ -245,3 +245,25 @@ body.dark .bottom-nav .nav-item.active { --color: #7fe0ee; --background: #12394a
   .form-grid .full { grid-column: auto; }
   .hero-title { font-size: 27px; }
 }
+
+// Mobile usability polish, preserving the existing SmileHub palette.
+:where(a, button, ion-button, input, select, textarea):focus-visible { outline:3px solid var(--ion-color-primary); outline-offset:3px; }
+ion-button { --padding-top:10px; --padding-bottom:10px; }
+.mobile-purchase-footer { display:none; background:var(--ion-card-background); }
+.purchase-bar { max-width:720px; margin:auto; padding:12px 16px calc(12px + env(safe-area-inset-bottom)); display:flex; gap:16px; align-items:center; justify-content:space-between; border-top:1px solid var(--ion-border-color); }
+.purchase-total { display:flex; flex-direction:column; gap:4px; min-width:0; }
+.purchase-total span { font-size:14px; color:var(--ion-text-color); }
+.purchase-total strong { font-size:18px; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+.purchase-bar ion-button { margin:0; min-height:48px; font-size:14px; text-transform:none; }
+.purchase-buttons { display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%; }
+@media(max-width:759px) { .mobile-purchase-footer { display:block; } .product-purchase-bar { flex-direction:column; align-items:stretch; gap:10px; } .product-purchase-bar .purchase-total { flex-direction:row; align-items:center; justify-content:space-between; } }
+@media(prefers-reduced-motion:reduce) { *, *::before, *::after { scroll-behavior:auto!important; animation-duration:0.01ms!important; transition-duration:0.01ms!important; } }
+
+.icon-btn { min-width:44px; min-height:44px; }
+.product-card .product-art .stock-pill { top:auto!important; bottom:8px; max-width:calc(100% - 16px); }
+.product-row-link, a.ac-item { color:var(--ion-text-color); text-decoration:none; }
+button.recently-viewed-card { font:inherit; color:var(--ion-text-color); text-align:left; }
+.primary-btn { --background:linear-gradient(135deg,#08758b,#086b80); --color:#ffffff; }
+.cat-pill.active { background:linear-gradient(135deg,#08758b,#086b80); }
+.muted, .section-row p { color:var(--ion-color-medium); }
+.product-card ion-button { min-height:44px; }

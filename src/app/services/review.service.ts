@@ -8,7 +8,6 @@ import {
   deleteDoc,
   doc,
   getDocs,
-  orderBy,
   query,
   serverTimestamp,
   updateDoc,
@@ -209,11 +208,6 @@ export class ReviewService {
           'productId',
           '==',
           productId
-        ),
-
-        orderBy(
-          'createdAt',
-          'desc'
         )
 
       );
@@ -280,7 +274,7 @@ export class ReviewService {
 
 
       }
-    );
+    ).sort((a, b) => (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0));
 
   }
 

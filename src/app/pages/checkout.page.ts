@@ -98,7 +98,7 @@ import {
       color:
         var(--ion-color-primary);
 
-      font-size: 9px;
+      font-size:14px;
       font-weight: 900;
 
       letter-spacing: .8px;
@@ -119,7 +119,7 @@ import {
     .checkout-subtitle {
       margin: 0;
 
-      font-size: 11px;
+      font-size:14px;
       line-height: 1.5;
 
       color:
@@ -182,7 +182,7 @@ import {
 
       color: #ffffff;
 
-      font-size: 9px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -190,7 +190,7 @@ import {
     .step-label {
       min-width: 0;
 
-      font-size: 9px;
+      font-size:14px;
       font-weight: 800;
 
       white-space: nowrap;
@@ -244,13 +244,13 @@ import {
       --padding-start: 7px;
       --padding-end: 7px;
 
-      font-size: 10px;
+      font-size:14px;
       font-weight: 800;
     }
 
 
     .section-count {
-      font-size: 10px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -321,7 +321,7 @@ import {
 
 
     .address-label {
-      font-size: 12px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -329,7 +329,7 @@ import {
     .address-recipient {
       margin-top: 13px;
 
-      font-size: 13px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -337,7 +337,7 @@ import {
     .address-phone {
       margin-top: 3px;
 
-      font-size: 10px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -347,7 +347,7 @@ import {
     .address-full {
       margin-top: 8px;
 
-      font-size: 11px;
+      font-size:14px;
       line-height: 1.55;
 
       color:
@@ -364,7 +364,7 @@ import {
 
 
     .address-empty-title {
-      font-size: 12px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -372,7 +372,7 @@ import {
     .address-empty-text {
       margin-top: 3px;
 
-      font-size: 10px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -391,7 +391,7 @@ import {
 
       border-radius: 18px;
 
-      font-size: 11px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -471,13 +471,13 @@ import {
 
 
     .delivery-name {
-      font-size: 12px;
+      font-size:14px;
       font-weight: 900;
     }
 
 
     .delivery-description {
-      font-size: 9px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -490,7 +490,7 @@ import {
       color:
         var(--ion-color-primary);
 
-      font-size: 10px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -570,7 +570,7 @@ import {
 
 
     .payment-name {
-      font-size: 12px;
+      font-size:14px;
       font-weight: 900;
 
       white-space: nowrap;
@@ -582,7 +582,7 @@ import {
     .payment-description {
       margin-top: 3px;
 
-      font-size: 10px;
+      font-size:14px;
       line-height: 1.4;
 
       color:
@@ -623,7 +623,7 @@ import {
       color:
         var(--ion-color-success);
 
-      font-size: 8px;
+      font-size:14px;
       font-weight: 900;
 
       white-space: nowrap;
@@ -631,7 +631,7 @@ import {
 
 
     .payment-selected ion-icon {
-      font-size: 12px;
+      font-size:14px;
 
       color:
         var(--ion-color-success);
@@ -725,7 +725,7 @@ import {
       color:
         var(--ion-color-primary);
 
-      font-size: 8px;
+      font-size:14px;
       font-weight: 900;
 
       text-transform: uppercase;
@@ -733,7 +733,7 @@ import {
 
 
     .checkout-item-name {
-      font-size: 11px;
+      font-size:14px;
       line-height: 1.35;
 
       font-weight: 900;
@@ -750,7 +750,7 @@ import {
     .checkout-item-meta {
       margin-top: 5px;
 
-      font-size: 9px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -765,7 +765,7 @@ import {
       color:
         var(--ion-color-primary);
 
-      font-size: 11px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -784,7 +784,7 @@ import {
     .summary-title {
       margin-bottom: 13px;
 
-      font-size: 13px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -798,7 +798,7 @@ import {
 
       gap: 12px;
 
-      font-size: 11px;
+      font-size:14px;
     }
 
 
@@ -880,7 +880,7 @@ import {
 
       gap: 7px;
 
-      font-size: 9px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -924,7 +924,7 @@ import {
 
       --border-radius: 14px;
 
-      font-size: 12px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -937,7 +937,7 @@ import {
       color:
         var(--ion-color-medium);
 
-      font-size: 8px;
+      font-size:14px;
       line-height: 1.45;
     }
 
@@ -1008,7 +1008,7 @@ import {
       color:
         var(--ion-color-medium);
 
-      font-size: 11px;
+      font-size:14px;
       line-height: 1.5;
     }
 
@@ -1064,7 +1064,7 @@ import {
 
 
       .step-label {
-        font-size: 8px;
+        font-size:14px;
       }
 
 
@@ -1114,12 +1114,16 @@ import {
       .payment-selected {
         padding: 4px 6px;
 
-        font-size: 7px;
+        font-size:14px;
       }
 
     }
 
-  `],
+
+.checkout-step { flex-direction:column; align-items:center; text-align:center; gap:4px; }
+.step-label { white-space:normal; overflow:visible; text-overflow:clip; line-height:1.3; }
+@media(max-width:759px) { .desktop-purchase-action { display:none; } }
+`],
 
 
   template: `
@@ -2053,7 +2057,7 @@ import {
 
               class="
                 primary-btn
-                place-order-btn
+                place-order-btn desktop-purchase-action
               "
 
               (click)="
@@ -2158,6 +2162,15 @@ import {
 
 
 </ion-content>
+<ion-footer class="mobile-purchase-footer ion-no-border" *ngIf="checkoutItems.length > 0">
+  <div class="purchase-bar">
+    <div class="purchase-total"><span>Total</span><strong>{{ money(total) }}</strong></div>
+    <ion-button class="primary-btn" (click)="confirmPlaceOrder()" [disabled]="!canPlaceOrder">
+      <ion-spinner *ngIf="placingOrder" name="crescent" slot="start"></ion-spinner>
+      {{ placingOrder ? 'Placing Order...' : 'Place Order' }}
+    </ion-button>
+  </div>
+</ion-footer>
 
 `
 
@@ -2177,6 +2190,8 @@ implements OnInit {
   loadingAddress =
     true;
 
+
+  confirmingOrder = false;
 
   placingOrder =
     false;
@@ -3064,7 +3079,7 @@ implements OnInit {
 
     return (
 
-      !this.loadingAddress
+      !this.loadingAddress && !this.confirmingOrder
 
       &&
 
@@ -3140,6 +3155,7 @@ implements OnInit {
 
   async confirmPlaceOrder():
     Promise<void> {
+    if (this.confirmingOrder || this.placingOrder) return;
 
 
     if (
@@ -3196,6 +3212,8 @@ implements OnInit {
     }
 
 
+    this.confirmingOrder = true;
+    try {
     const alert =
       await this.alerts
         .create({
@@ -3259,6 +3277,8 @@ implements OnInit {
 
 
     await alert.present();
+    await alert.onDidDismiss();
+    } finally { this.confirmingOrder = false; }
 
 
   }
@@ -3434,6 +3454,7 @@ implements OnInit {
 
 
             items,
+            couponCode: this.state.couponApplied ? 'SMILE10' : '',
 
 
             shippingAddress:

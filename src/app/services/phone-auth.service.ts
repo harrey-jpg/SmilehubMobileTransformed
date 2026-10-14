@@ -440,8 +440,9 @@ export class PhoneAuthService {
         phoneVerified:
           true,
 
-        verifiedPhoneNumber:
-          phone,
+        verifiedPhoneNumber: phone,
+        phone: phone,
+        phoneE164: phone,
 
         phoneVerifiedAt:
           serverTimestamp(),

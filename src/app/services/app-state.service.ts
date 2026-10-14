@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { CustomerSyncService, SharedListItem } from './customer-sync.service';
+import { onSnapshot, QuerySnapshot, DocumentData } from 'firebase/firestore';
 
 import {
   collection,
@@ -153,14 +155,29 @@ export class AppStateService {
 
 
 
-  constructor() {
+  constructor(public customerSync: CustomerSyncService) {
 
 
     this.restore();
+    // Keep an unattributed legacy cache for recovery; never upload it to an arbitrary account.
+    try {
+      const legacy = localStorage.getItem('smilehubState');
+      if (legacy && !JSON.parse(legacy).syncVersion && !localStorage.getItem('smilehubStateBeforeSync')) localStorage.setItem('smilehubStateBeforeSync', legacy);
+    } catch (error) { console.warn('Could not back up the legacy shopping cache', error); }
+    this.customerSync.connect((name, items) => {
+      const valid = items.filter(item => Number.isInteger(Number(item.id)) && Number(item.id) > 0);
+      if (name === 'carts') this.cart = new Map(valid.filter(item => Number.isInteger(Number(item.quantity)) && Number(item.quantity) > 0).map(item => [Number(item.id), Number(item.quantity)]));
+      else this.wishlist = new Set(valid.map(item => Number(item.id)));
+      this.persist();
+    }, methods => {
+      const selectedTitle = this.selectedPayment?.title;
+      this.paymentMethods = [{ title: 'Cash on Delivery', subtitle: 'Pay when your order arrives', icon: 'cash-outline', isDefault: true }, ...methods];
+      this.selectedPaymentIndex = Math.max(0, this.paymentMethods.findIndex(method => method.title === selectedTitle));
+      this.persist();
+    });
+    onSnapshot(query(collection(firestore, 'products'), orderBy('id')), snapshot => { void this.loadProductsFromFirestore(snapshot); }, error => console.warn('Catalog sync unavailable', error));
 
 
-    void this
-      .loadProductsFromFirestore();
 
   }
 
@@ -170,7 +187,7 @@ export class AppStateService {
      LOAD PRODUCTS
      ========================= */
 
-  async loadProductsFromFirestore():
+  async loadProductsFromFirestore(snapshot?: QuerySnapshot<DocumentData>):
     Promise<void> {
 
 
@@ -178,7 +195,7 @@ export class AppStateService {
 
 
       const snap =
-        await getDocs(
+        snapshot ?? await getDocs(
 
           query(
 
@@ -194,11 +211,6 @@ export class AppStateService {
         );
 
 
-      if (snap.empty) {
-
-        return;
-
-      }
 
 
       const loaded:
@@ -346,11 +358,6 @@ export class AppStateService {
           );
 
 
-      if (!loaded.length) {
-
-        return;
-
-      }
 
 
       this.products =
@@ -791,9 +798,10 @@ export class AppStateService {
      WISHLIST
      ========================= */
 
-  toggleWishlist(
-    id: number
-  ): void {
+  toggleWishlist(id: number): void {
+    const remove = this.wishlist.has(id);
+    const item = this.sharedItem(id);
+    this.customerSync.change('wishlists', items => remove ? items.filter(value => Number(value.id) !== id) : [...items.filter(value => Number(value.id) !== id), item]);
 
 
     if (
@@ -822,10 +830,13 @@ export class AppStateService {
      ADD TO CART
      ========================= */
 
-  addToCart(
-    id: number,
-    quantity = 1
-  ): void {
+  addToCart(id: number, quantity = 1): void {
+    if (!Number.isInteger(quantity) || quantity <= 0 || !this.products.some(product => product.id === id)) return;
+    const item = this.sharedItem(id);
+    this.customerSync.change('carts', items => {
+      const existing = items.find(value => Number(value.id) === id);
+      return [...items.filter(value => Number(value.id) !== id), { ...item, quantity: Number(existing?.quantity || 0) + quantity }];
+    });
 
 
     this.cart.set(
@@ -845,10 +856,10 @@ export class AppStateService {
 
 
 
-  setCartQuantity(
-    id: number,
-    quantity: number
-  ): void {
+  setCartQuantity(id: number, quantity: number): void {
+    if (!Number.isInteger(quantity) || quantity < 0) return;
+    const item = this.sharedItem(id);
+    this.customerSync.change('carts', items => [...items.filter(value => Number(value.id) !== id), ...(quantity ? [{ ...item, quantity }] : [])]);
 
 
     if (quantity <= 0) {
@@ -874,9 +885,8 @@ export class AppStateService {
 
 
 
-  removeFromCart(
-    id: number
-  ): void {
+  removeFromCart(id: number): void {
+    this.customerSync.change('carts', items => items.filter(value => Number(value.id) !== id));
 
 
     this.cart.delete(id);
@@ -967,6 +977,8 @@ export class AppStateService {
     this.selectedPaymentIndex =
       this.paymentMethods.length - 1;
 
+    this.customerSync.savePaymentMethods(this.paymentMethods);
+
 
     this.persist();
 
@@ -1012,6 +1024,8 @@ export class AppStateService {
 
     };
 
+    this.customerSync.savePaymentMethods(this.paymentMethods);
+
 
     this.persist();
 
@@ -1052,6 +1066,8 @@ export class AppStateService {
       index,
       1
     );
+
+    this.customerSync.savePaymentMethods(this.paymentMethods);
 
 
 
@@ -1135,8 +1151,8 @@ export class AppStateService {
      CLEAR CART
      ========================= */
 
-  clearCartAfterOrder():
-    void {
+  clearCartAfterOrder(): void {
+    this.customerSync.change('carts', () => []);
 
 
     this.cart.clear();
@@ -1185,6 +1201,11 @@ export class AppStateService {
      PERSIST
      ========================= */
 
+  private sharedItem(id: number): SharedListItem {
+    const product = this.productById(id);
+    return { id, name: product.name, price: product.price, image: product.image || product.imageAsset };
+  }
+
   private persist():
     void {
 
@@ -1194,6 +1215,7 @@ export class AppStateService {
       'smilehubState',
 
       JSON.stringify({
+        syncVersion: 1,
 
 
         wishlist:

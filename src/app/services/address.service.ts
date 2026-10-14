@@ -37,6 +37,7 @@ export class AddressService {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     });
+    if (makeDefault) batch.set(doc(firestore, 'users', this.requireUser().uid), { address: this.profileAddress(address), updatedAt: serverTimestamp() }, { merge: true });
     await batch.commit();
   }
 
@@ -57,6 +58,7 @@ export class AddressService {
       isDefault: makeDefault,
       updatedAt: serverTimestamp()
     }, { merge: true });
+    if (makeDefault) batch.set(doc(firestore, 'users', this.requireUser().uid), { address: this.profileAddress(address), updatedAt: serverTimestamp() }, { merge: true });
     await batch.commit();
   }
 
@@ -69,7 +71,10 @@ export class AddressService {
     await deleteDoc(ref);
     if (wasDefault) {
       const remaining = await getDocs(col);
-      if (!remaining.empty) await setDoc(remaining.docs[0].ref, { isDefault: true, updatedAt: serverTimestamp() }, { merge: true });
+      const batch = writeBatch(firestore);
+      if (!remaining.empty) batch.set(remaining.docs[0].ref, { isDefault: true, updatedAt: serverTimestamp() }, { merge: true });
+      batch.set(doc(firestore, 'users', this.requireUser().uid), { address: remaining.empty ? null : this.profileAddress(remaining.docs[0].data() as ShippingAddress), updatedAt: serverTimestamp() }, { merge: true });
+      await batch.commit();
     }
   }
 
@@ -77,5 +82,9 @@ export class AddressService {
     const list = await this.listAddresses();
     if (!list.length) return null;
     return list.find(a => a.isDefault) || list[0];
+  }
+
+  private profileAddress(address: ShippingAddress) {
+    return { street: address.street, barangay: address.barangay, city: address.city, province: address.province || '', postal: address.postalCode, isDefault: true };
   }
 }

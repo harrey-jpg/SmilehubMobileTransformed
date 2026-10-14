@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 
 import {
-  Router
+  Router, RouterModule
 } from '@angular/router';
 
 import {
@@ -39,7 +39,7 @@ import {
 
   standalone: true,
 
-  imports: [
+  imports: [RouterModule,
     IonicModule,
     CommonModule
   ],
@@ -109,7 +109,7 @@ import {
 
     .brand {
 
-      font-size: 10px;
+      font-size:14px;
 
       font-weight: 900;
 
@@ -130,7 +130,7 @@ import {
 
       min-height: 38px;
 
-      font-size: 13px;
+      font-size:14px;
 
       line-height: 1.35;
 
@@ -179,8 +179,7 @@ import {
       padding:
         5px 9px;
 
-      font-size:
-        9px;
+      font-size:14px;
 
       font-weight:
         900;
@@ -204,6 +203,13 @@ import {
     }
 
 
+
+    .product-image-link { display:grid; place-items:center; width:100%; min-height:138px; }
+    a.product-name { display:block; color:var(--ion-text-color); text-decoration:none; overflow-wrap:anywhere; }
+    .wish-btn { width:44px; height:44px; min-height:44px; }
+    .row-between { flex-wrap:wrap; }
+    .rating-feedback { font-size:14px; line-height:1.5; }
+    .rating-feedback button { min-height:44px; padding:8px; color:var(--ion-color-primary); border:0; background:transparent; text-decoration:underline; }
   `],
 
   template: `
@@ -216,16 +222,14 @@ import {
          ========================= -->
 
     <div
-      class="product-art card-button"
-
-      (click)="open()">
+      class="product-art">
 
 
-      <img
+      <a class="product-image-link" [routerLink]="['/product-details', product.id]" [attr.aria-label]="'View ' + product.name"><img
         [src]="productImage"
         [alt]="product.name"
 
-        loading="lazy">
+        loading="lazy"></a>
 
 
 
@@ -257,6 +261,8 @@ import {
         fill="solid"
 
         class="wish-btn"
+        [attr.aria-label]="(state.wishlist.has(product.id) ? 'Remove ' : 'Save ') + product.name + (state.wishlist.has(product.id) ? ' from wishlist' : ' to wishlist')"
+        [attr.aria-pressed]="state.wishlist.has(product.id)"
 
         [class.wished]="
           state.wishlist.has(
@@ -305,14 +311,14 @@ import {
          PRODUCT NAME
          ========================= -->
 
-    <div
+    <a [routerLink]="['/product-details', product.id]"
       class="product-name card-button"
 
       (click)="open()">
 
       {{ product.name }}
 
-    </div>
+    </a>
 
 
 
@@ -343,7 +349,7 @@ import {
 
       <span
         style="
-          font-size:11px;
+          font-size:14px;
           font-weight:700;
           white-space:nowrap
         ">
@@ -358,7 +364,7 @@ import {
 
           <span
             style="
-              font-size:9px;
+              font-size:14px;
               opacity:.7
             ">
 
@@ -371,8 +377,7 @@ import {
 
         <ng-container
           *ngIf="
-            reviewCount === 0
-          ">
+            !loadingRating && !reviewFailed && reviewCount === 0">
 
           No reviews yet
 
@@ -386,6 +391,11 @@ import {
 
 
 
+<div class="rating-feedback" aria-live="polite">
+      <span *ngIf="loadingRating">Loading reviews…</span>
+      <span *ngIf="reviewFailed">Reviews unavailable</span>
+      <button type="button" *ngIf="reviewFailed" (click)="loadReviewSummary()" [disabled]="loadingRating" [attr.aria-label]="'Retry reviews for ' + product.name">Retry</button>
+    </div>
     <!-- =========================
          ADD TO CART
          ========================= -->
@@ -498,6 +508,9 @@ implements OnChanges, OnDestroy {
 
 
 
+  reviewFailed = false;
+  private summaryProductId = 0;
+
   loadingRating =
     false;
 
@@ -590,7 +603,7 @@ implements OnChanges, OnDestroy {
      LOAD REVIEWS
      ========================= */
 
-  private async loadReviewSummary():
+  async loadReviewSummary():
     Promise<void> {
 
 
@@ -606,8 +619,9 @@ implements OnChanges, OnDestroy {
 
 
 
-    const productId =
-      this.product.id;
+    const productId = this.product.id;
+    if (this.summaryProductId !== productId) { this.reviewCount = 0; this.averageRating = 0; this.summaryProductId = productId; }
+    this.reviewFailed = false;
 
 
 
@@ -725,15 +739,7 @@ implements OnChanges, OnDestroy {
       ) {
 
 
-        this.reviewCount =
-          0;
-
-
-
-        this.averageRating =
-          0;
-
-
+        this.reviewFailed = true;
       }
 
 

@@ -1,6 +1,8 @@
 :root {
-  --ion-color-primary: #0f839a;
-  --ion-color-primary-rgb: 15, 131, 154;
+  --ion-color-primary: #08758b;
+  --ion-color-primary-rgb: 8, 117, 139;
+  --ion-color-medium: #536476;
+  --ion-color-medium-rgb: 83, 100, 118;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
   --ion-color-primary-shade: #0d7388;
@@ -24,6 +26,9 @@
 }
 
 body.dark {
+  --ion-color-primary: #65d6e7;
+  --ion-color-primary-rgb: 101, 214, 231;
+  --ion-color-primary-contrast: #07101f;
   --ion-background-color: #07101f;
   --ion-background-color-rgb: 7, 16, 31;
   --ion-text-color: #eef4f8;

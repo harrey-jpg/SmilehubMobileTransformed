@@ -39,10 +39,11 @@ import { firebaseAuth } from '../services/firebase';
       <div 
       style="
       flex:1;
-      min-height:300px;
-      background:#eaf0ff;
+      min-height:230px;
+      max-height:280px;
+      background:var(--ion-card-background);
       border-radius:26px;
-      margin:28px 0 22px;
+      margin:22px 0 18px;
       display:grid;
       place-items:center">
 
@@ -99,7 +100,7 @@ import { firebaseAuth } from '../services/firebase';
 
       <p 
       class="muted" 
-      style="font-size:12px">
+      style="font-size:14px">
 
         Quality checked • Local delivery • Secure checkout
 

@@ -104,7 +104,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
     7px 0
     12px;
 
-  font-size: 11px;
+  font-size:14px;
 
   line-height: 1.4;
 
@@ -133,7 +133,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
   --border-radius: 6px;
 
-  font-size: 10px;
+  font-size:14px;
 }
     /* =========================
        SEARCH DROPDOWN
@@ -172,7 +172,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
     .suggestion-heading {
       padding: 11px 14px 6px;
 
-      font-size: 11px;
+      font-size:14px;
       font-weight: 900;
 
       color: var(--ion-color-medium);
@@ -200,7 +200,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
       color: var(--ion-color-primary);
 
-      font-size: 11px;
+      font-size:14px;
       font-weight: 800;
 
       cursor: pointer;
@@ -257,7 +257,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
     }
 
     .recent-label {
-      font-size: 9px;
+      font-size:14px;
       font-weight: 800;
 
       color: var(--ion-color-medium);
@@ -317,7 +317,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
     }
 
     .suggestion-name {
-      font-size: 13px;
+      font-size:14px;
       font-weight: 800;
 
       white-space: nowrap;
@@ -328,7 +328,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
     .suggestion-meta {
       margin-top: 2px;
 
-      font-size: 10px;
+      font-size:14px;
 
       color: var(--ion-color-medium);
 
@@ -340,7 +340,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
     .suggestion-price {
       margin-top: 2px;
 
-      font-size: 12px;
+      font-size:14px;
       font-weight: 900;
 
       color: var(--ion-color-primary);
@@ -372,7 +372,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
       cursor: pointer;
 
-      font-size: 12px;
+      font-size:14px;
       font-weight: 900;
 
       color: var(--ion-color-primary);
@@ -403,7 +403,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
     .no-search-result p {
       margin: 6px 0 0;
 
-      font-size: 12px;
+      font-size:14px;
 
       color: var(--ion-color-medium);
     }
@@ -463,7 +463,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
     }
 
     .recently-viewed-brand {
-      font-size: 9px;
+      font-size:14px;
       font-weight: 800;
 
       color:
@@ -481,7 +481,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
       margin-top: 3px;
 
-      font-size: 11px;
+      font-size:14px;
       line-height: 1.4;
       font-weight: 800;
 
@@ -495,7 +495,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
     .recently-viewed-price {
       margin-top: 6px;
 
-      font-size: 12px;
+      font-size:14px;
       font-weight: 900;
 
       color:
@@ -575,7 +575,12 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       height: 54px;
     }
 
-  `],
+
+button.search-keyword, button.product-suggestion { width:100%; text-align:left; font:inherit; color:var(--ion-text-color); background:transparent; border:0; border-bottom:1px solid var(--ion-border-color); min-height:44px; } .history-clear { min-height:44px; }
+
+button.category-bubble, button.see-all-search { font:inherit; color:var(--ion-text-color); background:transparent; border:0; padding:4px; min-height:44px; }
+.premium-banner { background:linear-gradient(135deg,#08758b,#086b80); }
+`],
 
   template: `
 
@@ -776,7 +781,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
 
 
-          <div
+          <button type="button"
             class="search-keyword"
 
             *ngFor="let keyword of visibleRecentSearches"
@@ -803,7 +808,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
             </span>
 
 
-          </div>
+          </button>
 
 
         </ng-container>
@@ -824,7 +829,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
 
 
-          <div
+          <button type="button"
             class="search-keyword"
 
             *ngFor="let keyword of visiblePopularSearches"
@@ -844,7 +849,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
             </span>
 
 
-          </div>
+          </button>
 
 
         </ng-container>
@@ -864,7 +869,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
 
 
-        <div
+        <button type="button"
           class="product-suggestion"
 
           *ngFor="let product of defaultSuggestions"
@@ -918,7 +923,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
           </ion-icon>
 
 
-        </div>
+        </button>
 
 
       </ng-container>
@@ -946,7 +951,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
         <!-- PRODUCT RESULTS -->
 
-        <div
+        <button type="button"
           class="product-suggestion"
 
           *ngFor="let product of filteredSuggestions"
@@ -1000,7 +1005,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
           </ion-icon>
 
 
-        </div>
+        </button>
 
 
 
@@ -1032,7 +1037,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
         <!-- SEE ALL -->
 
-        <div
+        <button type="button"
           class="see-all-search"
 
           (click)="searchAll()">
@@ -1051,7 +1056,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
           </ion-icon>
 
 
-        </div>
+        </button>
 
 
       </ng-container>
@@ -1148,7 +1153,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
   <div class="category-strip">
 
 
-    <div
+    <button type="button"
       class="category-bubble"
 
       *ngFor="let c of categories"
@@ -1276,7 +1281,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
       <div
         style="
-          font-size:11px;
+          font-size:14px;
           font-weight:800;
           margin-top:6px
         ">
@@ -1286,7 +1291,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       </div>
 
 
-    </div>
+    </button>
 
 
   </div>
@@ -1373,7 +1378,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
     <div class="recently-viewed-scroll">
 
 
-      <div
+      <button type="button"
         class="app-card recently-viewed-card"
 
         *ngFor="let p of recentlyViewed"
@@ -1413,7 +1418,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
         </div>
 
 
-      </div>
+      </button>
 
 
     </div>
@@ -1460,7 +1465,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
       *ngFor="let p of latest"
 
-      (click)="openProduct(p.id)">
+      >
 
 
       <div
@@ -1485,7 +1490,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
 
 
-      <div class="flex-1">
+      <a class="flex-1 product-row-link" [routerLink]="['/product-details',p.id]">
 
 
         <div class="brand">
@@ -1509,7 +1514,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
         </div>
 
 
-      </div>
+      </a>
 
 
 
@@ -1518,7 +1523,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
         [disabled]="isOutOfStock(p)"
 
-        (click)="addNewArrivalToCart($event, p)">
+        [attr.aria-label]="'Add ' + p.name + ' to cart'" (click)="addNewArrivalToCart($event, p)">
 
 
         <ion-icon

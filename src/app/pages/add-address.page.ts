@@ -2972,6 +2972,7 @@ export class AddAddressPage {
 
 
         this.applyDropdownLocation();
+        this.form.province = this.provinces.find(province => province.code === this.provinceCode)?.name || this.form.province || '';
 
 
       } else {

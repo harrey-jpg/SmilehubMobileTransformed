@@ -75,7 +75,7 @@ import {
       color:
         var(--ion-color-primary);
 
-      font-size: 9px;
+      font-size:14px;
       font-weight: 900;
 
       letter-spacing: .8px;
@@ -95,7 +95,7 @@ import {
     .cart-count {
       margin-top: 3px;
 
-      font-size: 11px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -106,7 +106,7 @@ import {
       --padding-start: 8px;
       --padding-end: 8px;
 
-      font-size: 11px;
+      font-size:14px;
       font-weight: 800;
     }
 
@@ -150,7 +150,7 @@ import {
 
 
     .selection-title {
-      font-size: 11px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -161,7 +161,7 @@ import {
       color:
         var(--ion-color-medium);
 
-      font-size: 9px;
+      font-size:14px;
     }
 
 
@@ -171,7 +171,7 @@ import {
       color:
         var(--ion-color-primary);
 
-      font-size: 11px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -298,7 +298,7 @@ import {
       color:
         var(--ion-color-primary);
 
-      font-size: 8px;
+      font-size:14px;
       font-weight: 900;
 
       letter-spacing: .4px;
@@ -310,7 +310,7 @@ import {
     .cart-product-name {
       padding-right: 28px;
 
-      font-size: 12px;
+      font-size:14px;
       line-height: 1.35;
 
       font-weight: 900;
@@ -413,7 +413,7 @@ import {
 
       text-align: center;
 
-      font-size: 12px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -424,7 +424,7 @@ import {
 
 
     .item-total-label {
-      font-size: 8px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -437,7 +437,7 @@ import {
       color:
         var(--ion-color-primary);
 
-      font-size: 12px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -445,7 +445,7 @@ import {
     .stock-text {
       margin-top: 7px;
 
-      font-size: 9px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -486,7 +486,7 @@ import {
 
       gap: 8px;
 
-      font-size: 12px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -549,7 +549,7 @@ import {
       color:
         var(--ion-color-success);
 
-      font-size: 10px;
+      font-size:14px;
       font-weight: 800;
     }
 
@@ -573,7 +573,7 @@ import {
 
       gap: 8px;
 
-      font-size: 13px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -595,7 +595,7 @@ import {
 
       gap: 12px;
 
-      font-size: 11px;
+      font-size:14px;
     }
 
 
@@ -665,7 +665,7 @@ import {
 
       --border-radius: 14px;
 
-      font-size: 12px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -675,7 +675,7 @@ import {
 
       text-align: center;
 
-      font-size: 9px;
+      font-size:14px;
       line-height: 1.4;
 
       color:
@@ -739,7 +739,7 @@ import {
       margin:
         0 0 18px;
 
-      font-size: 11px;
+      font-size:14px;
       line-height: 1.5;
 
       color:
@@ -837,7 +837,9 @@ import {
 
     }
 
-  `],
+
+.qty button, .remove-btn, .remove-item-btn { width:44px; height:44px; min-width:44px; min-height:44px; } .item-bottom { flex-wrap:wrap; gap:12px; } .cart-product-name { overflow-wrap:anywhere; }
+`],
 
 
   template: `
@@ -1222,7 +1224,7 @@ import {
                         item.qty <= 1
                       "
 
-                      (click)="
+                      aria-label="Decrease quantity" (click)="
                         decreaseQuantity(item)
                       ">
 
@@ -1248,7 +1250,7 @@ import {
                         reachedStockLimit(item)
                       "
 
-                      (click)="
+                      aria-label="Increase quantity" (click)="
                         increaseQuantity(item)
                       ">
 

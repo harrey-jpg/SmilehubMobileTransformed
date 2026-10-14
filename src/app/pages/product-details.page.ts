@@ -134,7 +134,7 @@ import {
 
       border-radius: 999px;
 
-      font-size: 9px;
+      font-size:14px;
       font-weight: 900;
 
       background:
@@ -191,7 +191,7 @@ import {
       color:
         var(--ion-color-primary);
 
-      font-size: 10px;
+      font-size:14px;
       font-weight: 900;
 
       letter-spacing: .5px;
@@ -251,7 +251,7 @@ import {
 
       gap: 5px;
 
-      font-size: 11px;
+      font-size:14px;
       font-weight: 800;
 
       white-space: nowrap;
@@ -264,7 +264,7 @@ import {
 
 
     .rating-count {
-      font-size: 9px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -279,7 +279,7 @@ import {
       margin:
         14px 0 0;
 
-      font-size: 12px;
+      font-size:14px;
       line-height: 1.6;
 
       color:
@@ -298,7 +298,7 @@ import {
 
       border-radius: 13px;
 
-      font-size: 10px;
+      font-size:14px;
       font-weight: 800;
 
       background:
@@ -336,13 +336,13 @@ import {
 
 
     .quantity-title {
-      font-size: 13px;
+      font-size:14px;
       font-weight: 900;
     }
 
 
     .quantity-stock {
-      font-size: 10px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -424,7 +424,7 @@ import {
     .qty-total-label {
       text-align: right;
 
-      font-size: 9px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -447,7 +447,7 @@ import {
     .cart-stock-note {
       margin-top: 11px;
 
-      font-size: 10px;
+      font-size:14px;
       line-height: 1.45;
 
       color:
@@ -481,7 +481,7 @@ import {
 
       --border-radius: 14px;
 
-      font-size: 12px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -520,7 +520,7 @@ import {
       color:
         var(--ion-color-medium);
 
-      font-size: 9px;
+      font-size:14px;
       line-height: 1.45;
     }
 
@@ -564,7 +564,7 @@ import {
         1px solid
         rgba(120,120,120,.10);
 
-      font-size: 11px;
+      font-size:14px;
     }
 
 
@@ -611,7 +611,7 @@ import {
         1px solid
         rgba(120,120,120,.10);
 
-      font-size: 11px;
+      font-size:14px;
       line-height: 1.45;
     }
 
@@ -671,7 +671,7 @@ import {
     .review-count {
       margin-top: 7px;
 
-      font-size: 10px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -698,7 +698,7 @@ import {
 
 
     .review-user {
-      font-size: 12px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -706,7 +706,7 @@ import {
     .review-date {
       margin-top: 3px;
 
-      font-size: 9px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -716,7 +716,7 @@ import {
     .review-rating {
       color: #f4b400;
 
-      font-size: 12px;
+      font-size:14px;
 
       letter-spacing: 1px;
 
@@ -728,7 +728,7 @@ import {
       margin:
         11px 0 0;
 
-      font-size: 11px;
+      font-size:14px;
       line-height: 1.55;
     }
 
@@ -762,7 +762,7 @@ import {
     .review-state-title {
       margin-top: 5px;
 
-      font-size: 13px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -770,7 +770,7 @@ import {
     .review-state-text {
       margin-top: 5px;
 
-      font-size: 10px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -847,7 +847,7 @@ import {
       color:
         var(--ion-color-primary);
 
-      font-size: 8px;
+      font-size:14px;
       font-weight: 900;
 
       text-transform: uppercase;
@@ -859,7 +859,7 @@ import {
 
       margin-top: 4px;
 
-      font-size: 11px;
+      font-size:14px;
       line-height: 1.4;
 
       font-weight: 800;
@@ -879,7 +879,7 @@ import {
       color:
         var(--ion-color-primary);
 
-      font-size: 12px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -917,7 +917,7 @@ import {
 
       border-radius: 999px;
 
-      font-size: 8px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -976,7 +976,7 @@ import {
       margin:
         0 0 18px;
 
-      font-size: 11px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -1021,7 +1021,11 @@ import {
     }
 
 
-  `],
+
+.qty-controls button, .wishlist-button, .wish-btn { min-width:44px; min-height:44px; } @media(max-width:759px) { .desktop-purchase-action { display:none; } }
+
+button.related-card { font:inherit; color:var(--ion-text-color); text-align:left; }
+`],
 
 
   template: `
@@ -1062,7 +1066,7 @@ import {
 
         class="icon-btn"
 
-        (click)="toggleWishlist()">
+        [attr.aria-label]="state.wishlist.has(p.id) ? 'Remove from wishlist' : 'Save to wishlist'" [attr.aria-pressed]="state.wishlist.has(p.id)" (click)="toggleWishlist()">
 
 
         <ion-icon
@@ -1081,7 +1085,7 @@ import {
 
       <ion-button
 
-        routerLink="/cart"
+        routerLink="/cart" aria-label="Open cart"
 
         class="icon-btn">
 
@@ -1347,7 +1351,7 @@ import {
               quantity <= 1
             "
 
-            (click)="decreaseQuantity()">
+            aria-label="Decrease quantity" (click)="decreaseQuantity()">
 
             −
 
@@ -1370,7 +1374,7 @@ import {
               reachedMaximumStock
             "
 
-            (click)="increaseQuantity()">
+            aria-label="Increase quantity" (click)="increaseQuantity()">
 
             +
 
@@ -1438,7 +1442,7 @@ import {
          ACTIONS
          ========================= -->
 
-    <div class="product-actions">
+    <div class="product-actions desktop-purchase-action">
 
 
       <ion-button
@@ -1874,8 +1878,7 @@ import {
       class="app-card review-state-card"
 
       *ngIf="
-        !loadingReviews &&
-        reviewCount === 0
+        !loadingReviews && !reviewsError && reviewCount === 0
       ">
 
 
@@ -1904,6 +1907,7 @@ import {
 
 
 
+<div class="review-state-card" *ngIf="reviewsError" role="status"><p>Reviews unavailable</p><ion-button fill="clear" (click)="loadReviews()" [disabled]="loadingReviews">Retry reviews</ion-button></div>
     <!-- =========================
          RELATED PRODUCTS
          ========================= -->
@@ -1925,7 +1929,7 @@ import {
       <div class="related-scroll">
 
 
-        <div
+        <button type="button"
 
           class="app-card related-card"
 
@@ -1972,7 +1976,7 @@ import {
           </div>
 
 
-        </div>
+        </button>
 
 
       </div>
@@ -1984,7 +1988,17 @@ import {
   </div>
 
 
+
 </ion-content>
+<ion-footer class="mobile-purchase-footer ion-no-border" *ngIf="product as p">
+    <div class="purchase-bar product-purchase-bar">
+      <div class="purchase-total"><span>Subtotal</span><strong>{{ money(p.price * quantity) }}</strong></div>
+      <div class="purchase-buttons">
+        <ion-button fill="outline" [disabled]="isOutOfStock || !canAddSelectedQuantity" (click)="add()">{{ addedToCart ? 'Added!' : 'Add to Cart' }}</ion-button>
+        <ion-button class="primary-btn" [disabled]="isOutOfStock || !canBuySelectedQuantity" (click)="buyNow()">{{ isOutOfStock ? 'Out of Stock' : 'Buy Now' }}</ion-button>
+      </div>
+    </div>
+  </ion-footer>
 
 
 
@@ -2068,6 +2082,8 @@ implements OnInit, OnDestroy {
   reviews:
     ProductReview[] = [];
 
+
+  reviewsError = false;
 
   loadingReviews =
     false;
@@ -3222,8 +3238,8 @@ implements OnInit, OnDestroy {
     }
 
 
-    this.loadingReviews =
-      true;
+    this.loadingReviews = true;
+    this.reviewsError = false;
 
 
     try {
@@ -3303,16 +3319,7 @@ implements OnInit, OnDestroy {
       );
 
 
-      this.reviews =
-        [];
-
-
-      this.averageRating =
-        0;
-
-
-      this.reviewCount =
-        0;
+      this.reviewsError = true;
 
 
     } finally {
@@ -3335,6 +3342,8 @@ implements OnInit, OnDestroy {
 
   get displayRating():
     string {
+    if (this.loadingReviews && !this.reviewCount) return 'Loading reviews…';
+    if (this.reviewsError && !this.reviewCount) return 'Reviews unavailable';
 
 
     if (

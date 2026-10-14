@@ -47,7 +47,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
     .ac-kicker {
       color: var(--ion-color-primary);
-      font-size: 9px;
+      font-size:14px;
       font-weight: 900;
       letter-spacing: .8px;
       text-transform: uppercase;
@@ -203,7 +203,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
         3px solid
         var(--ion-background-color);
 
-      font-size: 13px;
+      font-size:14px;
     }
 
 
@@ -241,7 +241,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       color:
         var(--ion-color-medium);
 
-      font-size: 10px;
+      font-size:14px;
 
       white-space: nowrap;
       overflow: hidden;
@@ -272,7 +272,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       color:
         var(--ion-color-primary);
 
-      font-size: 8px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -307,7 +307,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       color:
         var(--ion-color-medium);
 
-      font-size: 10px;
+      font-size:14px;
     }
 
 
@@ -323,7 +323,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       color:
         var(--ion-text-color);
 
-      font-size: 13px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -499,7 +499,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       color:
         var(--ion-text-color);
 
-      font-size: 11px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -509,7 +509,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       color:
         var(--ion-color-medium);
 
-      font-size: 9px;
+      font-size:14px;
       line-height: 1.35;
     }
 
@@ -542,7 +542,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
       text-align: center;
 
-      font-size: 8px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -586,7 +586,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
       --border-radius: 14px;
 
-      font-size: 10px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -598,7 +598,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       color:
         var(--ion-color-medium);
 
-      font-size: 8px;
+      font-size:14px;
     }
 
 
@@ -652,7 +652,9 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
     }
 
-  `],
+
+button.ac-item { width:100%; text-align:left; font:inherit; color:var(--ion-text-color); background:transparent; border:0; min-height:44px; }
+`],
 
 
   template: `
@@ -864,7 +866,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
           <!-- PERSONAL INFO -->
 
-          <div
+          <a
             class="ac-item"
             routerLink="/personal-information">
 
@@ -904,13 +906,13 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
             </ion-icon>
 
 
-          </div>
+          </a>
 
 
 
           <!-- ORDERS -->
 
-          <div
+          <a
             class="ac-item"
             routerLink="/orders">
 
@@ -950,13 +952,13 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
             </ion-icon>
 
 
-          </div>
+          </a>
 
 
 
           <!-- ADDRESSES -->
 
-          <div
+          <a
             class="ac-item"
             routerLink="/addresses">
 
@@ -996,13 +998,13 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
             </ion-icon>
 
 
-          </div>
+          </a>
 
 
 
           <!-- PAYMENT -->
 
-          <div
+          <a
             class="ac-item"
             routerLink="/payments">
 
@@ -1042,13 +1044,13 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
             </ion-icon>
 
 
-          </div>
+          </a>
 
 
 
           <!-- WISHLIST -->
 
-          <div
+          <a
             class="ac-item"
             routerLink="/wishlist">
 
@@ -1103,7 +1105,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
             </ion-icon>
 
 
-          </div>
+          </a>
 
 
         </div>
@@ -1178,7 +1180,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
             </div>
 
 
-            <ion-toggle
+            <ion-toggle aria-label="Dark mode"
               [checked]="state.darkMode"
               (ionChange)="
                 state.toggleTheme(
@@ -1194,7 +1196,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
 
           <!-- HELP -->
 
-          <div
+          <a
             class="ac-item"
             routerLink="/help">
 
@@ -1234,13 +1236,13 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
             </ion-icon>
 
 
-          </div>
+          </a>
 
 
 
           <!-- CONTACT -->
 
-          <div
+          <button type="button"
             class="ac-item"
             (click)="openContactSupport()">
 
@@ -1280,7 +1282,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
             </ion-icon>
 
 
-          </div>
+          </button>
 
 
         </div>

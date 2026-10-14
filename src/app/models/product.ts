@@ -23,6 +23,7 @@ export interface ShippingAddress {
   recipient: string;
   phone: string;
   city: string;
+  province?: string;
   barangay: string;
   street: string;
   postalCode: string;

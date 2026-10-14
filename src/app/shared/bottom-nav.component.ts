@@ -22,6 +22,7 @@ import { AppStateService } from '../services/app-state.service';
     fill="clear"
     class="nav-item"
     [class.active]="active==='home'"
+    [attr.aria-current]="active==='home' ? 'page' : null"
     (click)="go('/home')">
 
     <span class="nav-inner">
@@ -37,6 +38,7 @@ import { AppStateService } from '../services/app-state.service';
     fill="clear"
     class="nav-item"
     [class.active]="active==='categories'"
+    [attr.aria-current]="active==='categories' ? 'page' : null"
     (click)="go('/categories')">
 
     <span class="nav-inner">
@@ -52,6 +54,7 @@ import { AppStateService } from '../services/app-state.service';
     fill="clear"
     class="nav-item nav-badge-wrap"
     [class.active]="active==='cart'"
+    [attr.aria-current]="active==='cart' ? 'page' : null"
     (click)="go('/cart')">
 
     <span class="nav-inner">
@@ -69,6 +72,7 @@ import { AppStateService } from '../services/app-state.service';
     fill="clear"
     class="nav-item"
     [class.active]="active==='account'"
+    [attr.aria-current]="active==='account' ? 'page' : null"
     (click)="go('/account')">
 
     <span class="nav-inner">

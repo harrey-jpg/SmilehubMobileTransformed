@@ -1,3 +1,4 @@
+import { BottomNavComponent } from '../shared/bottom-nav.component';
 import {
   Component,
   OnInit
@@ -67,7 +68,7 @@ interface ProductRatingSummary {
   selector: 'app-catalog',
   standalone: true,
 
-  imports: [
+  imports: [BottomNavComponent,
     IonicModule,
     FormsModule,
     CommonModule,
@@ -96,7 +97,7 @@ interface ProductRatingSummary {
     .catalog-kicker {
       color: var(--ion-color-primary);
 
-      font-size: 10px;
+      font-size:14px;
       font-weight: 900;
 
       letter-spacing: .8px;
@@ -114,7 +115,7 @@ interface ProductRatingSummary {
     .catalog-subtitle {
       margin: 0;
 
-      font-size: 12px;
+      font-size:14px;
       line-height: 1.45;
 
       color: var(--ion-color-medium);
@@ -169,7 +170,7 @@ interface ProductRatingSummary {
     }
 
     .search-label {
-      font-size: 10px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -178,7 +179,7 @@ interface ProductRatingSummary {
     .search-term {
       margin-top: 2px;
 
-      font-size: 13px;
+      font-size:14px;
       font-weight: 900;
 
       white-space: nowrap;
@@ -197,7 +198,7 @@ interface ProductRatingSummary {
       color:
         var(--ion-color-primary);
 
-      font-size: 11px;
+      font-size:14px;
       font-weight: 900;
 
       cursor: pointer;
@@ -215,7 +216,7 @@ interface ProductRatingSummary {
     .filter-label {
       margin-bottom: 9px;
 
-      font-size: 12px;
+      font-size:14px;
       font-weight: 900;
     }
 
@@ -272,7 +273,7 @@ interface ProductRatingSummary {
       color:
         var(--ion-text-color);
 
-      font-size: 11px;
+      font-size:14px;
       font-weight: 800;
 
       white-space: nowrap;
@@ -355,7 +356,7 @@ interface ProductRatingSummary {
     .results-count {
       margin: 3px 0 0;
 
-      font-size: 10px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -396,7 +397,7 @@ interface ProductRatingSummary {
       width: 100%;
       max-width: 145px;
 
-      font-size: 11px;
+      font-size:14px;
       font-weight: 800;
     }
 
@@ -413,7 +414,7 @@ interface ProductRatingSummary {
 
       gap: 7px;
 
-      font-size: 10px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -512,7 +513,7 @@ interface ProductRatingSummary {
 
       margin: 0 0 17px;
 
-      font-size: 11px;
+      font-size:14px;
       line-height: 1.5;
 
       color:
@@ -778,7 +779,7 @@ interface ProductRatingSummary {
 
             [class.active]="
               category === c
-            "
+            " [attr.aria-pressed]="category === c"
 
             (click)="
               selectCategory(c)
@@ -1022,6 +1023,7 @@ interface ProductRatingSummary {
 
 
 </ion-content>
+<ion-footer class="ion-no-border"><app-bottom-nav active="categories"></app-bottom-nav></ion-footer>
 
 `
 

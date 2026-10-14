@@ -61,7 +61,7 @@ import {
       color:
         var(--ion-color-primary);
 
-      font-size: 11px;
+      font-size:14px;
       font-weight: 800;
 
       cursor: pointer;
@@ -100,7 +100,7 @@ import {
 
 
     .divider-text {
-      font-size: 10px;
+      font-size:14px;
       font-weight: 800;
 
       color:
@@ -130,7 +130,7 @@ import {
       --color:
         var(--ion-text-color);
 
-      font-size: 12px;
+      font-size:14px;
       font-weight: 800;
 
       text-transform: none;
@@ -171,7 +171,7 @@ import {
 
       text-align: center;
 
-      font-size: 12px;
+      font-size:14px;
 
       color:
         var(--ion-color-medium);
@@ -195,7 +195,9 @@ import {
       pointer-events: none;
     }
 
-  `],
+
+.forgot-link, .signup-link { min-height:44px; padding:10px 8px; font-size:14px; background:transparent; border:0; color:var(--ion-color-primary); }
+`],
 
 
   template: `
@@ -451,8 +453,7 @@ import {
       New to SmileHub?
 
 
-      <span
-        class="signup-link"
+      <button type="button" class="signup-link" [disabled]="busy"
 
         [class.disabled]="busy"
 
@@ -460,7 +461,7 @@ import {
 
         Create account
 
-      </span>
+      </button>
 
 
     </div>

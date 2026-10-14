@@ -44,6 +44,11 @@ export class ProfileService {
 
 
 
+  private toLocal(value: string): string {
+    const digits = String(value).replace(/\D/g, '');
+    return /^639\d{9}$/.test(digits) ? '0' + digits.slice(2) : /^9\d{9}$/.test(digits) ? '0' + digits : digits;
+  }
+
   private mobileToE164(
     mobile: string
   ): string {
@@ -102,9 +107,7 @@ export class ProfileService {
 
     const mobile =
       (
-        data['mobile']
-        ||
-        ''
+        this.toLocal(data['phoneE164'] || data['phone'] || data['mobile'] || '')
       ).toString();
 
 
@@ -112,9 +115,7 @@ export class ProfileService {
       user.phoneNumber
       ||
       (
-        data['verifiedPhoneNumber']
-        ||
-        ''
+        data['verifiedPhoneNumber'] || (data['phoneVerified'] ? data['phoneE164'] || data['phone'] : '') || ''
       ).toString();
 
 
@@ -132,7 +133,7 @@ export class ProfileService {
 
       fullName:
         (
-          data['fullName']
+          ([data['firstName'], data['lastName']].filter(Boolean).join(' ') || data['fullName'] || data['displayName'])
           ||
           user.displayName
           ||
@@ -151,11 +152,7 @@ export class ProfileService {
       mobile,
 
       address:
-        (
-          data['address']
-          ||
-          ''
-        ).toString(),
+        (data['addressText'] || (typeof data['address'] === 'string' ? data['address'] : [data['address']?.street, data['address']?.barangay, data['address']?.city, data['address']?.province, data['address']?.postal].filter(Boolean).join(', '))),
 
       clinic:
         (
@@ -204,14 +201,9 @@ export class ProfileService {
       );
 
 
-    const phoneVerified =
-
-      !!user.phoneNumber
-
-      &&
-
-      enteredPhone
-        === user.phoneNumber;
+    const existing = (await getDoc(doc(firestore, 'users', user.uid))).data() || {};
+    const verifiedPhone = user.phoneNumber || (existing['phoneVerified'] ? existing['phoneE164'] || existing['verifiedPhoneNumber'] : '');
+    const phoneVerified = !!verifiedPhone && enteredPhone === verifiedPhone;
 
 
     await setDoc(
@@ -227,8 +219,13 @@ export class ProfileService {
         uid:
           user.uid,
 
-        fullName:
-          fullName.trim(),
+        fullName: fullName.trim(),
+        displayName: fullName.trim(),
+        firstName: fullName.trim().split(/\s+/)[0] || '',
+        lastName: fullName.trim().split(/\s+/).slice(1).join(' '),
+        phone: enteredPhone,
+        phoneE164: enteredPhone,
+        phoneLocal: cleanMobile,
 
         email:
           user.email || '',
@@ -236,8 +233,7 @@ export class ProfileService {
         mobile:
           cleanMobile,
 
-        address:
-          address.trim(),
+        addressText: address.trim(),
 
         clinic:
           clinic.trim(),
