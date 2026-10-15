@@ -191,36 +191,29 @@ export class OrderService {
     return response;
   }
 
-  async submitGcashReference(orderId: string, reference: string): Promise<void> {
-    const user = firebaseAuth.currentUser;
-    if (!user) throw new Error('Please sign in first.');
-    const clean = String(reference || '').trim().toUpperCase();
-    if (!/^[A-Z0-9-]{6,40}$/.test(clean)) {
-      throw new Error('Enter a valid GCash reference number (6–40 letters, numbers or dashes).');
-    }
-    const order = await this.getOrder(orderId);
-    if (!order || order.userId !== user.uid) throw new Error('Order not found.');
-    if (order.paymentMethod !== 'GCash (SmileHub QR)' || order.paymentStatus === 'paid') {
-      throw new Error('This order does not accept a new GCash reference.');
-    }
-    if (order.status === 'Cancelled') throw new Error('Cancelled orders cannot be paid.');
+  private pendingGcash = new Map<string, Promise<void>>();
 
+  submitGcashReference(orderId: string, reference: string): Promise<void> {
+    if (this.pendingGcash.has(orderId)) return this.pendingGcash.get(orderId)!;
+    const user = firebaseAuth.currentUser;
+    const clean = String(reference || '').trim().toUpperCase();
+    if (!user) return Promise.reject(new Error('Please sign in first.'));
+    if (!/^[A-Z0-9-]{6,40}$/.test(clean)) return Promise.reject(new Error('Enter a valid GCash reference number (6–40 letters, numbers or dashes).'));
     const claimRef = doc(firestore, 'gcash_payment_claims', orderId);
-    const existing = await getDoc(claimRef);
-    if (existing.exists()) {
-      if (existing.data()['status'] !== 'Rejected') {
-        throw new Error('Your GCash reference has already been submitted. Please wait for staff verification.');
-      }
-      await updateDoc(claimRef, {
-        reference: clean, status: 'For Verification',
-        reason: '', submittedAt: serverTimestamp()
-      });
-    } else {
-      await setDoc(claimRef, {
-        orderId, userId: user.uid, reference: clean,
-        status: 'For Verification', submittedAt: serverTimestamp()
-      });
-    }
+    const task = runTransaction(firestore, async tx => {
+      const orderSnap = await tx.get(doc(firestore, 'orders', orderId));
+      const existing = await tx.get(claimRef);
+      const order = orderSnap.exists() ? orderSnap.data() : null;
+      if (!order || order['userId'] !== user.uid || firebaseAuth.currentUser?.uid !== user.uid) throw new Error('Order not found for this account.');
+      if (!['GCash', 'GCash (SmileHub QR)'].includes(order['paymentMethod'] || order['payment']) || String(order['paymentStatus']).toLowerCase() === 'paid' || order['gcashPaymentStatus'] === 'Paid' || order['status'] === 'Cancelled') throw new Error('This order does not accept a new GCash reference.');
+      if (existing.exists()) {
+        if (existing.data()['status'] !== 'Rejected') throw new Error('Your GCash reference has already been submitted. Please wait for staff verification.');
+        tx.update(claimRef, { reference: clean, status: 'For Verification', reason: '', submittedAt: serverTimestamp() });
+      } else tx.set(claimRef, { orderId, userId: user.uid, reference: clean, status: 'For Verification', submittedAt: serverTimestamp() });
+    });
+    this.pendingGcash.set(orderId, task);
+    task.then(() => this.pendingGcash.delete(orderId), () => this.pendingGcash.delete(orderId));
+    return task;
   }
 
   watchGcashReference(orderId: string): Observable<any | null> {
@@ -229,8 +222,9 @@ export class OrderService {
         subscriber.error(new Error('Please sign in first.'));
         return;
       }
-      return onSnapshot(doc(firestore, 'gcash_payment_claims', orderId), snap => {
-        subscriber.next(snap.exists() ? { id: snap.id, ...snap.data() } : null);
+      return onSnapshot(doc(firestore, 'gcash_payment_claims', orderId), { includeMetadataChanges: true }, snap => {
+        if (snap.metadata.hasPendingWrites) return;
+        subscriber.next(snap.metadata.fromCache ? { unavailable: true } : snap.exists() ? { id: snap.id, ...snap.data() } : null);
       }, error => subscriber.error(error));
     });
   }

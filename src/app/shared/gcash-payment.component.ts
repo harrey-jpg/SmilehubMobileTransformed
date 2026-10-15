@@ -20,18 +20,19 @@ import { OrderService } from '../services/order.service';
     .gcash-total { font-size:26px; font-weight:900; color:var(--ion-color-primary,#087c94); }
     .gcash-ref-label { display:block; margin:18px 0 7px; font-weight:800; font-size:13px; text-align:left; }
     .gcash-input { width:100%; min-height:46px; padding:12px 14px; background:var(--ion-background-color,#fff);
-      color:var(--ion-text-color,#172437); border:1px solid #b8cdd6; border-radius:12px; outline:none; font-size:15px; }
+      color:var(--ion-text-color,#172437); border:1px solid #b8cdd6; border-radius:12px; box-sizing:border-box; font-size:16px; }
     .gcash-input:focus { border-color:#087c94; box-shadow:0 0 0 3px rgba(8,124,148,.12); }
     .gcash-button { width:100%; margin-top:13px; min-height:46px; border:0; border-radius:12px;
-      background:#087c94; color:white; font-weight:800; font-size:14px; }
+      background:var(--ion-color-primary,#087c94); color:var(--ion-color-primary-contrast,white); font-weight:800; font-size:14px; }
     .gcash-button:disabled { opacity:.6; }
-    .gcash-save { display:inline-block; font-weight:750; font-size:13px; margin-top:7px; color:#087c94; }
+    .gcash-save { display:inline-block; font-weight:750; font-size:13px; margin-top:7px; color:var(--ion-color-primary,#087c94); }
     .gcash-state { padding:12px; border-radius:12px; background:rgba(8,124,148,.08);
       margin:14px 0; line-height:1.6; font-size:13px; text-align:left; }
     .gcash-state strong { display:block; font-size:15px; margin-bottom:4px; }
     .gcash-help { font-size:12px!important; color:var(--ion-color-medium,#657482)!important; }
     .gcash-error { margin-top:10px; color:var(--ion-color-danger,#c53030)!important; }
-    .gcash-success { color:#168059; }
+    .gcash-success { color:var(--ion-text-color,#172437); }
+    .gcash-button:focus-visible, .gcash-save:focus-visible { outline:2px solid var(--ion-color-primary,#087c94); outline-offset:3px; }
     @media(prefers-reduced-motion:no-preference) { .gcash-panel { animation:gcashIn .35s ease both; }
       @keyframes gcashIn { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:translateY(0) } } }
   `],
@@ -50,7 +51,11 @@ import { OrderService } from '../services/order.service';
         This order can no longer be paid.
       </div>
 
-      <ng-container *ngIf="!isPaid && orderStatus !== 'Cancelled'">
+      <p *ngIf="!loaded && !unavailable" role="status">Loading payment status…</p>
+      <p *ngIf="unavailable" role="status">Payment status is unavailable. Check your connection.</p>
+      <ion-button *ngIf="unavailable" fill="outline" (click)="watch()">Retry payment status</ion-button>
+      <p *ngIf="progress" role="status" aria-live="polite">{{ progress }}</p>
+      <ng-container *ngIf="loaded && !unavailable && !isPaid && orderStatus !== 'Cancelled'">
         <div *ngIf="claim?.status === 'For Verification'" class="gcash-state" role="status">
           <strong>For Verification</strong>
           We received your reference <b>{{ claim.reference }}</b>.
@@ -100,6 +105,12 @@ export class GcashPaymentComponent implements OnChanges, OnDestroy {
   error = '';
   submitting = false;
   private subscription?: Subscription;
+  loaded = false;
+  unavailable = false;
+  progress = '';
+  private timer?: ReturnType<typeof setTimeout>;
+  private watchedOrderId = '';
+  get canSubmit(): boolean { return this.loaded && !this.unavailable && !this.isPaid && this.orderStatus !== 'Cancelled' && (!this.claim || this.claim.status === 'Rejected'); }
 
   constructor(private orders: OrderService) {}
 
@@ -107,22 +118,31 @@ export class GcashPaymentComponent implements OnChanges, OnDestroy {
   get isPaid(): boolean { return String(this.paymentStatus).toLowerCase() === 'paid' || this.claim?.status === 'Paid'; }
 
   ngOnChanges(): void {
+    if (this.watchedOrderId === this.orderId && this.subscription && !this.subscription.closed) return;
+    this.watch();
+  }
+
+  watch(): void {
+    this.watchedOrderId = this.orderId;
+    this.loaded = false; this.unavailable = false;
     this.subscription?.unsubscribe();
     this.claim = null;
     this.error = '';
     if (!this.orderId || !this.isGcash) return;
     this.subscription = this.orders.watchGcashReference(this.orderId).subscribe({
-      next: claim => { this.claim = claim; },
+      next: claim => { this.unavailable = !!claim?.unavailable; if (!this.unavailable) { this.claim = claim; this.loaded = true; } },
       error: err => {
         console.error('Unable to read payment verification status:', err);
-        this.error = 'Payment status could not be loaded. Check Firebase Firestore rules.';
+        this.unavailable = true; this.error = 'Payment status could not be loaded. Check your connection and retry.';
       }
     });
   }
 
   async submitReference(): Promise<void> {
-    if (this.submitting || !this.orderId) return;
+    if (this.submitting || !this.orderId || !this.canSubmit) return;
     this.submitting = true;
+    this.progress = 'Saving reference…';
+    this.timer = setTimeout(() => { this.progress = 'Still saving—check your connection. Do not submit again.'; }, 10000);
     this.error = '';
     try {
       await this.orders.submitGcashReference(this.orderId, this.reference);
@@ -130,12 +150,13 @@ export class GcashPaymentComponent implements OnChanges, OnDestroy {
     } catch (err: any) {
       console.error('GCash reference submission failed:', err);
       this.error = err?.code === 'permission-denied'
-        ? 'Firebase rejected this reference. Check that the new firestore.rules were deployed.'
+        ? 'Could not save this reference. Check your account and connection, then retry. Your entry is kept.'
         : String(err?.message || 'Could not submit the reference.');
     } finally {
+      clearTimeout(this.timer); this.progress = '';
       this.submitting = false;
     }
   }
 
-  ngOnDestroy(): void { this.subscription?.unsubscribe(); }
+  ngOnDestroy(): void { this.subscription?.unsubscribe(); clearTimeout(this.timer); }
 }

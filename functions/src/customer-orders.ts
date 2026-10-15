@@ -52,7 +52,7 @@ export const mobilePlaceOrder = onCall({ region: 'us-central1' }, async request 
     }
     const orderNumber = `SH-${requestId.replace(/-/g, '').slice(0, 8).toUpperCase()}`;
     for (const { ref, product, item } of products) transaction.update(ref, { stock: product.stock - item.quantity, updatedAt: FieldValue.serverTimestamp() });
-    transaction.set(orderRef, { orderId: orderRef.id, orderNumber, requestFingerprint: fingerprint, userId: uid, customerEmail: request.auth!.token.email || '', items, itemCount: items.reduce((sum, item) => sum + item.quantity, 0), shippingAddress, paymentMethod, deliveryMethod: data.deliveryMethod, ...totals, status: 'Pending', statusHistory: [{ status: 'Pending', createdAt: Timestamp.now() }], source: 'mobile', createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp() });
+    transaction.set(orderRef, { orderId: orderRef.id, orderNumber, requestFingerprint: fingerprint, userId: uid, customerEmail: request.auth!.token.email || '', items, itemCount: items.reduce((sum, item) => sum + item.quantity, 0), shippingAddress, paymentMethod, paymentStatus: 'unpaid', gcashPaymentStatus: ['GCash', 'GCash (SmileHub QR)'].includes(paymentMethod) ? 'Pending Payment' : 'Not Applicable', deliveryMethod: data.deliveryMethod, ...totals, status: 'Pending', statusHistory: [{ status: 'Pending', createdAt: Timestamp.now() }], source: 'mobile', createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp() });
     // This private server-written ledger is the proof that stock was reserved.
     // Customer-created order fields alone must never authorize a stock increase.
     transaction.set(db.collection('order_inventory').doc(orderRef.id), { userId: uid, items: requested, requestFingerprint: fingerprint, restored: false, createdAt: FieldValue.serverTimestamp() });
@@ -73,6 +73,10 @@ export const mobileCancelOrder = onCall({ region: 'us-central1' }, async request
     const order = snapshot.data()!;
     if (order.userId !== uid) throw new HttpsError('permission-denied', 'You cannot cancel this order.');
     if (order.status === 'Cancelled') return;
+    const claim = await transaction.get(db.collection('gcash_payment_claims').doc(orderId));
+    if (String(order.paymentStatus || '').toLowerCase() === 'paid' || order.gcashPaymentStatus === 'Paid' || claim.exists) {
+      throw new HttpsError('failed-precondition', 'This payment needs support assistance before cancellation.');
+    }
     if (!['Pending', 'Processing'].includes(order.status)) throw new HttpsError('failed-precondition', 'This order can no longer be cancelled.');
     const inventoryRef = db.collection('order_inventory').doc(orderId);
     const inventory = await transaction.get(inventoryRef);

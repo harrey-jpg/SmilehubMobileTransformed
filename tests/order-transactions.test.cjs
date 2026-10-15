@@ -56,3 +56,16 @@ test('server totals preserve the mobile shipping and coupon policy',()=>{
  assert.deepEqual(mobileTotals(3000,'Standard Delivery','SMILE10'),{subtotal:3000,shippingFee:0,discount:300,total:2700});
  assert.deepEqual(mobileTotals(5000,'Express Delivery','SMILE10'),{subtotal:5000,shippingFee:220,discount:349.9,total:4870.1});
 });
+
+test('paid orders and GCash claims cannot be cancelled or release inventory', async()=>{
+ for(const state of ['paid','gcash-paid','For Verification','Paid','Rejected']) {
+  const app=setup();const placed=await app.mobilePlaceOrder(app.request());
+  const order=app.records.get('orders/'+placed.orderId);
+  if(state==='paid') {order.paymentStatus='paid';order.status='Processing';}
+  else if(state==='gcash-paid') order.gcashPaymentStatus='Paid';
+  else app.records.set('gcash_payment_claims/'+placed.orderId,{status:state});
+  await assert.rejects(app.mobileCancelOrder({auth:{uid:'alice'},data:{orderId:placed.orderId}}),error=>error.code==='failed-precondition');
+  assert.notEqual(order.status,'Cancelled');assert.equal(app.records.get('products/1').stock,3);
+  assert.equal(app.records.get('order_inventory/'+placed.orderId).restored,false);
+ }
+});
