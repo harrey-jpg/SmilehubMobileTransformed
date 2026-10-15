@@ -407,8 +407,8 @@ import {
       visibility: visible;
 
       transition:
-        opacity .42s ease,
-        visibility .42s ease;
+        opacity .62s ease,
+        visibility .62s ease;
     }
 
 
@@ -711,7 +711,7 @@ import {
        ========================= */
 
     .splash-loading {
-      width: 118px;
+      width: 148px;
 
       margin-top: 24px;
 
@@ -726,7 +726,7 @@ import {
 
     .splash-loading-track {
       width: 100%;
-      height: 4px;
+      height: 6px;
 
       overflow: hidden;
 
@@ -741,7 +741,7 @@ import {
 
 
     .splash-loading-bar {
-      width: 46%;
+      width: 42%;
       height: 100%;
 
       border-radius: inherit;
@@ -755,7 +755,7 @@ import {
 
       animation:
         splashLoadingMove
-        1.15s
+        1.4s
         ease-in-out
         infinite;
     }
@@ -776,6 +776,29 @@ import {
       opacity: .88;
     }
 
+
+
+    /* Three subtle progress dots complement the logo/ring animation. */
+    .splash-dots {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 7px;
+      margin-top: 13px;
+    }
+    .splash-dots span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--ion-color-primary);
+      animation: splashDotBounce 1.05s ease-in-out infinite;
+    }
+    .splash-dots span:nth-child(2) { animation-delay: .14s; }
+    .splash-dots span:nth-child(3) { animation-delay: .28s; }
+    @keyframes splashDotBounce {
+      0%, 80%, 100% { opacity: .35; transform: translateY(0); }
+      40% { opacity: 1; transform: translateY(-7px); }
+    }
 
     /* =========================
        ANIMATIONS
@@ -968,7 +991,8 @@ import {
       .splash-brand,
       .splash-tagline,
       .splash-loading,
-      .splash-loading-bar {
+      .splash-loading-bar,
+      .splash-dots span {
         animation: none !important;
       }
 
@@ -1332,6 +1356,10 @@ import {
 
               Preparing your SmileHub experience
 
+            </div>
+
+            <div class="splash-dots" aria-hidden="true">
+              <span></span><span></span><span></span>
             </div>
 
 
@@ -1845,7 +1873,7 @@ implements OnInit {
 
           },
 
-          430
+          630
 
         );
 

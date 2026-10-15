@@ -56,6 +56,21 @@ const assetByCategory:
 };
 
 
+const BUILT_IN_PAYMENT_METHODS: PaymentMethodItem[] = [
+  {
+    title: 'Cash on Delivery',
+    subtitle: 'Pay when your order arrives',
+    icon: 'cash-outline',
+    isDefault: true
+  },
+  {
+    title: 'GCash (SmileHub QR)',
+    subtitle: 'Scan the SmileHub QR after placing your order',
+    icon: 'qr-code-outline',
+    isDefault: true
+  }
+];
+
 @Injectable({
   providedIn: 'root'
 })
@@ -108,51 +123,8 @@ export class AppStateService {
      PAYMENT METHODS
      ========================= */
 
-  paymentMethods:
-    PaymentMethodItem[] = [
-
-
-    {
-      title:
-        'Cash on Delivery',
-
-      subtitle:
-        'Pay when your order arrives',
-
-      icon:
-        'cash-outline',
-
-      isDefault:
-        true
-    },
-
-
-    {
-      title:
-        'GCash',
-
-      subtitle:
-        '•••• •••• 6789',
-
-      icon:
-        'wallet-outline'
-    },
-
-
-    {
-      title:
-        'Visa ending 1234',
-
-      subtitle:
-        'Expires 08/29',
-
-      icon:
-        'card-outline'
-    }
-
-
-  ];
-
+  paymentMethods: PaymentMethodItem[] =
+    BUILT_IN_PAYMENT_METHODS.map(method => ({ ...method }));
 
 
   constructor(public customerSync: CustomerSyncService) {
@@ -171,7 +143,13 @@ export class AppStateService {
       this.persist();
     }, methods => {
       const selectedTitle = this.selectedPayment?.title;
-      this.paymentMethods = [{ title: 'Cash on Delivery', subtitle: 'Pay when your order arrives', icon: 'cash-outline', isDefault: true }, ...methods];
+      this.paymentMethods = [
+        ...BUILT_IN_PAYMENT_METHODS.map(method => ({ ...method })),
+        ...methods.filter(method =>
+          !method.isDefault &&
+          !BUILT_IN_PAYMENT_METHODS.some(builtIn => builtIn.title === method.title)
+        )
+      ];
       this.selectedPaymentIndex = Math.max(0, this.paymentMethods.findIndex(method => method.title === selectedTitle));
       this.persist();
     });
@@ -1001,15 +979,8 @@ export class AppStateService {
      * Keep it protected.
      */
 
-    if (
-      index <= 0
-      ||
-      index >=
-        this.paymentMethods.length
-    ) {
-
+    if (!this.canManagePayment(index)) {
       return false;
-
     }
 
 
@@ -1050,15 +1021,8 @@ export class AppStateService {
      * Cash on Delivery.
      */
 
-    if (
-      index <= 0
-      ||
-      index >=
-        this.paymentMethods.length
-    ) {
-
+    if (!this.canManagePayment(index)) {
       return false;
-
     }
 
 
@@ -1127,24 +1091,11 @@ export class AppStateService {
      CAN EDIT / DELETE
      ========================= */
 
-  canManagePayment(
-    index: number
-  ): boolean {
-
-
-    return (
-
-      index > 0
-
-      &&
-
-      index <
-        this.paymentMethods.length
-
-    );
-
+  canManagePayment(index: number): boolean {
+    return index >= 0 &&
+      index < this.paymentMethods.length &&
+      !this.paymentMethods[index].isDefault;
   }
-
 
 
   /* =========================
@@ -1324,43 +1275,30 @@ export class AppStateService {
 
 
 
-      if (
-        Array.isArray(
-          value.paymentMethods
-        )
-        &&
-        value.paymentMethods.length
-      ) {
-
-
-        this.paymentMethods =
-          value.paymentMethods;
-
-      }
-
-
-
-      const restoredPaymentIndex =
-        Number(
-          value.selectedPaymentIndex
-          || 0
-        );
-
-
-      this.selectedPaymentIndex =
-
-        restoredPaymentIndex >= 0
-
-        &&
-
-        restoredPaymentIndex <
-          this.paymentMethods.length
-
-          ? restoredPaymentIndex
-
-          : 0;
-
-
+      // Restore selection by title, not index, because store payment options changed.
+      const rememberedMethods: PaymentMethodItem[] =
+        Array.isArray(value.paymentMethods) ? value.paymentMethods : [];
+      const rememberedIndex = Number(value.selectedPaymentIndex || 0);
+      const selectedTitle = rememberedMethods[rememberedIndex]?.title ||
+        BUILT_IN_PAYMENT_METHODS[0].title;
+      const savedCustomMethods = rememberedMethods.filter(method =>
+        method &&
+        typeof method.title === 'string' &&
+        typeof method.subtitle === 'string' &&
+        typeof method.icon === 'string' &&
+        !method.isDefault &&
+        !BUILT_IN_PAYMENT_METHODS.some(builtIn => builtIn.title === method.title) &&
+        !(method.title === 'GCash' && method.subtitle === '•••• •••• 6789') &&
+        !(method.title === 'Visa ending 1234' && method.subtitle === 'Expires 08/29')
+      );
+      this.paymentMethods = [
+        ...BUILT_IN_PAYMENT_METHODS.map(method => ({ ...method })),
+        ...savedCustomMethods
+      ];
+      this.selectedPaymentIndex = Math.max(
+        0,
+        this.paymentMethods.findIndex(method => method.title === selectedTitle)
+      );
 
       this.darkMode =
         !!value.darkMode;

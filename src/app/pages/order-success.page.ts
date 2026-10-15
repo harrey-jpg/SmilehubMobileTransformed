@@ -20,6 +20,7 @@ import {
 import {
   OrderService
 } from '../services/order.service';
+import { GcashPaymentComponent } from '../shared/gcash-payment.component';
 
 
 @Component({
@@ -31,7 +32,8 @@ import {
   imports: [
     RouterModule,
     IonicModule,
-    CommonModule
+    CommonModule,
+    GcashPaymentComponent
   ],
 
 
@@ -507,6 +509,73 @@ import {
 
     }
 
+
+    .gcash-payment-panel {
+      margin-top: 18px;
+      padding: 20px 16px;
+      border-radius: 20px;
+      text-align: center;
+      animation: gcashReveal .5s ease both;
+    }
+    .gcash-payment-panel h2 {
+      margin: 0 0 8px;
+      color: var(--ion-color-primary);
+      font-size: 20px;
+      font-weight: 900;
+    }
+    .gcash-payment-panel p {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .gcash-qr-box {
+      margin: 16px auto;
+      padding: 13px;
+      max-width: 320px;
+      border: 1px solid #e0e7ee;
+      border-radius: 16px;
+      background: #fff;
+    }
+    .gcash-qr-box img {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+    .gcash-amount {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 15px 0 12px;
+      font-size: 13px;
+    }
+    .gcash-amount strong {
+      color: var(--ion-color-primary);
+      font-size: 26px;
+      font-weight: 900;
+    }
+    .gcash-order-number { font-size: 13px; font-weight: 800; }
+    .gcash-save-btn {
+      display: block;
+      margin-top: 16px;
+      padding: 13px;
+      border-radius: 13px;
+      background: var(--ion-color-primary);
+      color: #fff;
+      text-align: center;
+      text-decoration: none;
+      font-weight: 900;
+    }
+    .gcash-reminder {
+      margin-top: 13px;
+      color: var(--ion-color-medium);
+    }
+    @keyframes gcashReveal {
+      from { opacity: 0; transform: translateY(14px) scale(.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .gcash-payment-panel { animation: none; }
+    }
   `],
 
 
@@ -547,7 +616,7 @@ import {
 
         <div class="success-kicker">
 
-          Order Confirmed
+          Order Received
 
         </div>
 
@@ -562,8 +631,8 @@ import {
         <p class="success-message">
 
           Thank you for shopping with SmileHub.
-          Your order has been submitted successfully
-          and is now being prepared for processing.
+          Your order has been submitted successfully.
+          Payment and fulfillment are subject to confirmation.
 
         </p>
 
@@ -637,7 +706,7 @@ import {
             </span>
 
 
-            Confirmed
+            Order Received
 
 
           </div>
@@ -664,7 +733,7 @@ import {
             {{
               orderNumber
               ||
-              'Confirmed'
+              'Pending'
             }}
 
           </div>
@@ -757,6 +826,17 @@ import {
       </div>
 
 
+
+      <!-- Live GCash QR, reference submission and verification status. -->
+      <app-gcash-payment
+        *ngIf="!loadingOrder && !loadError"
+        [orderId]="orderId"
+        [orderNumber]="orderNumber"
+        [paymentMethod]="paymentMethod"
+        [total]="total"
+        [paymentStatus]="paymentStatus"
+        [orderStatus]="orderStatus">
+      </app-gcash-payment>
 
       <!-- =========================
            ERROR
@@ -887,6 +967,9 @@ implements OnInit {
 
   paymentMethod =
     '';
+
+  paymentStatus = 'unpaid';
+  orderStatus = '';
 
 
   deliveryMethod =
@@ -1070,6 +1153,9 @@ implements OnInit {
         this.paymentMethod;
 
 
+
+      this.paymentStatus = String(order.paymentStatus || 'unpaid');
+      this.orderStatus = String(order.status || 'Pending');
 
       this.deliveryMethod =
 

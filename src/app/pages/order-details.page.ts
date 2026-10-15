@@ -25,6 +25,7 @@ import {
 import {
   OrderService
 } from '../services/order.service';
+import { GcashPaymentComponent } from '../shared/gcash-payment.component';
 
 import {
   ReviewService,
@@ -47,7 +48,8 @@ import {
   imports: [
     IonicModule,
     CommonModule,
-    FormsModule
+    FormsModule,
+    GcashPaymentComponent
   ],
 
   styles: [`
@@ -2414,6 +2416,17 @@ import {
 
         </div>
 
+
+        <!-- GCash reference may be submitted later from My Orders as well. -->
+        <app-gcash-payment
+          *ngIf="order"
+          [orderId]="currentOrderId"
+          [orderNumber]="order.orderNumber || order.number || currentOrderId"
+          [paymentMethod]="order.paymentMethod || order.payment || ''"
+          [total]="order.total || 0"
+          [paymentStatus]="order.paymentStatus || 'unpaid'"
+          [orderStatus]="order.status || ''">
+        </app-gcash-payment>
 
         <div class="app-card od-payment-card">
 

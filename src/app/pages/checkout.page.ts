@@ -1123,6 +1123,24 @@ import {
 .checkout-step { flex-direction:column; align-items:center; text-align:center; gap:4px; }
 .step-label { white-space:normal; overflow:visible; text-overflow:clip; line-height:1.3; }
 @media(max-width:759px) { .desktop-purchase-action { display:none; } }
+
+    /* Store QR payments are manual: order stays Pending until verified. */
+    .gcash-checkout-note {
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(var(--ion-color-primary-rgb), .08);
+      border: 1px solid rgba(var(--ion-color-primary-rgb), .16);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .gcash-checkout-note strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ion-color-primary);
+      font-size: 14px;
+    }
+    .gcash-checkout-note p { margin: 7px 0 0; }
 `],
 
 
@@ -1661,15 +1679,11 @@ import {
 
               <div class="payment-icon">
 
-
                 <ion-icon
-                  [name]="
-                    state.selectedPayment?.icon
-                    ||
-                    'wallet-outline'
-                  ">
+                  [name]="state.selectedPayment?.title === 'GCash (SmileHub QR)'
+                    ? 'wallet-outline'
+                    : (state.selectedPayment?.icon || 'wallet-outline')">
                 </ion-icon>
-
 
               </div>
 
@@ -1745,6 +1759,15 @@ import {
 
           </div>
 
+          <div
+            *ngIf="state.selectedPayment?.title === 'GCash (SmileHub QR)'"
+            class="gcash-checkout-note">
+            <strong>GCash QR Payment</strong>
+            <p>Once your order is placed, scan or save the SmileHub QR to pay
+              <b>{{ money(total) }}</b>.</p>
+            <p>Your order stays <b>Pending</b> until the payment is verified by SmileHub.
+              Keep your transfer receipt.</p>
+          </div>
 
         </div>
 
@@ -3223,22 +3246,14 @@ implements OnInit {
             'Place this order?',
 
 
-          message:
+          // Use plain text: Ionic alert sanitizes literal HTML such as <br>.
+          cssClass: 'smilehub-confirm-alert',
 
-            'Total: '
-            +
-            this.money(
-              this.total
-            )
-            +
-            '<br><br>Payment: '
-            +
-            payment
-            +
-            '<br>Delivery: '
-            +
-            this.delivery,
-
+          message: [
+            `Total: ${this.money(this.total)}`,
+            `Payment: ${payment}`,
+            `Delivery: ${this.delivery}`
+          ].join('\n'),
 
           buttons: [
 
@@ -3553,21 +3568,27 @@ implements OnInit {
         );
 
 
-    } catch (
-      error: any
-    ) {
+    } catch (error: any) {
+      // Show a useful message to the customer and technical details to developers.
+      // In particular, Firebase functions/internal means the server failed;
+      // changing the payment-method label will not repair the Cloud Function.
+      const errorCode = String(error?.code || 'unknown');
+      const rawMessage = String(error?.message || 'Unable to place order.');
+      console.error('[SmileHub] Place Order failed', {
+        code: errorCode,
+        message: rawMessage,
+        details: error?.details ?? null
+      }, error);
 
-
-      await this.message(
-
-        error?.message
-
-        ||
-
-        'Unable to place order.'
-
-      );
-
+      if (errorCode === 'functions/internal' || rawMessage.toLowerCase() === 'internal') {
+        await this.message(
+          'The order server encountered an error (functions/internal). ' +
+          'Please check My Orders before retrying, to avoid duplicate orders. ' +
+          'If no order appears, check the Firebase logs for mobilePlaceOrder.'
+        );
+      } else {
+        await this.message(rawMessage);
+      }
 
     } finally {
 

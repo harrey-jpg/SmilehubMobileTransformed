@@ -366,13 +366,7 @@ import { AppStateService } from '../services/app-state.service';
 
         <div class="payment-icon">
 
-
-          <ion-icon
-            [name]="
-              paymentIcon(payment)
-            ">
-          </ion-icon>
-
+          <ion-icon [name]="paymentIcon(payment)"></ion-icon>
 
         </div>
 
@@ -873,21 +867,9 @@ export class PaymentsPage {
         .toLowerCase();
 
 
-    if (
-      title.includes('cash')
-    ) {
-
+    // Keep GCash and Cash on Delivery consistent with the wallet icon.
+    if (title.includes('cash')) {
       return 'wallet-outline';
-
-    }
-
-
-    if (
-      title.includes('gcash')
-    ) {
-
-      return 'wallet-outline';
-
     }
 
 

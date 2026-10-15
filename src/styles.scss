@@ -267,3 +267,45 @@ button.recently-viewed-card { font:inherit; color:var(--ion-text-color); text-al
 .cat-pill.active { background:linear-gradient(135deg,#08758b,#086b80); }
 .muted, .section-row p { color:var(--ion-color-medium); }
 .product-card ion-button { min-height:44px; }
+
+
+// SmileHub: keep two product columns readable on normal mobile widths.
+.category-strip { gap: 9px; padding-bottom: 12px; }
+.category-bubble {
+  flex: 0 0 91px;
+  width: 91px;
+  min-width: 0;
+  padding: 2px !important;
+}
+.category-bubble > div:last-child {
+  font-size: 11.5px !important;
+  font-weight: 800;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+}
+.category-icon { width: 60px; height: 60px; margin-bottom: 7px; }
+@media (max-width: 380px) {
+  .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .category-bubble { flex-basis: 87px; width: 87px; }
+}
+@media (max-width: 330px) {
+  .product-grid { grid-template-columns: 1fr; }
+}
+
+
+/* Checkout confirmation modal: display text newlines as separate lines.
+   cssClass is attached to the Ionic overlay, which uses a shadow part. */
+ion-alert.smilehub-confirm-alert::part(message) {
+  white-space: pre-line;
+  line-height: 1.6;
+}
+
+/* Fallback for Ionic themes that use a light-DOM message element. */
+ion-alert.smilehub-confirm-alert .alert-message {
+  white-space: pre-line;
+  line-height: 1.6;
+}

@@ -46,6 +46,8 @@ import {
 
   styles: [`
 
+    :host { display: block; height: 100%; min-width: 0; }
+
     .product-card {
 
       padding: 14px;
@@ -210,6 +212,119 @@ import {
     .row-between { flex-wrap:wrap; }
     .rating-feedback { font-size:14px; line-height:1.5; }
     .rating-feedback button { min-height:44px; padding:8px; color:var(--ion-color-primary); border:0; background:transparent; text-decoration:underline; }
+
+    /* Consistent mobile product frames; preserve the existing product model. */
+    .product-card {
+      position: relative;
+      height: 100%;
+      min-width: 0;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .product-art {
+      height: clamp(132px, 38vw, 170px);
+      min-height: 0;
+      padding: 10px;
+      margin-bottom: 8px;
+    }
+    .product-image-link {
+      height: 100%;
+      min-height: 0;
+      width: 100%;
+      display: grid;
+      place-items: center;
+    }
+    .product-art img {
+      width: 100%;
+      height: 100%;
+      max-width: 128px;
+      max-height: 132px;
+      object-fit: contain;
+    }
+    .brand {
+      min-height: 17px;
+      margin: 3px 0 2px;
+      font-size: 11.5px;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+    .product-name {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+      min-height: 3.9em;
+      max-height: 3.9em;
+      margin: 2px 0 4px;
+      font-size: 13px;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+    .row-between {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px !important;
+      margin-top: 3px;
+    }
+    .row-between > span {
+      font-size: 12px !important;
+      line-height: 1.3;
+      white-space: normal !important;
+    }
+    .row-between > .price {
+      font-size: 15px !important;
+    }
+    .rating-feedback {
+      min-height: 20px;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+    .stock-pill { font-size: 10.5px; }
+    .product-card > ion-button.primary-btn {
+      flex-shrink: 0;
+      width: 100%;
+      min-height: 44px;
+      margin-top: auto !important;
+    }
+    .product-card > ion-button.cart-pop {
+      animation: cartTap .46s cubic-bezier(.2, .9, .25, 1.3) both;
+    }
+    .cart-fly {
+      position: absolute;
+      right: 16px;
+      bottom: 65px;
+      z-index: 3;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: #0b7891;
+      color: white;
+      box-shadow: 0 7px 22px rgba(11, 120, 145, .27);
+      font-size: 12px;
+      font-weight: 900;
+      pointer-events: none;
+      animation: cartFly .85s ease-out both;
+    }
+    @keyframes cartTap {
+      0% { transform: scale(1); }
+      35% { transform: scale(.94); }
+      70% { transform: scale(1.035); }
+      100% { transform: scale(1); }
+    }
+    @keyframes cartFly {
+      0% { opacity: 0; transform: translateY(14px) scale(.8); }
+      30% { opacity: 1; transform: translateY(0) scale(1.08); }
+      100% { opacity: 0; transform: translateY(-30px) scale(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .product-card > ion-button.cart-pop,
+      .cart-fly { animation: none; }
+    }
   `],
 
   template: `
@@ -402,6 +517,7 @@ import {
 
     <ion-button
       class="primary-btn"
+      [class.cart-pop]="addedToCart"
 
       size="small"
 
@@ -449,6 +565,10 @@ import {
 
     </ion-button>
 
+    <div *ngIf="addedToCart" class="cart-fly" aria-hidden="true">
+      <ion-icon name="checkmark-circle-outline"></ion-icon>
+      +1
+    </div>
 
   </div>
 
