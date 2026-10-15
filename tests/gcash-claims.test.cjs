@@ -49,9 +49,10 @@ test('mobile reference submission waits for acknowledgement and duplicate taps w
   const app = setup(), done = app.delay();
   const first = app.submitGcashReference('order-1', '12345678');
   assert.equal(app.submitGcashReference('order-1', '87654321'), first); assert.equal(app.writes(), 0);
-  done(); await first; assert.equal(app.writes(), 1);
+  done(); await first; assert.equal(app.writes(), 2);
   assert.equal(app.records.get('gcash_payment_claims/order-1').status, 'For Verification');
   assert.equal(app.records.get('orders/order-1').paymentStatus, 'unpaid');
+  assert.equal(app.records.get('notifications/gcash-submitted-order-1-12345678').type, 'payment_submitted');
 });
 test('mobile corrections preserve review history; reviewed or paid claims cannot be overwritten', async () => {
   const app = setup();
@@ -60,7 +61,7 @@ test('mobile corrections preserve review history; reviewed or paid claims cannot
   const claim = app.records.get('gcash_payment_claims/order-1');
   assert.equal(claim.reason, ''); assert.equal(claim.reviewedBy, 'staff');
   await assert.rejects(app.submitGcashReference('order-1', '12345678'));
-  assert.equal(app.writes(), 1);
+  assert.equal(app.writes(), 2);
 });
 test('mobile validates ownership, method, paid/cancelled state, input and failed writes', async () => {
   for (const value of [{ userId: 'bob' }, { paymentStatus: 'paid' }, { gcashPaymentStatus: 'Paid' }, { status: 'Cancelled' }, { paymentMethod: 'Credit Card' }]) {
@@ -69,7 +70,7 @@ test('mobile validates ownership, method, paid/cancelled state, input and failed
   }
   const app = setup(); await assert.rejects(app.submitGcashReference('order-1', '<bad>'));
   app.fail('Permission denied'); await assert.rejects(app.submitGcashReference('order-1', '12345678'));
-  app.fail(''); await app.submitGcashReference('order-1', '12345678'); assert.equal(app.writes(), 1);
+  app.fail(''); await app.submitGcashReference('order-1', '12345678'); assert.equal(app.writes(), 2);
 });
 test('mobile displays live payment states, disables offline submission, and cleans up listeners', () => {
   const app = setup(), component = new app.GcashPaymentComponent();

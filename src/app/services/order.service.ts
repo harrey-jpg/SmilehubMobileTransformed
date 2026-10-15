@@ -210,6 +210,13 @@ export class OrderService {
         if (existing.data()['status'] !== 'Rejected') throw new Error('Your GCash reference has already been submitted. Please wait for staff verification.');
         tx.update(claimRef, { reference: clean, status: 'For Verification', reason: '', submittedAt: serverTimestamp() });
       } else tx.set(claimRef, { orderId, userId: user.uid, reference: clean, status: 'For Verification', submittedAt: serverTimestamp() });
+      const number = String(order['orderNumber'] || order['number'] || orderId);
+      tx.set(doc(firestore, 'notifications', 'gcash-submitted-' + orderId + '-' + clean), {
+        userId: user.uid, orderId, orderNumber: number, kind: 'order', type: 'payment_submitted',
+        title: 'GCash reference submitted',
+        message: 'Order ' + number + ': your reference is awaiting staff verification. Payment is not confirmed yet.',
+        read: false, createdAt: serverTimestamp()
+      });
     });
     this.pendingGcash.set(orderId, task);
     task.then(() => this.pendingGcash.delete(orderId), () => this.pendingGcash.delete(orderId));
