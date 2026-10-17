@@ -1,6 +1,8 @@
 import {
   Component,
-  OnInit
+  OnInit,
+  OnDestroy,
+  NgZone
 } from '@angular/core';
 
 import {
@@ -11,16 +13,16 @@ import {
   addIcons
 } from 'ionicons';
 
-import {
-  onAuthStateChanged
-} from 'firebase/auth';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 import {
   AppStateService
 } from './services/app-state.service';
 
 import {
-  firebaseAuth
+  firebaseAuth,
+  firestore
 } from './services/firebase';
 
 import {
@@ -183,6 +185,18 @@ import {
           .09
         );
     }
+
+    .side-menu-profile { color: #fff; text-decoration: none; }
+    .side-menu-profile:focus-visible { outline: 2px solid #fff; outline-offset: -5px; }
+    .side-menu-avatar {
+      width: 54px; height: 54px; flex: 0 0 54px; border-radius: 50%;
+      display: grid; place-items: center; overflow: hidden;
+      background: rgba(255,255,255,.18); border: 2px solid rgba(255,255,255,.45);
+      color: #fff; font-size: 21px; font-weight: 800;
+    }
+    .side-menu-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .side-menu-contact { margin-top: 5px; font-size: 11px; line-height: 1.4; overflow-wrap: anywhere; }
+    .side-menu-name { overflow-wrap: anywhere; }
 
     .side-menu-brand-copy {
       min-width: 0;
@@ -375,627 +389,63 @@ import {
        ========================= */
 
     .app-splash {
-      position: fixed;
-      inset: 0;
-      z-index: 999999;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      overflow: hidden;
-
-      background:
-        radial-gradient(
-          circle at 50% 42%,
-          rgba(
-            var(--ion-color-primary-rgb),
-            .10
-          ) 0%,
-          rgba(
-            var(--ion-color-primary-rgb),
-            .035
-          ) 30%,
-          transparent 58%
-        ),
-        var(
-          --ion-background-color,
-          #f5f8fb
-        );
-
-      opacity: 1;
-      visibility: visible;
-
-      transition:
-        opacity .62s ease,
-        visibility .62s ease;
+      position: fixed; inset: 0; z-index: 999999;
+      display: grid; place-items: center; overflow: hidden;
+      background: radial-gradient(circle at 50% 42%, rgba(var(--ion-color-primary-rgb), .10), transparent 60%), var(--ion-background-color, #f5f8fb);
+      opacity: 1; transition: opacity 280ms ease;
     }
-
-
-    .app-splash.splash-closing {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
+    .app-splash.splash-closing { opacity: 0; pointer-events: none; }
+    .splash-content { width: min(88vw, 340px); text-align: center; transform: translateY(-12px); }
+    .splash-logo-stage { position: relative; width: 148px; height: 148px; margin: 0 auto; }
+    .splash-halo {
+      position: absolute; inset: 5px; border-radius: 50%;
+      background: rgba(var(--ion-color-primary-rgb), .07);
+      border: 1px solid rgba(var(--ion-color-primary-rgb), .13);
+      animation: splashHalo 1.6s ease-in-out infinite;
     }
-
-
-    /* =========================
-       DECORATIVE BACKGROUND
-       ========================= */
-
-    .splash-orb {
-      position: absolute;
-
-      border-radius: 50%;
-
-      pointer-events: none;
-
-      filter: blur(1px);
-
-      background:
-        rgba(
-          var(--ion-color-primary-rgb),
-          .08
-        );
-
-      animation:
-        splashOrbFloat
-        4s
-        ease-in-out
-        infinite
-        alternate;
-    }
-
-
-    .splash-orb-one {
-      width: 170px;
-      height: 170px;
-
-      top: -55px;
-      right: -55px;
-    }
-
-
-    .splash-orb-two {
-      width: 130px;
-      height: 130px;
-
-      bottom: -35px;
-      left: -40px;
-
-      animation-delay: .5s;
-    }
-
-
-    /* =========================
-       CONTENT
-       ========================= */
-
-    .splash-content {
-      position: relative;
-      z-index: 2;
-
-      width: min(
-        88vw,
-        340px
-      );
-
-      display: flex;
-      flex-direction: column;
-
-      align-items: center;
-      justify-content: center;
-
-      text-align: center;
-
-      transform:
-        translateY(-12px);
-    }
-
-
-    /* =========================
-       LOGO AREA
-       ========================= */
-
-    .splash-logo-stage {
-      position: relative;
-
-      width: 118px;
-      height: 118px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      animation:
-        splashStageEnter
-        .72s
-        cubic-bezier(
-          .2,
-          .85,
-          .25,
-          1
-        )
-        both;
-    }
-
-
-    .splash-ring {
-      position: absolute;
-
-      inset: 5px;
-
-      border-radius: 31px;
-
-      border:
-        1px solid
-        rgba(
-          var(--ion-color-primary-rgb),
-          .18
-        );
-
-      animation:
-        splashRingPulse
-        1.8s
-        ease-out
-        .4s
-        infinite;
-    }
-
-
-    .splash-ring-two {
-      inset: -5px;
-
-      opacity: .55;
-
-      animation-delay: .7s;
-    }
-
-
     .splash-logo {
-      position: relative;
-
-      width: 88px;
-      height: 88px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 26px;
-
-      background:
-        linear-gradient(
-          145deg,
-          #0f839a,
-          #22b8c9 58%,
-          #39d0dc
-        );
-
-      box-shadow:
-        0 15px 38px
-        rgba(
-          var(--ion-color-primary-rgb),
-          .24
-        );
-
-      overflow: hidden;
-
-      animation:
-        splashLogoBreath
-        2.1s
-        ease-in-out
-        .8s
-        infinite
-        alternate;
+      position: relative; width: 148px; height: 148px; display: block; object-fit: contain;
+      animation: splashLogoEnter 500ms cubic-bezier(.2,.8,.25,1) both;
     }
-
-
-    .splash-logo::after {
-      content: '';
-
-      position: absolute;
-
-      width: 42px;
-      height: 145px;
-
-      top: -28px;
-      left: -55px;
-
-      transform:
-        rotate(22deg);
-
-      background:
-        linear-gradient(
-          to right,
-          transparent,
-          rgba(255,255,255,.33),
-          transparent
-        );
-
-      animation:
-        splashLogoShine
-        2.2s
-        ease-in-out
-        .8s
-        infinite;
-    }
-
-
-    .splash-tooth {
-      position: relative;
-      z-index: 2;
-
-      display: block;
-
-      font-size: 50px;
-
-      line-height: 1;
-
-      filter:
-        drop-shadow(
-          0 3px 4px
-          rgba(0,0,0,.12)
-        );
-
-      animation:
-        splashToothFloat
-        1.35s
-        ease-in-out
-        .7s
-        infinite
-        alternate;
-    }
-
-
-    /* =========================
-       BRAND TEXT
-       ========================= */
-
     .splash-brand {
-      margin-top: 15px;
-
-      color:
-        var(
-          --ion-text-color,
-          #101828
-        );
-
-      font-size: 29px;
-      line-height: 1;
-
-      font-weight: 950;
-
-      letter-spacing: -.7px;
-
-      animation:
-        splashTextEnter
-        .58s
-        ease
-        .22s
-        both;
+      margin-top: 18px; color: var(--ion-text-color); font-size: 29px;
+      line-height: 1; font-weight: 950; letter-spacing: -.7px;
+      animation: splashTextEnter 420ms ease 120ms both;
     }
-
-
-    .splash-brand-accent {
-      color:
-        var(--ion-color-primary);
-    }
-
-
+    .splash-brand-accent { color: var(--ion-color-primary); }
     .splash-tagline {
-      margin-top: 8px;
-
-      color:
-        var(--ion-color-medium);
-
-      font-size: 10px;
-
-      font-weight: 800;
-
-      letter-spacing: 1.15px;
-
-      text-transform: uppercase;
-
-      animation:
-        splashTextEnter
-        .58s
-        ease
-        .34s
-        both;
+      margin-top: 9px; color: var(--ion-color-medium); font-size: 10px;
+      font-weight: 800; letter-spacing: 1.15px; text-transform: uppercase;
+      animation: splashTextEnter 420ms ease 180ms both;
     }
-
-
-    /* =========================
-       LOADING INDICATOR
-       ========================= */
-
-    .splash-loading {
-      width: 148px;
-
-      margin-top: 24px;
-
-      animation:
-        splashTextEnter
-        .5s
-        ease
-        .46s
-        both;
-    }
-
-
-    .splash-loading-track {
-      width: 100%;
-      height: 6px;
-
-      overflow: hidden;
-
-      border-radius: 999px;
-
-      background:
-        rgba(
-          var(--ion-color-primary-rgb),
-          .12
-        );
-    }
-
-
+    .splash-loading { width: 148px; margin: 24px auto 0; }
+    .splash-loading-track { height: 4px; overflow: hidden; border-radius: 99px; background: rgba(var(--ion-color-primary-rgb), .12); }
     .splash-loading-bar {
-      width: 42%;
-      height: 100%;
-
-      border-radius: inherit;
-
-      background:
-        linear-gradient(
-          90deg,
-          var(--ion-color-primary),
-          #31c7d7
-        );
-
-      animation:
-        splashLoadingMove
-        1.4s
-        ease-in-out
-        infinite;
+      width: 45%; height: 100%; border-radius: inherit;
+      background: linear-gradient(90deg, var(--ion-color-primary), #31c7d7);
+      animation: splashLoadingMove 1.1s ease-in-out infinite;
     }
-
-
-    .splash-loading-text {
-      margin-top: 9px;
-
-      color:
-        var(--ion-color-medium);
-
-      font-size: 8px;
-
-      font-weight: 700;
-
-      letter-spacing: .3px;
-
-      opacity: .88;
+    .splash-loading-text { margin-top: 11px; color: var(--ion-color-medium); font-size: 11px; }
+    @keyframes splashLogoEnter {
+      from { opacity: 0; transform: translate3d(0, 8px, 0) scale(.92); }
+      to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
     }
-
-
-
-    /* Three subtle progress dots complement the logo/ring animation. */
-    .splash-dots {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 7px;
-      margin-top: 13px;
+    @keyframes splashHalo {
+      0%, 100% { transform: scale(.94); opacity: .55; }
+      50% { transform: scale(1.08); opacity: 1; }
     }
-    .splash-dots span {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--ion-color-primary);
-      animation: splashDotBounce 1.05s ease-in-out infinite;
-    }
-    .splash-dots span:nth-child(2) { animation-delay: .14s; }
-    .splash-dots span:nth-child(3) { animation-delay: .28s; }
-    @keyframes splashDotBounce {
-      0%, 80%, 100% { opacity: .35; transform: translateY(0); }
-      40% { opacity: 1; transform: translateY(-7px); }
-    }
-
-    /* =========================
-       ANIMATIONS
-       ========================= */
-
-    @keyframes splashStageEnter {
-
-      0% {
-        opacity: 0;
-
-        transform:
-          translateY(18px)
-          scale(.74);
-      }
-
-      70% {
-        opacity: 1;
-
-        transform:
-          translateY(-2px)
-          scale(1.045);
-      }
-
-      100% {
-        opacity: 1;
-
-        transform:
-          translateY(0)
-          scale(1);
-      }
-
-    }
-
-
-    @keyframes splashRingPulse {
-
-      0% {
-        opacity: .55;
-
-        transform:
-          scale(.82);
-      }
-
-      70% {
-        opacity: .12;
-
-        transform:
-          scale(1.12);
-      }
-
-      100% {
-        opacity: 0;
-
-        transform:
-          scale(1.18);
-      }
-
-    }
-
-
-    @keyframes splashLogoBreath {
-
-      from {
-        transform:
-          translateY(0)
-          scale(1);
-      }
-
-      to {
-        transform:
-          translateY(-2px)
-          scale(1.02);
-      }
-
-    }
-
-
-    @keyframes splashLogoShine {
-
-      0%,
-      28% {
-        left: -55px;
-      }
-
-      65%,
-      100% {
-        left: 110px;
-      }
-
-    }
-
-
-    @keyframes splashToothFloat {
-
-      from {
-        transform:
-          translateY(1px)
-          rotate(-1deg)
-          scale(1);
-      }
-
-      to {
-        transform:
-          translateY(-3px)
-          rotate(1deg)
-          scale(1.035);
-      }
-
-    }
-
-
     @keyframes splashTextEnter {
-
-      from {
-        opacity: 0;
-
-        transform:
-          translateY(10px);
-      }
-
-      to {
-        opacity: 1;
-
-        transform:
-          translateY(0);
-      }
-
+      from { opacity: 0; transform: translate3d(0, 6px, 0); }
+      to { opacity: 1; transform: translate3d(0, 0, 0); }
     }
-
-
     @keyframes splashLoadingMove {
-
-      0% {
-        transform:
-          translateX(-115%);
-      }
-
-      50% {
-        transform:
-          translateX(78%);
-      }
-
-      100% {
-        transform:
-          translateX(220%);
-      }
-
+      0% { transform: translateX(-110%); }
+      100% { transform: translateX(325%); }
     }
-
-
-    @keyframes splashOrbFloat {
-
-      from {
-        transform:
-          translate3d(
-            0,
-            0,
-            0
-          )
-          scale(1);
-      }
-
-      to {
-        transform:
-          translate3d(
-            10px,
-            12px,
-            0
-          )
-          scale(1.06);
-      }
-
-    }
-
-
-    /* =========================
-       REDUCED MOTION
-       ========================= */
-
-    @media (
-      prefers-reduced-motion: reduce
-    ) {
-
-      .splash-orb,
-      .splash-logo-stage,
-      .splash-ring,
-      .splash-logo,
-      .splash-logo::after,
-      .splash-tooth,
-      .splash-brand,
-      .splash-tagline,
-      .splash-loading,
-      .splash-loading-bar,
-      .splash-dots span {
-        animation: none !important;
-      }
-
+    @media (prefers-reduced-motion: reduce) {
+      .app-splash { transition: none; }
+      .splash-logo, .splash-halo, .splash-brand, .splash-tagline, .splash-loading-bar { animation: none; }
+      .splash-loading-bar { width: 100%; opacity: .6; }
     }
 
   `],
@@ -1010,6 +460,7 @@ import {
            ===================== -->
 
       <ion-split-pane
+        [attr.inert]="showSplash && !splashClosing ? '' : null"
         contentId="main-content"
         when="lg">
 
@@ -1026,27 +477,29 @@ import {
 
             <ion-toolbar class="side-menu-toolbar">
 
-              <div class="side-menu-brand">
-
-                <div
-                  class="side-menu-logo"
-                  aria-hidden="true">
-                  🦷
-                </div>
-
-                <div class="side-menu-brand-copy">
-
-                  <div class="side-menu-name">
-                    SmileHub
+              <ion-menu-toggle [autoHide]="false">
+                <a class="side-menu-brand side-menu-profile"
+                   [routerLink]="menuSignedIn ? '/account' : '/login'"
+                   [attr.aria-label]="menuSignedIn ? 'View your profile' : 'Sign in to SmileHub'">
+                  <div class="side-menu-avatar">
+                    <img *ngIf="menuPhoto && failedPhoto !== menuPhoto; else profileFallback"
+                         [src]="menuPhoto" [alt]="menuName + ' profile picture'"
+                         (error)="failedPhoto = menuPhoto">
+                    <ng-template #profileFallback>
+                      <span *ngIf="menuSignedIn; else guestIcon">{{ menuInitials }}</span>
+                      <ng-template #guestIcon><ion-icon name="person-outline"></ion-icon></ng-template>
+                    </ng-template>
                   </div>
-
-                  <div class="side-menu-tagline">
-                    Dental supplies made simple
+                  <div class="side-menu-brand-copy">
+                    <div class="side-menu-name">{{ menuName }}</div>
+                    <div class="side-menu-contact" *ngIf="menuPhone">{{ menuPhone }}</div>
+                    <div class="side-menu-contact" *ngIf="menuEmail">{{ menuEmail }}</div>
+                    <div class="side-menu-contact" *ngIf="!menuPhone && !menuEmail">
+                      {{ menuSignedIn ? 'View your profile' : 'Sign in to your account' }}
+                    </div>
                   </div>
-
-                </div>
-
-              </div>
+                </a>
+              </ion-menu-toggle>
 
             </ion-toolbar>
 
@@ -1119,7 +572,7 @@ import {
                     <ion-label>Cart</ion-label>
                     <ion-badge
                       color="danger"
-                      *ngIf="state.cartCount > 0">
+                      data-cart-badge *ngIf="state.cartCount > 0">
                       {{ menuBadgeText(state.cartCount) }}
                     </ion-badge>
                   </ion-item>
@@ -1203,10 +656,18 @@ import {
                     class="side-menu-item"
                     [class.menu-active]="isMenuActive('/about')">
                     <ion-icon slot="start" name="information-circle-outline"></ion-icon>
-                    <ion-label>About the App</ion-label>
+                    <ion-label>About Us</ion-label>
                   </ion-item>
                 </ion-menu-toggle>
 
+
+                <ion-menu-toggle [autoHide]="false">
+                  <ion-item button detail="false" lines="none" routerLink="/contact-us"
+                    class="side-menu-item" [class.menu-active]="isMenuActive('/contact-us')">
+                    <ion-icon slot="start" name="headset-outline"></ion-icon>
+                    <ion-label>Contact Us</ion-label>
+                  </ion-item>
+                </ion-menu-toggle>
 
                 <ion-menu-toggle [autoHide]="false">
                   <ion-item
@@ -1254,123 +715,22 @@ import {
            ANIMATED SPLASH
            ===================== -->
 
-      <div
-        class="app-splash"
-
-        *ngIf="showSplash"
-
-        [class.splash-closing]="
-          splashClosing
-        ">
-
-
-        <!-- BACKGROUND ORBS -->
-
-        <div
-          class="
-            splash-orb
-            splash-orb-one
-          ">
-        </div>
-
-
-        <div
-          class="
-            splash-orb
-            splash-orb-two
-          ">
-        </div>
-
-
-
+      <div class="app-splash" *ngIf="showSplash" [class.splash-closing]="splashClosing"
+        role="status" aria-live="polite" aria-label="Loading SmileHub">
         <div class="splash-content">
-
-
-          <!-- LOGO -->
-
           <div class="splash-logo-stage">
-
-
-            <div class="splash-ring">
-            </div>
-
-
-            <div
-              class="
-                splash-ring
-                splash-ring-two
-              ">
-            </div>
-
-
-            <div class="splash-logo">
-
-              <span class="splash-tooth">
-
-                🦷
-
-              </span>
-
-            </div>
-
-
+            <div class="splash-halo" aria-hidden="true"></div>
+            <img class="splash-logo" src="/assets/branding/smilehub-logo.png"
+              alt="SmileHub logo" width="148" height="148" fetchpriority="high">
           </div>
-
-
-
-          <!-- BRAND -->
-
-          <div class="splash-brand">
-
-            Smile<span
-              class="splash-brand-accent">
-              Hub
-            </span>
-
-          </div>
-
-
-
-          <div class="splash-tagline">
-
-            Dental Supplies
-
-          </div>
-
-
-
-          <!-- LOADING -->
-
+          <div class="splash-brand">Smile<span class="splash-brand-accent">Hub</span></div>
+          <div class="splash-tagline">Dental Supplies</div>
           <div class="splash-loading">
-
-
-            <div class="splash-loading-track">
-
-              <div class="splash-loading-bar">
-              </div>
-
-            </div>
-
-
-            <div class="splash-loading-text">
-
-              Preparing your SmileHub experience
-
-            </div>
-
-            <div class="splash-dots" aria-hidden="true">
-              <span></span><span></span><span></span>
-            </div>
-
-
+            <div class="splash-loading-track" aria-hidden="true"><div class="splash-loading-bar"></div></div>
+            <div class="splash-loading-text">Getting things ready…</div>
           </div>
-
-
         </div>
-
-
       </div>
-
 
     </ion-app>
 
@@ -1379,8 +739,55 @@ import {
 
 
 export class AppComponent
-implements OnInit {
+implements OnInit, OnDestroy {
 
+
+  menuSignedIn = false;
+  menuName = 'Guest';
+  menuEmail = '';
+  menuPhone = '';
+  menuPhoto = '';
+  failedPhoto = '';
+  private stopAuth?: () => void;
+  private stopProfile?: () => void;
+
+  get menuInitials(): string {
+    return this.menuName.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase();
+  }
+
+  private watchMenuProfile(user: User | null): void {
+    this.stopProfile?.();
+    this.stopProfile = undefined;
+    this.menuSignedIn = !!user;
+    this.menuName = user?.displayName?.trim() || (user ? 'My account' : 'Guest');
+    this.menuEmail = user?.email || '';
+    this.menuPhone = user?.phoneNumber || '';
+    this.menuPhoto = user?.photoURL || '';
+    this.failedPhoto = '';
+    if (!user) return;
+
+    this.stopProfile = onSnapshot(doc(firestore, 'users', user.uid), snapshot => {
+      if (firebaseAuth.currentUser?.uid !== user.uid) return;
+      const data = snapshot.data() || {};
+      this.zone.run(() => {
+        this.menuName = String([data['firstName'], data['lastName']].filter(Boolean).join(' ')
+          || data['fullName'] || data['displayName'] || user.displayName || 'My account');
+        this.menuEmail = String(user.email || data['email'] || '');
+        this.menuPhone = String(data['phoneLocal'] || data['mobile'] || data['phoneE164']
+          || data['phone'] || user.phoneNumber || '');
+        this.menuPhoto = data['photoRemoved'] ? '' : String(data['photoDataUrl']
+          || data['photoURL'] || user.photoURL || '');
+      });
+    }, error => console.warn('Profile details could not be refreshed.', error));
+  }
+
+  ngOnDestroy(): void {
+    this.stopAuth?.();
+    this.stopProfile?.();
+    if (this.splashFallbackTimer) clearTimeout(this.splashFallbackTimer);
+    if (this.splashCloseTimer) clearTimeout(this.splashCloseTimer);
+    if (this.splashRemoveTimer) clearTimeout(this.splashRemoveTimer);
+  }
 
   /* =========================
      SPLASH STATE
@@ -1405,7 +812,11 @@ implements OnInit {
 
   private readonly minimumSplashTime:
     number =
-    1650;
+    900;
+
+  private splashFallbackTimer?: ReturnType<typeof setTimeout>;
+  private splashCloseTimer?: ReturnType<typeof setTimeout>;
+  private splashRemoveTimer?: ReturnType<typeof setTimeout>;
 
 
 
@@ -1419,7 +830,9 @@ implements OnInit {
       AppStateService,
 
     private router:
-      Router
+      Router,
+
+    private zone: NgZone
 
   ) {
 
@@ -1569,6 +982,8 @@ implements OnInit {
         .split('?')[0];
 
 
+    if (path === '/contact-us') return ['/contact-us', '/contact-support'].includes(currentPath);
+
     if (
       path === '/catalog'
     ) {
@@ -1648,7 +1063,6 @@ implements OnInit {
         '/payments',
         '/add-payment',
         '/help',
-        '/contact-support',
         '/notifications',
         '/verify-phone'
 
@@ -1705,11 +1119,12 @@ implements OnInit {
      */
 
 
-    onAuthStateChanged(
+    this.stopAuth = onAuthStateChanged(
 
       firebaseAuth,
 
       user => {
+        this.zone.run(() => this.watchMenuProfile(user));
 
 
         if (
@@ -1795,7 +1210,7 @@ implements OnInit {
      * if Firebase takes too long.
      */
 
-    setTimeout(
+    this.splashFallbackTimer = setTimeout(
 
       () => {
 
@@ -1816,76 +1231,19 @@ implements OnInit {
      FINISH SPLASH
      ========================= */
 
-  private finishSplash():
-    void {
-
-
-    if (
-      this.splashFinished
-    ) {
-
-
-      return;
-
-
-    }
-
-
-    this.splashFinished =
-      true;
-
-
-    const elapsed =
-      Date.now()
-      -
-      this.splashStartedAt;
-
-
-    const remaining =
-      Math.max(
-
-        0,
-
-        this.minimumSplashTime
-        -
-        elapsed
-
-      );
-
-
-    setTimeout(
-
-      () => {
-
-
-        this.splashClosing =
-          true;
-
-
-        setTimeout(
-
-          () => {
-
-
-            this.showSplash =
-              false;
-
-
-          },
-
-          630
-
-        );
-
-
-      },
-
-      remaining
-
-    );
-
-
+  private finishSplash(): void {
+    if (this.splashFinished) return;
+    this.splashFinished = true;
+    if (this.splashFallbackTimer) clearTimeout(this.splashFallbackTimer);
+    const reducedMotion = typeof window !== 'undefined'
+      && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const minimum = reducedMotion ? 0 : this.minimumSplashTime;
+    const remaining = Math.max(0, minimum - (Date.now() - this.splashStartedAt));
+    this.splashCloseTimer = setTimeout(() => {
+      this.zone.run(() => { this.splashClosing = true; });
+      this.splashRemoveTimer = setTimeout(() => {
+        this.zone.run(() => { this.showSplash = false; });
+      }, reducedMotion ? 0 : 300);
+    }, remaining);
   }
-
-
 }

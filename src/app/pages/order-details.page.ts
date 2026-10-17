@@ -1,3 +1,4 @@
+import { firmnessOptionsFor, isFirmness } from '../models/product';
 import {
   Component,
   OnDestroy
@@ -1940,8 +1941,10 @@ import {
                 </span>
 
 
+                <span class="od-item-meta" *ngIf="item.firmness">
+                  Bristle firmness: {{ item.firmness }}
+                </span>
                 <span class="od-item-meta">
-
                   Qty {{ item.quantity || 1 }}
 
                   •
@@ -3814,6 +3817,11 @@ private async showOtherReasonPrompt():
         }
 
 
+        if (item.firmness && (!isFirmness(item.firmness) || !firmnessOptionsFor(product).includes(item.firmness))) {
+          unavailable.push(String(product.name) + ' (' + String(item.firmness) + ')');
+          continue;
+        }
+
         const requested =
           Math.max(
 
@@ -3930,7 +3938,8 @@ private async showOtherReasonPrompt():
         this.state
           .addToCart(
             id,
-            quantityToAdd
+            quantityToAdd,
+            item.firmness
           );
 
 

@@ -1168,7 +1168,9 @@ import {
                 <div class="cart-product-name">
 
                   {{ item.product.name }}
-
+                </div>
+                <div class="muted" *ngIf="item.firmness" style="margin:6px 0;font-size:12px">
+                  Bristle firmness: <strong>{{ item.firmness }}</strong>
                 </div>
 
 
@@ -1667,161 +1669,23 @@ export class CartPage {
      ========================= */
 
   get items() {
-
-
-    const known =
-      new Set(
-
-        this.state.products.map(
-          product =>
-            product.id
-        )
-
-      );
-
-
-    return [
-
-      ...this.state.cart.entries()
-
-    ]
-
-      .filter(
-
-        ([id]) =>
-          known.has(id)
-
-      )
-
-      .map(
-
-        ([id, qty]) => ({
-
-          product:
-            this.state.productById(id),
-
-          qty
-
-        })
-
-      );
-
-
+    return this.state.cartEntries.flatMap(([key, qty]) => {
+      const product = this.state.products.find(item => item.id === this.state.productIdForCartKey(key));
+      return product ? [{ key, product, qty, firmness: this.state.firmnessForCartKey(key) }] : [];
+    });
   }
 
-
-
-  /* =========================
-     ITEM SELECTION
-     ========================= */
-
-  private readonly unselectedIds =
-    new Set<number>();
-
-
-  isSelected(
-    item: any
-  ):
-    boolean {
-
-
-    const id =
-      Number(
-        item?.product?.id
-      );
-
-
-    return (
-      Number.isFinite(id)
-      &&
-      !this.unselectedIds.has(id)
-    );
-
-
+  private readonly unselectedIds = new Set<string>();
+  isSelected(item: any): boolean { return !!item?.key && !this.unselectedIds.has(item.key); }
+  setSelected(item: any, checked: boolean): void {
+    if (!item?.key) return;
+    if (checked) this.unselectedIds.delete(item.key);
+    else this.unselectedIds.add(item.key);
   }
-
-
-  setSelected(
-    item: any,
-    checked: boolean
-  ):
-    void {
-
-
-    const id =
-      Number(
-        item?.product?.id
-      );
-
-
-    if (
-      !Number.isFinite(id)
-    ) {
-
-      return;
-
-    }
-
-
-    if (
-      checked
-    ) {
-
-      this.unselectedIds.delete(id);
-
-    } else {
-
-      this.unselectedIds.add(id);
-
-    }
-
-
+  toggleAll(checked: boolean): void {
+    this.unselectedIds.clear();
+    if (!checked) this.items.forEach(item => this.unselectedIds.add(item.key));
   }
-
-
-  toggleAll(
-    checked: boolean
-  ):
-    void {
-
-
-    if (
-      checked
-    ) {
-
-      this.unselectedIds.clear();
-
-      return;
-
-    }
-
-
-    for (
-      const item
-      of this.items
-    ) {
-
-
-      const id =
-        Number(
-          item.product.id
-        );
-
-
-      if (
-        Number.isFinite(id)
-      ) {
-
-        this.unselectedIds.add(id);
-
-      }
-
-
-    }
-
-
-  }
-
 
   get selectedItems() {
 
@@ -2024,20 +1888,7 @@ export class CartPage {
     }
 
 
-    const selected =
-      this.selectedItems
-        .map(
-          item =>
-            Number(
-              item.product.id
-            )
-        )
-        .filter(
-          id =>
-            Number.isFinite(id)
-        )
-        .join(',');
-
+    const selected = this.selectedItems.map(item => item.key).join(',');
 
     await this.router.navigate(
 
@@ -2090,24 +1941,7 @@ export class CartPage {
      TRACK ITEM
      ========================= */
 
-  trackItem(
-    index: number,
-    item: any
-  ) {
-
-
-    return (
-
-      item?.product?.id
-
-      ??
-
-      index
-
-    );
-
-
-  }
+  trackItem(_index: number, item: any): string { return item.key; }
 
 
 
@@ -2243,7 +2077,7 @@ export class CartPage {
 
 
     return (
-      item.qty >= stock
+      this.state.quantityFor(item.product.id) >= stock
     );
 
 
@@ -2271,9 +2105,8 @@ export class CartPage {
 
 
     this.state
-      .setCartQuantity(
-
-        item.product.id,
+      .setCartLineQuantity(
+        item.key,
 
         item.qty - 1
 
@@ -2303,7 +2136,7 @@ export class CartPage {
     if (
       stock !== null
       &&
-      item.qty >= stock
+      this.state.quantityFor(item.product.id) >= stock
     ) {
 
 
@@ -2329,9 +2162,8 @@ export class CartPage {
 
 
     this.state
-      .setCartQuantity(
-
-        item.product.id,
+      .setCartLineQuantity(
+        item.key,
 
         item.qty + 1
 
@@ -2396,16 +2228,12 @@ export class CartPage {
 
 
                 this.state
-                  .removeFromCart(
-                    item.product.id
+                  .removeCartLine(
+                    item.key
                   );
 
 
-                this.unselectedIds.delete(
-                  Number(
-                    item.product.id
-                  )
-                );
+                this.unselectedIds.delete(item.key);
 
 
                 void this.showToast(

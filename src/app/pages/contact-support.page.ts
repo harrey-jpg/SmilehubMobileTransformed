@@ -1,3 +1,4 @@
+import { firebaseAuth } from '../services/firebase';
 import { Component } from '@angular/core';
 import {
   ActivatedRoute,
@@ -38,15 +39,14 @@ import {
 
     <ion-buttons slot="start">
 
-      <ion-back-button
-        defaultHref="/account">
-      </ion-back-button>
+      <ion-menu-button menu="main-menu" aria-label="Open navigation menu"></ion-menu-button>
+      <ion-back-button defaultHref="/home"></ion-back-button>
 
     </ion-buttons>
 
 
     <ion-title>
-      Contact Support
+      Contact Us
     </ion-title>
 
   </ion-toolbar>
@@ -59,6 +59,14 @@ import {
 
 <div class="page-wrap no-bottom">
 
+
+  <div class="app-card">
+    <h2>Contact SmileHub</h2>
+    <p class="muted">Have a product question or need help with an order, delivery, payment,
+      or your account? Send a message using the form below.</p>
+    <p class="muted" *ngIf="!isSignedIn">Please sign in so we can link your message to your account.</p>
+    <ion-button *ngIf="!isSignedIn" routerLink="/login" fill="outline">Sign In</ion-button>
+  </div>
 
   <!-- CONTACT FORM -->
 
@@ -96,7 +104,7 @@ import {
 
           name="concern"
 
-          [disabled]="submitting">
+          [disabled]="submitting || !isSignedIn">
 
 
           <ion-select-option
@@ -184,7 +192,7 @@ import {
 
           maxlength="1000"
 
-          [disabled]="submitting">
+          [disabled]="submitting || !isSignedIn">
         </ion-textarea>
 
 
@@ -228,7 +236,7 @@ import {
 
         class="primary-btn"
 
-        [disabled]="submitting">
+        [disabled]="submitting || !isSignedIn">
 
 
         <ion-spinner
@@ -384,6 +392,8 @@ import {
 
 
 export class ContactSupportPage {
+  get isSignedIn(): boolean { return !!firebaseAuth.currentUser; }
+
 
 
   concern =

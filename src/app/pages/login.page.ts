@@ -213,9 +213,7 @@ import {
 
     <div class="logo">
 
-      <span class="logo-mark">
-        🦷
-      </span>
+      <img class="logo-mark" src="assets/branding/smilehub-logo.png" alt="SmileHub logo" width="40" height="40">
 
       <span>
         SmileHub

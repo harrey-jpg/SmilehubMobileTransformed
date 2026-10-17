@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, onSnapshot, runTransaction, serverTimestamp, setDoc } from 'firebase/firestore';
-import { PaymentMethodItem } from '../models/product';
+import { PaymentMethodItem, CartVariant } from '../models/product';
 import { ToastController } from '@ionic/angular';
 import { firebaseAuth, firestore } from './firebase';
 
@@ -11,6 +11,7 @@ export interface SharedListItem {
   price?: number;
   image?: string;
   quantity?: number;
+  variants?: CartVariant[];
 }
 type ListName = 'carts' | 'wishlists';
 

@@ -68,10 +68,8 @@ ion-toggle { --handle-width: 22px; }
 .logo { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 900; color: #0f839a; letter-spacing: 0.2px; }
 body.dark .logo { color: #5fd3e3; }
 .logo-mark {
-  width: 40px; height: 40px; border-radius: 14px;
-  background: linear-gradient(135deg, #0f839a, #20c4d8);
-  display: grid; place-items: center; font-size: 22px;
-  box-shadow: var(--sh-shadow-sm);
+  width: 40px; height: 40px; flex: 0 0 40px;
+  display: block; object-fit: contain;
 }
 .hero-title { font-size: 32px; line-height: 1.05; font-weight: 900; margin: 18px 0 8px; letter-spacing: -0.5px; }
 .muted { color: var(--ion-color-medium, #64748b); line-height: 1.5; }
@@ -308,4 +306,23 @@ ion-alert.smilehub-confirm-alert::part(message) {
 ion-alert.smilehub-confirm-alert .alert-message {
   white-space: pre-line;
   line-height: 1.6;
+}
+
+// Lightweight cart feedback shared by every Add to Cart surface.
+.cart-add-button { transition: transform 140ms ease; touch-action: manipulation; }
+.cart-add-button:active:not([disabled]) { transform: scale(.97); }
+[data-cart-badge] { transform-origin: center; }
+ion-toast.smilehub-cart-toast {
+  --background: var(--ion-card-background);
+  --color: var(--ion-text-color);
+  --border-radius: 16px;
+  --box-shadow: var(--sh-shadow-md);
+  --width: max-content;
+  --max-width: calc(100% - 32px);
+  font-weight: 700;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cart-add-button { transition: none; }
+  .cart-add-button:active:not([disabled]) { transform: none; }
 }

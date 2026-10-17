@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { OnboardingPage } from './pages/onboarding.page';
 import { LoginPage } from './pages/login.page';
 import { SignupPage } from './pages/signup.page';
 import { HomePage } from './pages/home.page';
@@ -29,7 +28,8 @@ import { AboutPage } from './pages/about.page';
 import { DevelopersPage } from './pages/developers.page';
 
 const routes: Routes = [
-  { path: '', component: OnboardingPage },
+  { path: '', pathMatch: 'full', redirectTo: 'home' },
+  { path: 'onboarding', pathMatch: 'full', redirectTo: 'home' },
   { path: 'login', component: LoginPage },
   { path: 'signup', component: SignupPage },
   { path: 'home', component: HomePage },
@@ -50,6 +50,7 @@ const routes: Routes = [
   { path: 'add-payment', component: AddPaymentPage },
   { path: 'help', component: HelpSupportPage },
   { path: 'contact-support', component: ContactSupportPage },
+  { path: 'contact-us', component: ContactSupportPage },
   { path: 'verify-phone', component: VerifyPhonePage },
   { path: 'notifications', component: NotificationsPage },
   { path: 'chatbot', component: ChatbotPage },

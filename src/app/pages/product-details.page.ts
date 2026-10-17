@@ -33,7 +33,7 @@ import {
 } from '../services/notification.service';
 
 import {
-  Product
+  Product, Firmness, firmnessOptionsFor
 } from '../models/product';
 
 
@@ -51,6 +51,21 @@ import {
 
 
   styles: [`
+    .firmness-card { margin: 16px 0; }
+    .firmness-card h2 { margin: 0 0 12px; font-size: 15px; }
+    .firmness-options { display: flex; gap: 10px; flex-wrap: wrap; }
+    .firmness-options button {
+      flex: 1; min-height: 44px; padding: 10px 14px; border-radius: 12px;
+      border: 1px solid var(--ion-color-medium); background: var(--ion-card-background);
+      color: var(--ion-text-color); font: inherit; font-weight: 700; cursor: pointer;
+    }
+    .firmness-options button.selected {
+      border: 2px solid var(--ion-color-primary);
+      color: var(--ion-color-primary); background: rgba(var(--ion-color-primary-rgb), .1);
+    }
+    .firmness-options button:focus-visible { outline: 3px solid var(--ion-color-primary); outline-offset: 3px; }
+    .firmness-card p { margin: 10px 0 0; font-size: 12px; line-height: 1.5; }
+
 
     /* =========================
        PAGE
@@ -1300,6 +1315,17 @@ button.related-card { font:inherit; color:var(--ion-text-color); text-align:left
 
 
 
+    <section class="app-card firmness-card" *ngIf="firmnessOptions.length" aria-labelledby="firmness-label">
+      <h2 id="firmness-label">Choose Bristle Firmness</h2>
+      <div class="firmness-options" role="group" aria-labelledby="firmness-label">
+        <button type="button" *ngFor="let option of firmnessOptions"
+          [class.selected]="selectedFirmness === option"
+          [attr.aria-pressed]="selectedFirmness === option"
+          (click)="selectedFirmness = option">{{ option }}</button>
+      </div>
+      <p class="muted" aria-live="polite">Selected: {{ selectedFirmness }}. Your choice will appear in your cart and order.</p>
+    </section>
+
     <!-- =========================
          QUANTITY
          ========================= -->
@@ -1603,6 +1629,11 @@ button.related-card { font:inherit; color:var(--ion-text-color); text-align:left
 
 
     <div class="app-card details-card">
+      <div class="detail-row" *ngIf="firmnessOptions.length">
+        <span class="detail-label">Bristle firmness</span>
+        <span class="detail-value">{{ selectedFirmness }}</span>
+      </div>
+
 
 
       <div class="detail-row">
@@ -2063,6 +2094,9 @@ implements OnInit, OnDestroy {
     Product;
 
 
+  selectedFirmness: Firmness | '' = '';
+  get firmnessOptions(): Firmness[] { return firmnessOptionsFor(this.product); }
+
   quantity =
     1;
 
@@ -2233,6 +2267,9 @@ implements OnInit, OnDestroy {
 
     this.product =
       found;
+    if (!this.selectedFirmness || !this.firmnessOptions.includes(this.selectedFirmness)) {
+      this.selectedFirmness = this.firmnessOptions[0] || '';
+    }
 
 
     this.state
@@ -3074,8 +3111,8 @@ implements OnInit, OnDestroy {
       .addToCart(
 
         this.product.id,
-
-        this.quantity
+        this.quantity,
+        this.selectedFirmness
 
       );
 
@@ -3194,7 +3231,7 @@ implements OnInit, OnDestroy {
         {
 
           queryParams: {
-
+            firmness: this.selectedFirmness || null,
             productId:
               this.product.id,
 

@@ -13,6 +13,12 @@ import { IonicModule } from '@ionic/angular';
   ],
   styles: [`
 
+    .about-copy { margin: 0; font-size: 13px; line-height: 1.7; }
+    .about-copy + .about-copy { margin-top: 12px; }
+    .product-guide { display: grid; gap: 12px; }
+    .product-guide h3 { margin: 0 0 6px; font-size: 14px; }
+    .product-guide p { margin: 0; font-size: 12px; line-height: 1.65; }
+
     .about-page {
       padding-bottom: 28px;
     }
@@ -320,7 +326,7 @@ import { IonicModule } from '@ionic/angular';
         </ion-buttons>
 
         <ion-title>
-          About the App
+          About Us
         </ion-title>
 
       </ion-toolbar>
@@ -334,7 +340,7 @@ import { IonicModule } from '@ionic/angular';
         <section class="about-hero">
 
           <div class="about-logo">
-            🦷
+            <img src="assets/branding/smilehub-logo.png" alt="SmileHub logo" width="52" height="52" style="object-fit:contain">
           </div>
 
           <div class="about-kicker">
@@ -356,6 +362,56 @@ import { IonicModule } from '@ionic/angular';
 
         </section>
 
+
+        <h2 class="about-section-title">Company History</h2>
+        <section class="tech-card" aria-label="Company history">
+          <!-- Replace this general project background with approved company milestones when available. -->
+          <p class="about-copy">SmileHub was developed around a simple goal: to make dental
+            supplies easier to browse and order. The application brings product discovery,
+            shopping lists, delivery information, and order tracking into one place for
+            dental professionals, clinics, students, and healthcare teams.</p>
+          <p class="about-copy">Today, the SmileHub experience includes a searchable catalog,
+            product details, customer accounts, order history, and support for product and
+            purchase questions. Its focus is a straightforward shopping experience from
+            finding supplies to reviewing an order.</p>
+        </section>
+
+        <h2 class="about-section-title">About Our Products</h2>
+        <div class="product-guide">
+          <article class="tech-card">
+            <h3>Oral Care</h3>
+            <p>Browse toothbrushes, floss picks, toothpaste, and mouthwash. Toothbrush product
+              details include selectable Soft, Medium, and Hard bristle options. Review the
+              product description, brand, pack information, and available stock before ordering.</p>
+          </article>
+          <article class="tech-card">
+            <h3>Instruments &amp; Equipment</h3>
+            <p>Explore dental mirrors, probes, tweezers, scaler sets, curing lights, and other
+              clinic equipment. Check each listing's specifications and manufacturer instructions
+              for materials, intended use, cleaning, and compatibility.</p>
+          </article>
+          <article class="tech-card">
+            <h3>Protective &amp; Disposable Supplies</h3>
+            <p>Find gloves, masks, face shields, gowns, bibs, cotton rolls, and applicators.
+              Sizes, quantities, and product specifications depend on the individual listing;
+              review them when preparing clinic or patient-care supplies.</p>
+          </article>
+          <article class="tech-card">
+            <h3>Restorative, Impression &amp; Orthodontic Supplies</h3>
+            <p>Browse composites, bonding agents, impression materials, trays, and orthodontic
+              accessories. Confirm the required shade, material, pack size, and compatibility
+              in the product information before purchase.</p>
+          </article>
+          <article class="tech-card">
+            <h3>Choosing Your Product</h3>
+            <p>Open a product to view its description, price, brand, category, SKU when available,
+              stock, specifications, and customer reviews. Select an available option and quantity
+              before adding it to your cart or using Buy Now.</p>
+            <ion-button fill="outline" routerLink="/catalog">Browse Products</ion-button>
+            <ion-button fill="clear" routerLink="/contact-us"
+              [queryParams]="{concern: 'Product inquiry'}">Ask About a Product</ion-button>
+          </article>
+        </div>
 
         <h2 class="about-section-title">
           Main Features
@@ -419,50 +475,6 @@ import { IonicModule } from '@ionic/angular';
         </div>
 
 
-        <h2 class="about-section-title">
-          Technology
-        </h2>
-
-
-        <div class="tech-card">
-
-          <div class="tech-row">
-            <ion-icon name="phone-portrait-outline"></ion-icon>
-            <div>
-              <div class="tech-name">
-                Ionic Angular
-              </div>
-              <div class="tech-copy">
-                Responsive mobile interface and navigation.
-              </div>
-            </div>
-          </div>
-
-          <div class="tech-row">
-            <ion-icon name="shield-checkmark-outline"></ion-icon>
-            <div>
-              <div class="tech-name">
-                Firebase
-              </div>
-              <div class="tech-copy">
-                Authentication, Firestore data, and app services.
-              </div>
-            </div>
-          </div>
-
-          <div class="tech-row">
-            <ion-icon name="medical-outline"></ion-icon>
-            <div>
-              <div class="tech-name">
-                Dental Ecommerce
-              </div>
-              <div class="tech-copy">
-                Built around the SmileHub customer purchase flow.
-              </div>
-            </div>
-          </div>
-
-        </div>
 
       </div>
 

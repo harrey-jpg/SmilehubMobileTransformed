@@ -1,3 +1,4 @@
+import { Firmness, firmnessOptionsFor, isFirmness } from '../models/product';
 import {
   Injectable
 } from '@angular/core';
@@ -55,6 +56,7 @@ export class OrderService {
       throw new Error('Choose between 1 and 50 products before checking out.');
     }
     const requested = new Map<number, number>();
+    const requestedVariants = new Map<number, Map<Firmness | '', number>>();
     for (const item of rawItems) {
       const id = Number(item?.productId);
       const qty = Number(item?.quantity);
@@ -64,6 +66,11 @@ export class OrderService {
       const next = (requested.get(id) || 0) + qty;
       if (next > 100) throw new Error('Too many units of the same product.');
       requested.set(id, next);
+      const firmness = item?.firmness || '';
+      if (firmness !== '' && !isFirmness(firmness)) throw new Error('Choose a valid product option.');
+      const variants = requestedVariants.get(id) || new Map<Firmness | '', number>();
+      variants.set(firmness, (variants.get(firmness) || 0) + qty);
+      requestedVariants.set(id, variants);
     }
 
     const payment = String(payload?.paymentMethod || '').trim();
@@ -93,7 +100,7 @@ export class OrderService {
       throw new Error('Please complete your delivery address and contact number.');
     }
 
-    const fingerprintBody = { uid: user.uid, products: [...requested], payment, delivery, coupon, address };
+    const fingerprintBody = { uid: user.uid, products: [...requested], variants: [...requestedVariants].map(([id, variants]) => [id, [...variants]]), payment, delivery, coupon, address };
     const fingerprintBytes = await crypto.subtle.digest(
       'SHA-256', new TextEncoder().encode(JSON.stringify(fingerprintBody))
     );
@@ -137,14 +144,26 @@ export class OrderService {
         if (!Number.isSafeInteger(stock) || stock < quantity) {
           throw new Error(`Insufficient stock for ${String(product['name'] || 'an item')}.`);
         }
-        items.push({
-          productId,
-          name: String(product['name'] || '').slice(0, 200),
-          brand: String(product['brand'] || '').slice(0, 120),
-          category: String(product['category'] || '').slice(0, 120),
-          price, quantity,
-          lineTotal: round(price * quantity)
-        });
+        const options = firmnessOptionsFor(product);
+        const variants = new Map<Firmness | '', number>();
+        for (const [requestedFirmness, count] of requestedVariants.get(productId)!) {
+          const firmness = requestedFirmness || options[0] || '';
+          if (firmness && !options.includes(firmness)) {
+            throw new Error(`The selected option for ${String(product['name'] || 'this product')} is no longer available.`);
+          }
+          variants.set(firmness, (variants.get(firmness) || 0) + count);
+        }
+        for (const [firmness, count] of variants) {
+          items.push({
+            productId,
+            name: String(product['name'] || '').slice(0, 200),
+            brand: String(product['brand'] || '').slice(0, 120),
+            category: String(product['category'] || '').slice(0, 120),
+            ...(firmness ? { firmness } : {}),
+            price, quantity: count,
+            lineTotal: round(price * count)
+          });
+        }
       }
       const subtotal = round(items.reduce((sum, item) => sum + item.lineTotal, 0));
       const shippingFee = delivery === 'Express Delivery' ? 220 : subtotal >= 3000 ? 0 : 120;

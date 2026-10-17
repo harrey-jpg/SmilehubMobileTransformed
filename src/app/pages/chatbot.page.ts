@@ -1,3 +1,4 @@
+import { CartFeedbackService } from '../services/cart-feedback.service';
 import {
   Component,
   ViewChild,
@@ -720,7 +721,7 @@ interface UiChatMessage extends ChatMessage {
         <ion-badge
           class="chat-cart-badge"
           color="danger"
-          *ngIf="state.cartCount > 0">
+          data-cart-badge *ngIf="state.cartCount > 0">
 
           {{ badgeText(state.cartCount) }}
 
@@ -931,14 +932,15 @@ interface UiChatMessage extends ChatMessage {
 
                   <ion-button
                     size="small"
-                    [disabled]="isOutOfStock(product)"
+                    class="cart-add-button"
+                    [disabled]="isOutOfStock(product) || cartFeedback.isAdding(product.id)"
                     (click)="
                       addRecommendedToCart(
                         $event,
                         product
                       )
                     ">
-                    Add
+                    {{ cartFeedback.isAdding(product.id) ? 'Added!' : 'Add' }}
                   </ion-button>
                 </div>
               </div>
@@ -1050,14 +1052,15 @@ interface UiChatMessage extends ChatMessage {
 
                     <ion-button
                       size="small"
-                      [disabled]="isOutOfStock(product)"
+                      class="cart-add-button"
+                    [disabled]="isOutOfStock(product) || cartFeedback.isAdding(product.id)"
                       (click)="
                         addRecommendedToCart(
                           $event,
                           product
                         )
                       ">
-                      Add
+                      {{ cartFeedback.isAdding(product.id) ? 'Added!' : 'Add' }}
                     </ion-button>
 
                   </div>
@@ -1223,7 +1226,8 @@ export class ChatbotPage implements OnDestroy {
     private orderService: OrderService,
     private router: Router,
     private alertController: AlertController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    public cartFeedback: CartFeedbackService
   ) {
 
     this.clearLegacySharedChatHistory();
@@ -1481,33 +1485,10 @@ export class ChatbotPage implements OnDestroy {
     this.viewProduct(productId);
   }
 
-  async addRecommendedToCart(
-    event: Event,
-    product: any
-  ): Promise<void> {
+  async addRecommendedToCart(event: Event, product: any): Promise<void> {
     event.stopPropagation();
-
-    if (
-      !product ||
-      this.isOutOfStock(product)
-    ) {
-      return;
-    }
-
-    this.state.addToCart(
-      product.id
-    );
-
-    const toast =
-      await this.toastController
-        .create({
-          message:
-            `${product.name} added to cart.`,
-          duration: 1400,
-          position: 'bottom'
-        });
-
-    await toast.present();
+    if (!product || this.isOutOfStock(product) || this.cartFeedback.isAdding(product.id)) return;
+    this.cartFeedback.add(product.id, 1, undefined, event);
   }
 
   viewCart():
@@ -2452,7 +2433,7 @@ export class ChatbotPage implements OnDestroy {
       cartSummary: {
 
         itemCount:
-          this.state.cartCount,
+          Array.from(this.state.cart.values()).reduce((total, quantity) => total + quantity, 0),
 
         subtotal:
           this.state.subtotal,

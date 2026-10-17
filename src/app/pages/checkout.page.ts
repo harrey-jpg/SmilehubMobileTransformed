@@ -1,3 +1,7 @@
+import { ParamMap } from '@angular/router';
+import { OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Firmness, firmnessOptionsFor, isFirmness } from '../models/product';
 import {
   Component,
   OnInit
@@ -1849,6 +1853,9 @@ import {
                 <div class="checkout-item-name">
                   {{ item.product.name }}
                 </div>
+                <div class="muted" *ngIf="item.firmness" style="margin:6px 0;font-size:12px">
+                  Bristle firmness: <strong>{{ item.firmness }}</strong>
+                </div>
 
 
                 <div class="checkout-item-meta">
@@ -2201,7 +2208,7 @@ import {
 
 
 export class CheckoutPage
-implements OnInit {
+implements OnInit, OnDestroy {
 
 
   address:
@@ -2234,8 +2241,10 @@ implements OnInit {
     1;
 
 
+  buyNowFirmness: Firmness | '' = '';
+
   selectedCartIds:
-    number[] |
+    string[] |
     null =
     null;
 
@@ -2276,14 +2285,22 @@ implements OnInit {
      INITIAL LOAD
      ========================= */
 
-  async ngOnInit():
-    Promise<void> {
+  private checkoutRoute?: Subscription;
 
+  ngOnInit(): void {
+    this.checkoutRoute = this.route.queryParamMap.subscribe(params => this.readCheckoutSelection(params));
+    void this.loadAddress();
+  }
+
+  ngOnDestroy(): void { this.checkoutRoute?.unsubscribe(); }
+
+  private readCheckoutSelection(params: ParamMap): void {
+    this.buyNowProductId = null;
+    this.selectedCartIds = null;
+    this.buyNowFirmness = '';
 
     const productIdParam =
-      this.route
-        .snapshot
-        .queryParamMap
+      params
         .get(
           'productId'
         );
@@ -2317,10 +2334,11 @@ implements OnInit {
     }
 
 
+    const requestedFirmness = params.get('firmness');
+    this.buyNowFirmness = isFirmness(requestedFirmness) ? requestedFirmness : '';
+
     const selectedParam =
-      this.route
-        .snapshot
-        .queryParamMap
+      params
         .get(
           'selected'
         );
@@ -2333,22 +2351,10 @@ implements OnInit {
     ) {
 
 
-      const selectedIds =
-        selectedParam
-          .split(',')
-          .map(
-            value =>
-              Number(
-                value.trim()
-              )
-          )
-          .filter(
-            id =>
-              Number.isFinite(id)
-              &&
-              id > 0
-          );
-
+      const selectedIds = selectedParam.split(',').map(value => value.trim())
+        .flatMap(value => /^\d+$/.test(value)
+          ? [String(Number(value))]
+          : /^\d+:(Soft|Medium|Hard)?$/.test(value) ? [value] : []);
 
       this.selectedCartIds =
         Array.from(
@@ -2362,9 +2368,7 @@ implements OnInit {
     const quantity =
       Number(
 
-        this.route
-          .snapshot
-          .queryParamMap
+        params
           .get(
             'quantity'
           )
@@ -2395,7 +2399,7 @@ implements OnInit {
         : 1;
 
 
-    await this.loadAddress();
+
 
 
   }
@@ -2520,119 +2524,29 @@ implements OnInit {
      CHECKOUT ITEMS
      ========================= */
 
-  get checkoutItems():
-    [number, number][] {
-
-
-    if (
-      this.buyNowProductId !== null
-    ) {
-
-
-      return [
-
-        [
-          this.buyNowProductId,
-          this.buyNowQuantity
-        ]
-
-      ];
-
-
+  get checkoutItems(): [string, number][] {
+    if (this.buyNowProductId !== null) {
+      const product = this.state.products.find(item => item.id === this.buyNowProductId);
+      if (!product) return [];
+      const firmness = this.buyNowFirmness || firmnessOptionsFor(product)[0] || '';
+      return [[this.state.cartKeyFor(this.buyNowProductId, firmness), this.buyNowQuantity]];
     }
-
-
-    const cartEntries = [
-
-      ...this.state
-        .cart
-        .entries()
-
-    ];
-
-
-    if (
-      this.selectedCartIds === null
-    ) {
-
-
-      return cartEntries;
-
-
-    }
-
-
-    const selected =
-      new Set(
-        this.selectedCartIds
-      );
-
-
-    return cartEntries
-      .filter(
-
-        ([id]) =>
-          selected.has(
-            Number(id)
-          )
-
-      );
-
-
+    const entries = this.state.cartEntries;
+    if (this.selectedCartIds === null) return entries;
+    return entries.filter(([key]) => this.selectedCartIds!.includes(key)
+      || this.selectedCartIds!.includes(String(this.state.productIdForCartKey(key))));
   }
-
-
 
   /* =========================
      ORDER ITEMS
      ========================= */
 
   get orderItems() {
-
-
-    return this.checkoutItems
-
-      .map(
-
-        (
-          [
-            id,
-            quantity
-          ]
-        ) => {
-
-
-          const product =
-            this.state
-              .productById(
-                id
-              );
-
-
-          return {
-
-            product,
-
-            quantity
-
-          };
-
-
-        }
-
-      )
-
-      .filter(
-
-        item =>
-          !!item.product
-
-      );
-
-
+    return this.checkoutItems.flatMap(([key, quantity]) => {
+      const product = this.state.products.find(item => item.id === this.state.productIdForCartKey(key));
+      return product ? [{ product, quantity, firmness: this.state.firmnessForCartKey(key) }] : [];
+    });
   }
-
-
 
   /* =========================
      PRODUCT IMAGE
@@ -2840,6 +2754,11 @@ implements OnInit {
       }
 
 
+      if (item.firmness && !firmnessOptionsFor(latest).includes(item.firmness)) {
+        await this.message('This product option is no longer available. Please choose another option from Product Details.');
+        return false;
+      }
+
       const stock =
         this.getNumericStock(
           latest
@@ -2849,7 +2768,8 @@ implements OnInit {
       if (
         stock !== null
         &&
-        item.quantity > stock
+        this.orderItems.filter(row => row.product.id === item.product.id)
+          .reduce((total, row) => total + row.quantity, 0) > stock
       ) {
 
 
@@ -3425,6 +3345,7 @@ implements OnInit {
 
                 productId:
                   item.product.id,
+                firmness: item.firmness,
 
 
                 name:
@@ -3524,7 +3445,7 @@ implements OnInit {
 
 
           this.state
-            .removeFromCart(
+            .removeCartLine(
               id
             );
 

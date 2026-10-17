@@ -1,3 +1,4 @@
+import { CartFeedbackService } from '../services/cart-feedback.service';
 import {
   Component,
   Input,
@@ -289,9 +290,6 @@ import {
       min-height: 44px;
       margin-top: auto !important;
     }
-    .product-card > ion-button.cart-pop {
-      animation: cartTap .46s cubic-bezier(.2, .9, .25, 1.3) both;
-    }
     .cart-fly {
       position: absolute;
       right: 16px;
@@ -310,19 +308,12 @@ import {
       pointer-events: none;
       animation: cartFly .85s ease-out both;
     }
-    @keyframes cartTap {
-      0% { transform: scale(1); }
-      35% { transform: scale(.94); }
-      70% { transform: scale(1.035); }
-      100% { transform: scale(1); }
-    }
     @keyframes cartFly {
       0% { opacity: 0; transform: translateY(14px) scale(.8); }
       30% { opacity: 1; transform: translateY(0) scale(1.08); }
       100% { opacity: 0; transform: translateY(-30px) scale(1); }
     }
     @media (prefers-reduced-motion: reduce) {
-      .product-card > ion-button.cart-pop,
       .cart-fly { animation: none; }
     }
   `],
@@ -516,8 +507,7 @@ import {
          ========================= -->
 
     <ion-button
-      class="primary-btn"
-      [class.cart-pop]="addedToCart"
+      class="primary-btn cart-add-button"
 
       size="small"
 
@@ -528,7 +518,7 @@ import {
       [disabled]="
         isOut()
         ||
-        addingToCart
+        addingToCart || cartFeedback.isAdding(product.id)
       "
 
       (click)="
@@ -567,7 +557,7 @@ import {
 
     <div *ngIf="addedToCart" class="cart-fly" aria-hidden="true">
       <ion-icon name="checkmark-circle-outline"></ion-icon>
-      +1
+      Added to Cart
     </div>
 
   </div>
@@ -658,7 +648,8 @@ implements OnChanges, OnDestroy {
       ToastController,
 
     private reviewService:
-      ReviewService
+      ReviewService,
+    public cartFeedback: CartFeedbackService
 
   ) {}
 
@@ -1099,183 +1090,26 @@ implements OnChanges, OnDestroy {
      ADD TO CART
      ========================= */
 
-  async addToCart(
-    event: Event
-  ):
-    Promise<void> {
-
-
+  async addToCart(event: Event): Promise<void> {
     event.stopPropagation();
-
-
-
-    if (
-      this.isOut()
-      ||
-      this.addingToCart
-    ) {
-
-
-      return;
-
-
-    }
-
-
-
-    /*
-     * Extra stock protection.
-     */
-
-    const currentInCart =
-      this.state
-        .quantityFor(
-          this.product.id
-        );
-
-
-
-    if (
-      this.numericStock !== null
-
-      &&
-
-      currentInCart >=
-        this.numericStock
-    ) {
-
-
-      const toast =
-        await this
-          .toastController
-          .create({
-
-
-            message:
-              'All available stock is already in your cart.',
-
-
-            duration:
-              1400,
-
-
-            position:
-              'bottom'
-
-
-          });
-
-
-
+    if (this.isOut() || this.addingToCart || this.cartFeedback.isAdding(this.product.id)) return;
+    const currentInCart = this.state.quantityFor(this.product.id);
+    if (this.numericStock !== null && currentInCart >= this.numericStock) {
+      const toast = await this.toastController.create({
+        message: 'All available stock is already in your cart.', duration: 1400, position: 'bottom'
+      });
       await toast.present();
-
-
-
       return;
-
-
     }
-
-
-
-    this.addingToCart =
-      true;
-
-
-
-    try {
-
-
-      this.state
-        .addToCart(
-          this.product.id
-        );
-
-
-
-      /*
-       * Temporary Added state
-       */
-
-      this.addedToCart =
-        true;
-
-
-
-      if (
-        this.addedTimer
-      ) {
-
-
-        clearTimeout(
-          this.addedTimer
-        );
-
-
-      }
-
-
-
-      this.addedTimer =
-        setTimeout(
-
-          () => {
-
-
-            this.addedToCart =
-              false;
-
-
-          },
-
-          1200
-
-        );
-
-
-
-      /*
-       * Toast notification
-       */
-
-      const toast =
-        await this
-          .toastController
-          .create({
-
-
-            message:
-              `${this.product.name} added to cart.`,
-
-
-            duration:
-              1400,
-
-
-            position:
-              'bottom'
-
-
-          });
-
-
-
-      await toast.present();
-
-
-    } finally {
-
-
-      this.addingToCart =
-        false;
-
-
-    }
-
-
+    if (!this.cartFeedback.add(this.product.id, 1, undefined, event)) return;
+    this.addingToCart = true;
+    this.addedToCart = true;
+    if (this.addedTimer) clearTimeout(this.addedTimer);
+    this.addedTimer = setTimeout(() => {
+      this.addedToCart = false;
+      this.addingToCart = false;
+    }, this.cartFeedback.feedbackDuration);
   }
-
-
 
   /* =========================
      OUT OF STOCK

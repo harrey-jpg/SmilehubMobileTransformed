@@ -13,6 +13,11 @@ import { firestore } from './firebase';
 
 import {
   Product,
+  Firmness,
+  CartVariant,
+  firmnessOptionsFor,
+  normalizeCartVariants,
+  isFirmness,
   PaymentMethodItem,
   ShippingAddress
 } from '../models/product';
@@ -95,6 +100,8 @@ export class AppStateService {
     new Map<number, number>();
 
 
+  private cartVariants = new Map<number, CartVariant[]>();
+
   couponApplied =
     false;
 
@@ -138,7 +145,12 @@ export class AppStateService {
     } catch (error) { console.warn('Could not back up the legacy shopping cache', error); }
     this.customerSync.connect((name, items) => {
       const valid = items.filter(item => Number.isInteger(Number(item.id)) && Number(item.id) > 0);
-      if (name === 'carts') this.cart = new Map(valid.filter(item => Number.isInteger(Number(item.quantity)) && Number(item.quantity) > 0).map(item => [Number(item.id), Number(item.quantity)]));
+      if (name === 'carts') {
+        const rows = valid.filter(item => Number.isSafeInteger(Number(item.quantity)) && Number(item.quantity) > 0);
+        this.cart = new Map(rows.map(item => [Number(item.id), Number(item.quantity)]));
+        this.cartVariants = new Map(rows.map(item => [Number(item.id),
+          normalizeCartVariants(item, this.defaultFirmness(Number(item.id)))]));
+      }
       else this.wishlist = new Set(valid.map(item => Number(item.id)));
       this.persist();
     }, methods => {
@@ -290,6 +302,8 @@ export class AppStateService {
               imageAsset:
                 image,
 
+              firmnessOptions: firmnessOptionsFor(value),
+
 
               sku:
                 (
@@ -375,6 +389,7 @@ export class AppStateService {
 
 
           this.cart.delete(id);
+          this.cartVariants.delete(id);
 
           pruned = true;
 
@@ -498,7 +513,7 @@ export class AppStateService {
      ========================= */
 
   productById(
-    id: number
+    id: number | string
   ): Product {
 
 
@@ -506,7 +521,7 @@ export class AppStateService {
 
       this.products.find(
         product =>
-          product.id === id
+          product.id === Number(String(id).split(':')[0])
       )
 
       ||
@@ -643,20 +658,8 @@ export class AppStateService {
 
 
 
-  get cartCount():
-    number {
-
-
-    return Array
-      .from(
-        this.cart.values()
-      )
-      .reduce(
-        (total, quantity) =>
-          total + quantity,
-        0
-      );
-
+  get cartCount(): number {
+    return this.cart.size;
   }
 
 
@@ -808,73 +811,106 @@ export class AppStateService {
      ADD TO CART
      ========================= */
 
-  addToCart(id: number, quantity = 1): void {
-    if (!Number.isInteger(quantity) || quantity <= 0 || !this.products.some(product => product.id === id)) return;
+  private defaultFirmness(id: number): Firmness | '' {
+    return firmnessOptionsFor(this.products.find(product => product.id === id))[0] || '';
+  }
+
+  cartKeyFor(id: number, firmness: Firmness | '' = ''): string {
+    return String(id) + ':' + firmness;
+  }
+
+  productIdForCartKey(key: string): number {
+    return Number(key.split(':')[0]);
+  }
+
+  firmnessForCartKey(key: string): Firmness | '' {
+    const value = key.split(':')[1];
+    return isFirmness(value) ? value : '';
+  }
+
+  private variantsFor(id: number): CartVariant[] {
+    return normalizeCartVariants({ quantity: this.quantityFor(id), variants: this.cartVariants.get(id) }, this.defaultFirmness(id));
+  }
+
+  get cartEntries(): [string, number][] {
+    return [...this.cart.keys()].flatMap(id => this.variantsFor(id)
+      .map(variant => [this.cartKeyFor(id, variant.firmness), variant.quantity] as [string, number]));
+  }
+
+  private storeVariants(id: number, variants: CartVariant[]): void {
+    const total = variants.reduce((sum, variant) => sum + variant.quantity, 0);
+    if (total) {
+      this.cart.set(id, total);
+      this.cartVariants.set(id, variants);
+    } else {
+      this.cart.delete(id);
+      this.cartVariants.delete(id);
+    }
+    this.persist();
+  }
+
+  addToCart(id: number, quantity = 1, firmness?: Firmness | ''): void {
+    const product = this.products.find(value => value.id === id);
+    if (!Number.isSafeInteger(quantity) || quantity <= 0 || !product) return;
+    const options = firmnessOptionsFor(product);
+    const selected: Firmness | '' = firmness && options.includes(firmness) ? firmness : options[0] || '';
+    const change = (variants: CartVariant[]) => {
+      const result = variants.map(row => ({ ...row }));
+      const existing = result.find(row => row.firmness === selected);
+      if (existing) existing.quantity += quantity;
+      else result.push({ firmness: selected, quantity });
+      return result;
+    };
     const item = this.sharedItem(id);
     this.customerSync.change('carts', items => {
       const existing = items.find(value => Number(value.id) === id);
-      return [...items.filter(value => Number(value.id) !== id), { ...item, quantity: Number(existing?.quantity || 0) + quantity }];
+      const variants = change(normalizeCartVariants(existing || {}, options[0] || ''));
+      return [...items.filter(value => Number(value.id) !== id), {
+        ...item, variants, quantity: variants.reduce((sum, row) => sum + row.quantity, 0)
+      }];
     });
-
-
-    this.cart.set(
-
-      id,
-
-      this.quantityFor(id)
-      +
-      quantity
-
-    );
-
-
-    this.persist();
-
+    this.storeVariants(id, change(this.variantsFor(id)));
   }
 
-
-
+  // Legacy product-level operations remain available for the AI assistant.
   setCartQuantity(id: number, quantity: number): void {
-    if (!Number.isInteger(quantity) || quantity < 0) return;
+    if (!Number.isSafeInteger(quantity) || quantity < 0) return;
     const item = this.sharedItem(id);
-    this.customerSync.change('carts', items => [...items.filter(value => Number(value.id) !== id), ...(quantity ? [{ ...item, quantity }] : [])]);
-
-
-    if (quantity <= 0) {
-
-
-      this.cart.delete(id);
-
-
-    } else {
-
-
-      this.cart.set(
-        id,
-        quantity
-      );
-
-    }
-
-
-    this.persist();
-
+    const defaultFirmness = this.defaultFirmness(id);
+    this.customerSync.change('carts', items => {
+      const previous = items.find(value => Number(value.id) === id);
+      const variants = normalizeCartVariants({ quantity, variants: previous?.variants }, defaultFirmness);
+      return [...items.filter(value => Number(value.id) !== id), ...(quantity ? [{ ...item, quantity, variants }] : [])];
+    });
+    this.storeVariants(id, normalizeCartVariants({ quantity, variants: this.variantsFor(id) }, defaultFirmness));
   }
 
+  setCartLineQuantity(key: string, quantity: number): void {
+    if (!Number.isSafeInteger(quantity) || quantity < 0) return;
+    const id = this.productIdForCartKey(key);
+    const firmness = this.firmnessForCartKey(key);
+    if (!this.cartEntries.some(([existing]) => existing === key)) return;
+    const change = (variants: CartVariant[]) => variants
+      .map(row => row.firmness === firmness ? { ...row, quantity } : row)
+      .filter(row => row.quantity > 0);
+    const item = this.sharedItem(id);
+    const defaultFirmness = this.defaultFirmness(id);
+    this.customerSync.change('carts', items => {
+      const previous = items.find(value => Number(value.id) === id);
+      if (!previous) return items;
+      const variants = change(normalizeCartVariants(previous, defaultFirmness));
+      const total = variants.reduce((sum, row) => sum + row.quantity, 0);
+      return [...items.filter(value => Number(value.id) !== id), ...(total ? [{ ...item, quantity: total, variants }] : [])];
+    });
+    this.storeVariants(id, change(this.variantsFor(id)));
+  }
 
+  removeCartLine(key: string): void { this.setCartLineQuantity(key, 0); }
 
   removeFromCart(id: number): void {
     this.customerSync.change('carts', items => items.filter(value => Number(value.id) !== id));
-
-
-    this.cart.delete(id);
-
-
-    this.persist();
-
+    this.storeVariants(id, []);
   }
-
-
 
   /* =========================
      COUPON
@@ -1107,6 +1143,7 @@ export class AppStateService {
 
 
     this.cart.clear();
+    this.cartVariants.clear();
 
 
     this.couponApplied =
@@ -1167,6 +1204,7 @@ export class AppStateService {
 
       JSON.stringify({
         syncVersion: 1,
+        cartVariants: [...this.cartVariants.entries()],
 
 
         wishlist:
@@ -1269,6 +1307,11 @@ export class AppStateService {
 
           : [];
 
+
+      if (Array.isArray(value.cartVariants)) {
+        this.cartVariants = new Map(value.cartVariants.filter((row: any) =>
+          Array.isArray(row) && Number.isSafeInteger(row[0]) && Array.isArray(row[1])));
+      }
 
       this.couponApplied =
         !!value.couponApplied;

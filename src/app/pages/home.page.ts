@@ -1,3 +1,4 @@
+import { CartFeedbackService } from '../services/cart-feedback.service';
 import {
   Component,
   HostListener
@@ -606,9 +607,7 @@ button.category-bubble, button.see-all-search { font:inherit; color:var(--ion-te
 
       <div class="logo">
 
-        <span class="logo-mark">
-          🦷
-        </span>
+        <img class="logo-mark" src="assets/branding/smilehub-logo.png" alt="SmileHub logo" width="40" height="40">
 
         <span>
           SmileHub
@@ -681,7 +680,7 @@ button.category-bubble, button.see-all-search { font:inherit; color:var(--ion-te
         <ion-badge
           color="danger"
           class="header-badge"
-          *ngIf="state.cartCount > 0">
+          data-cart-badge *ngIf="state.cartCount > 0">
 
           {{ badgeText(state.cartCount) }}
 
@@ -1521,14 +1520,15 @@ button.category-bubble, button.see-all-search { font:inherit; color:var(--ion-te
       <ion-button
         fill="clear"
 
-        [disabled]="isOutOfStock(p)"
+        class="cart-add-button"
+        [disabled]="isOutOfStock(p) || cartFeedback.isAdding(p.id)"
 
-        [attr.aria-label]="'Add ' + p.name + ' to cart'" (click)="addNewArrivalToCart($event, p)">
+        [attr.aria-label]="cartFeedback.isAdding(p.id) ? 'Added to Cart' : 'Add ' + p.name + ' to cart'" (click)="addNewArrivalToCart($event, p)">
 
 
         <ion-icon
           [name]="
-            newArrivalAddedId === p.id
+            cartFeedback.isAdding(p.id)
               ? 'checkmark-circle-outline'
               : 'add-outline'
           ">
@@ -1601,9 +1601,6 @@ export class HomePage {
 
   showSearchSuggestions = false;
 
-  newArrivalAddedId: number | null = null;
-
-  private newArrivalAddedTimer?: ReturnType<typeof setTimeout>;
 
 
   unreadNotificationCount = 0;
@@ -1645,7 +1642,8 @@ export class HomePage {
     public state: AppStateService,
     public router: Router,
     private toastController: ToastController,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    public cartFeedback: CartFeedbackService
   ) {
 
     this.loadRecentSearches();
@@ -2362,40 +2360,11 @@ get categories() {
      NEW ARRIVALS ADD TO CART
      ================================== */
 
-  async addNewArrivalToCart(
-    event: Event,
-    product: any
-  ): Promise<void> {
-
+  async addNewArrivalToCart(event: Event, product: any): Promise<void> {
     event.stopPropagation();
-
-    if (!product || this.isOutOfStock(product)) {
-      return;
-    }
-
-    this.state.addToCart(product.id);
-
-    this.newArrivalAddedId = product.id;
-
-    if (this.newArrivalAddedTimer) {
-      clearTimeout(this.newArrivalAddedTimer);
-    }
-
-    this.newArrivalAddedTimer = setTimeout(() => {
-      this.newArrivalAddedId = null;
-    }, 1200);
-
-    const toast = await this.toastController.create({
-      message: `${product.name} added to cart.`,
-      duration: 1400,
-      position: 'bottom'
-    });
-
-    await toast.present();
-
+    if (!product || this.isOutOfStock(product) || this.cartFeedback.isAdding(product.id)) return;
+    this.cartFeedback.add(product.id, 1, undefined, event);
   }
-
-
 
   /* ==================================
      NEW ARRIVALS STOCK CHECK
