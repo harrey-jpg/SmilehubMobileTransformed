@@ -46,276 +46,63 @@ import {
   ],
 
   styles: [`
-
-    :host { display: block; height: 100%; min-width: 0; }
-
+    :host { display:block; height:100%; min-width:0; }
     .product-card {
-
-      padding: 14px;
-
-      border-radius: 20px;
-
-      overflow: hidden;
-
-    }
-
-
-    /* BIGGER PRODUCT IMAGE */
-
-    .product-art {
-
-      height: 170px;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      position: relative;
-
-      border-radius: 16px;
-
-      overflow: hidden;
-
-      background:
-        rgba(120,120,120,.08);
-
-      margin-bottom: 12px;
-
-    }
-
-
-    .product-art img {
-
-      width: 135px;
-
-      height: 135px;
-
-      object-fit: contain;
-
-      transition:
-        transform .2s ease;
-
-    }
-
-
-    .product-art:hover img {
-
-      transform:
-        scale(1.06);
-
-    }
-
-
-    /* BRAND */
-
-    .brand {
-
-      font-size:14px;
-
-      font-weight: 900;
-
-      text-transform:
-        uppercase;
-
-      color:
-        var(--ion-color-primary);
-
-      margin-bottom: 4px;
-
-    }
-
-
-    /* PRODUCT NAME */
-
-    .product-name {
-
-      min-height: 38px;
-
-      font-size:14px;
-
-      line-height: 1.35;
-
-      font-weight: 900;
-
-    }
-
-
-    /* PRICE */
-
-    .price {
-
-      font-size: 16px;
-
-      font-weight: 900;
-
-      color:
-        var(--ion-color-primary);
-
-    }
-
-
-    /* BUTTON */
-
-    ion-button {
-
-      --border-radius:
-        14px;
-
-      font-weight:
-        900;
-
-      margin-top:
-        12px;
-
-    }
-
-
-    /* STOCK BADGE */
-
-    .stock-pill {
-
-      border-radius:
-        999px;
-
-      padding:
-        5px 9px;
-
-      font-size:14px;
-
-      font-weight:
-        900;
-
-    }
-
-
-    /* WISHLIST BUTTON */
-
-    .wish-btn {
-
-      --border-radius:
-        50%;
-
-      width:
-        34px;
-
-      height:
-        34px;
-
-    }
-
-
-
-    .product-image-link { display:grid; place-items:center; width:100%; min-height:138px; }
-    a.product-name { display:block; color:var(--ion-text-color); text-decoration:none; overflow-wrap:anywhere; }
-    .wish-btn { width:44px; height:44px; min-height:44px; }
-    .row-between { flex-wrap:wrap; }
-    .rating-feedback { font-size:14px; line-height:1.5; }
-    .rating-feedback button { min-height:44px; padding:8px; color:var(--ion-color-primary); border:0; background:transparent; text-decoration:underline; }
-
-    /* Consistent mobile product frames; preserve the existing product model. */
-    .product-card {
-      position: relative;
-      height: 100%;
-      min-width: 0;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
+      position:relative; height:100%; min-width:0; padding:12px;
+      display:flex; flex-direction:column; gap:6px;
+      border-radius:20px; overflow:hidden;
     }
     .product-art {
-      height: clamp(132px, 38vw, 170px);
-      min-height: 0;
-      padding: 10px;
-      margin-bottom: 8px;
+      position:relative; display:grid; place-items:center;
+      height:clamp(112px,32vw,144px); min-height:0; flex-shrink:0;
+      padding:8px; margin:0; border-radius:16px; overflow:hidden;
+      background:var(--ion-background-color);
     }
-    .product-image-link {
-      height: 100%;
-      min-height: 0;
-      width: 100%;
-      display: grid;
-      place-items: center;
-    }
-    .product-art img {
-      width: 100%;
-      height: 100%;
-      max-width: 128px;
-      max-height: 132px;
-      object-fit: contain;
-    }
+    .product-image-link { display:grid; place-items:center; width:100%; height:100%; min-height:0; }
+    .product-art img { width:100%; height:100%; min-height:0; object-fit:contain; filter:none; }
     .brand {
-      min-height: 17px;
-      margin: 3px 0 2px;
-      font-size: 11.5px;
-      line-height: 1.3;
-      overflow-wrap: anywhere;
+      margin:0; min-height:1.4em; font-size:12px; line-height:1.4;
+      font-weight:600; text-transform:uppercase; color:var(--ion-color-primary);
+      overflow-wrap:anywhere;
     }
-    .product-name {
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 3;
-      overflow: hidden;
-      min-height: 3.9em;
-      max-height: 3.9em;
-      margin: 2px 0 4px;
-      font-size: 13px;
-      line-height: 1.3;
-      overflow-wrap: anywhere;
+    a.product-name {
+      display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3;
+      min-height:2.7em; max-height:4.05em; overflow:hidden;
+      margin:0; font-size:14px; line-height:1.35; font-weight:700;
+      color:var(--ion-text-color); text-decoration:none; overflow-wrap:anywhere;
     }
     .row-between {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 4px !important;
-      margin-top: 3px;
+      display:flex; flex-direction:column; align-items:flex-start;
+      gap:4px!important; margin:0!important;
     }
-    .row-between > span {
-      font-size: 12px !important;
-      line-height: 1.3;
-      white-space: normal !important;
+    .row-between > .price { font-size:16px; line-height:1.3; font-weight:800; color:var(--ion-color-primary); }
+    .review-summary { font-size:12px; line-height:1.4; font-weight:400; white-space:normal; }
+    .review-count { font-size:12px; }
+    .stock-pill { border-radius:999px; padding:4px 8px; font-size:11px; font-weight:600; }
+    ion-button { --border-radius:14px; font-weight:600; }
+    .wish-btn { width:44px; height:44px; min-height:44px; margin:0; --border-radius:50%; }
+    .rating-feedback { font-size:12px; line-height:1.4; font-weight:400; }
+    .rating-feedback button {
+      min-width:44px; min-height:44px; padding:8px; margin:0;
+      color:var(--ion-color-primary); border:0; background:transparent; text-decoration:underline;
     }
-    .row-between > .price {
-      font-size: 15px !important;
-    }
-    .rating-feedback {
-      min-height: 20px;
-      font-size: 12px;
-      line-height: 1.3;
-    }
-    .stock-pill { font-size: 10.5px; }
     .product-card > ion-button.primary-btn {
-      flex-shrink: 0;
-      width: 100%;
-      min-height: 44px;
-      margin-top: auto !important;
+      flex-shrink:0; width:100%; min-height:44px; margin:0!important;
+      margin-top:auto!important; font-size:14px; font-weight:600;
     }
     .cart-fly {
-      position: absolute;
-      right: 16px;
-      bottom: 65px;
-      z-index: 3;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: #0b7891;
-      color: white;
-      box-shadow: 0 7px 22px rgba(11, 120, 145, .27);
-      font-size: 12px;
-      font-weight: 900;
-      pointer-events: none;
-      animation: cartFly .85s ease-out both;
+      position:absolute; right:16px; bottom:65px; z-index:3;
+      display:inline-flex; align-items:center; gap:5px; padding:7px 12px;
+      border-radius:999px; background:#0b7891; color:white;
+      box-shadow:0 7px 22px rgba(11,120,145,.27); font-size:12px;
+      font-weight:700; pointer-events:none; animation:cartFly .85s ease-out both;
     }
     @keyframes cartFly {
-      0% { opacity: 0; transform: translateY(14px) scale(.8); }
-      30% { opacity: 1; transform: translateY(0) scale(1.08); }
-      100% { opacity: 0; transform: translateY(-30px) scale(1); }
+      0% { opacity:0; transform:translateY(14px) scale(.8); }
+      30% { opacity:1; transform:translateY(0) scale(1.08); }
+      100% { opacity:0; transform:translateY(-30px) scale(1); }
     }
-    @media (prefers-reduced-motion: reduce) {
-      .cart-fly { animation: none; }
-    }
+    @media(prefers-reduced-motion:reduce) { .cart-fly { animation:none; } }
   `],
 
   template: `
@@ -418,7 +205,7 @@ import {
          ========================= -->
 
     <a [routerLink]="['/product-details', product.id]"
-      class="product-name card-button"
+      class="product-name card-button" [attr.aria-label]="product.name" [attr.title]="product.name"
 
       (click)="open()">
 
@@ -453,12 +240,7 @@ import {
 
 
 
-      <span
-        style="
-          font-size:14px;
-          font-weight:700;
-          white-space:nowrap
-        ">
+      <span class="review-summary" *ngIf="reviewCount > 0 || (!loadingRating && !reviewFailed)">
 
 
         <ng-container
@@ -468,11 +250,7 @@ import {
 
           ★ {{ averageRating.toFixed(1) }}
 
-          <span
-            style="
-              font-size:14px;
-              opacity:.7
-            ">
+          <span class="review-count">
 
             ({{ reviewCount }})
 
@@ -497,7 +275,7 @@ import {
 
 
 
-<div class="rating-feedback" aria-live="polite">
+<div *ngIf="loadingRating || reviewFailed" class="rating-feedback" aria-live="polite">
       <span *ngIf="loadingRating">Loading reviews…</span>
       <span *ngIf="reviewFailed">Reviews unavailable</span>
       <button type="button" *ngIf="reviewFailed" (click)="loadReviewSummary()" [disabled]="loadingRating" [attr.aria-label]="'Retry reviews for ' + product.name">Retry</button>

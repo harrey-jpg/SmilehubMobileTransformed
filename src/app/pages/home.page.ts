@@ -565,16 +565,20 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
        AI CHAT FLOATING BUTTON
        ========================= */
 
-    .ai-chat-fab {
-      margin-bottom: 72px;
-      margin-right: 8px;
-      z-index: 1000;
+    .assistant-dock {
+      width:min(calc(100% - 24px),560px); height:62px; margin:0 auto;
+      display:flex; justify-content:flex-end; align-items:center; padding:4px 8px;
     }
-
-    .ai-chat-fab ion-fab-button {
-      width: 54px;
-      height: 54px;
+    .assistant-dock ion-fab-button {
+      width:54px; height:54px; margin:0; flex-shrink:0;
+      --box-shadow:0 6px 16px rgba(0,0,0,.18);
     }
+    .assistant-dock ion-fab-button:focus-within {
+      outline:3px solid var(--ion-color-primary); outline-offset:3px; border-radius:50%;
+    }
+    ion-content::part(scroll) { padding-bottom:24px; }
+    .page-wrap { padding-bottom:24px; }
+    .home-footer { background:var(--ion-background-color); }
 
 
 button.search-keyword, button.product-suggestion { width:100%; text-align:left; font:inherit; color:var(--ion-text-color); background:transparent; border:0; border-bottom:1px solid var(--ion-border-color); min-height:44px; } .history-clear { min-height:44px; }
@@ -1551,23 +1555,7 @@ button.category-bubble, button.see-all-search { font:inherit; color:var(--ion-te
      SMILEHUB AI FLOATING BUTTON
      ================================== -->
 
-<ion-fab
-  slot="fixed"
-  vertical="bottom"
-  horizontal="end"
-  class="ai-chat-fab">
 
-  <ion-fab-button
-    routerLink="/chatbot"
-    aria-label="Open SmileHub AI Assistant">
-
-    <ion-icon
-      name="chatbubble-ellipses-outline">
-    </ion-icon>
-
-  </ion-fab-button>
-
-</ion-fab>
 
 
 </ion-content>
@@ -1578,7 +1566,18 @@ button.category-bubble, button.see-all-search { font:inherit; color:var(--ion-te
      BOTTOM NAV
      ================================== -->
 
-<ion-footer>
+<ion-footer class="home-footer">
+  <div class="assistant-dock">
+    <ion-fab-button
+    routerLink="/chatbot"
+    aria-label="Open SmileHub AI Assistant">
+
+    <ion-icon
+      name="chatbubble-ellipses-outline">
+    </ion-icon>
+
+  </ion-fab-button>
+  </div>
 
   <app-bottom-nav
     active="home">
