@@ -8,6 +8,8 @@ interface DeveloperInfo {
   role: string;
   email: string;
   initials: string;
+  photo: string;
+  photoFailed?: boolean;
 }
 
 @Component({
@@ -125,6 +127,7 @@ interface DeveloperInfo {
       align-items: center;
       justify-content: center;
       border-radius: 18px;
+      overflow: hidden;
 
       background:
         linear-gradient(
@@ -146,6 +149,13 @@ interface DeveloperInfo {
 
       font-size: 18px;
       font-weight: 950;
+    }
+
+    .developer-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 25%;
     }
 
     .developer-info {
@@ -293,7 +303,11 @@ interface DeveloperInfo {
             *ngFor="let developer of developers">
 
             <div class="developer-avatar">
-              {{ developer.initials }}
+              <img *ngIf="!developer.photoFailed; else initials"
+                [src]="developer.photo" [alt]="developer.name + ' portrait'"
+                width="58" height="58" loading="lazy"
+                (error)="developer.photoFailed = true">
+              <ng-template #initials>{{ developer.initials }}</ng-template>
             </div>
 
             <div class="developer-info">
@@ -346,31 +360,36 @@ developers:
       name: 'Harry Barasona',
       role: 'Developer',
       email: 'qhbarasona@tip.edu.ph',
-      initials: 'N'
+      initials: 'HB',
+      photo: 'assets/developers/Harry.jpg'
     },
     {
       name: 'Yuan Fordlynx Coyyao',
       role: 'Developer',
       email: 'qyfwcoyyao@tip.edu.ph',
-      initials: 'H'
+      initials: 'YC',
+      photo: 'assets/developers/Yuan.png'
     },
     {
       name: 'Giann Ed Louise Garcia',
       role: 'Developer',
       email: 'qgelgarcia@tip.edu.ph',
-      initials: 'D3'
+      initials: 'GG',
+      photo: 'assets/developers/Giann.png'
     },
     {
       name: 'Nikko Pensocas',
       role: 'Developer',
       email: 'qnppensocas@tip.edu.ph',
-      initials: 'D4'
+      initials: 'NP',
+      photo: 'assets/developers/Nikko.png'
     },
     {
       name: 'Marck Jarrel Queling',
       role: 'Developer',
       email: 'qmjrqueling@tip.edu.ph',
-      initials: 'D5'
+      initials: 'MQ',
+      photo: 'assets/developers/Jarrel.png'
     }
   ];
 
