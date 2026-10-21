@@ -1067,6 +1067,11 @@ export class LoginPage {
 
 
     switch (code) {
+      case 'auth/mobile-customer-only':
+        return 'This mobile app is for customers. Staff, admin, and super admin accounts must use the SmileHub web portal.';
+      case 'auth/mobile-access-unavailable':
+        return 'Unable to verify account access. Check your connection and try again.';
+
 
 
       case 'auth/invalid-email':
@@ -1119,6 +1124,11 @@ export class LoginPage {
 
 
     switch (code) {
+      case 'auth/mobile-customer-only':
+        return 'This mobile app is for customers. Staff, admin, and super admin accounts must use the SmileHub web portal.';
+      case 'auth/mobile-access-unavailable':
+        return 'Unable to verify account access. Check your connection and try again.';
+
 
 
       case 'auth/popup-blocked':
@@ -1167,6 +1177,11 @@ export class LoginPage {
 
 
     switch (code) {
+      case 'auth/mobile-customer-only':
+        return 'This mobile app is for customers. Staff, admin, and super admin accounts must use the SmileHub web portal.';
+      case 'auth/mobile-access-unavailable':
+        return 'Unable to verify account access. Check your connection and try again.';
+
 
 
       case 'auth/invalid-email':

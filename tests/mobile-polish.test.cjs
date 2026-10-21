@@ -1,17 +1,33 @@
 const test = require('node:test'), assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path'), vm = require('node:vm');
 const ts = require('../node_modules/typescript');
-function component(file, name) {
+function component(file, name, overrides = {}) {
   const exports = {};
   const source = fs.readFileSync(path.join(__dirname,'../src/app',file),'utf8');
   const code = ts.transpileModule(source, { compilerOptions: { module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020,experimentalDecorators:true } }).outputText;
   const noOp = () => {};
   vm.runInNewContext(code,{exports,console:{error:noOp},setTimeout,clearTimeout,require(module) {
+    if (overrides[module]) return overrides[module];
     if (module==='@angular/core') return {Component:()=>value=>value,Input:()=>noOp,HostListener:()=>noOp};
     return new Proxy({}, { get:()=>noOp });
   }});
   return exports[name];
 }
+
+test('guest account clears stale profile data without loading customer records', async () => {
+  const Account = component('pages/account.page.ts', 'AccountPage', {
+    '../services/firebase': { firebaseAuth: { authStateReady: async () => {} } }
+  });
+  const account = new Account({ currentUser: null }, {
+    loadProfile: () => { throw new Error('Guest must not load a profile'); }
+  }, {}, {}, {}, {});
+  account.profile = { fullName: 'Previous customer' };
+  account.profilePhoto = 'previous-photo';
+  await account.ionViewWillEnter();
+  assert.equal(Object.keys(account.profile).length, 0);
+  assert.equal(account.profilePhoto, '');
+  assert.equal(account.loadingProfile, false);
+});
 test('product card distinguishes loading, empty, failure, and successful retry',async()=>{
   const Card = component('shared/product-card.component.ts','ProductCardComponent');
   let finish, fail=false, results=[];
@@ -68,4 +84,49 @@ test('product purchasing retains stock and quantity restrictions',()=>{
   details.product={id:1,stockCount:1,stock:'In stock'};details.quantity=2;
   assert.equal(details.canAddSelectedQuantity,false);assert.equal(details.canBuySelectedQuantity,false);
   details.quantity=1;details.decreaseQuantity();assert.equal(details.quantity,1);assert.equal(details.canBuySelectedQuantity,true);
+});
+
+
+test('signed-in account loads identity and photo, and falls back after failure', async () => {
+  const Account = component('pages/account.page.ts', 'AccountPage', {
+    '../services/firebase': { firebaseAuth: { authStateReady: async () => {} } }
+  });
+  let fail = false;
+  const user = { uid: 'alice', displayName: 'Alice Santos', email: 'alice@example.test' };
+  const account = new Account({ currentUser: user }, {
+    loadProfile: async () => { if (fail) throw new Error('offline'); return { fullName: 'Alice Maria Santos' }; }
+  }, { loadProfilePhoto: async () => 'alice-photo' }, {}, {}, {});
+  await account.ionViewWillEnter();
+  assert.equal(account.profile.fullName, 'Alice Maria Santos');
+  assert.equal(account.profile.email, user.email);
+  assert.equal(account.profilePhoto, 'alice-photo');
+  assert.equal(account.initials, 'AS');
+  fail = true;
+  await account.ionViewWillEnter();
+  assert.equal(account.profile.fullName, user.displayName);
+  assert.equal(account.profilePhoto, '');
+  assert.equal(account.loadingProfile, false);
+});
+
+test('late profile response cannot replace the next account identity', async () => {
+  const Account = component('pages/account.page.ts', 'AccountPage', {
+    '../services/firebase': { firebaseAuth: { authStateReady: async () => {} } }
+  });
+  let resolveOld, markStarted;
+  const started = new Promise(resolve => markStarted = resolve);
+  const auth = { currentUser: { uid: 'old', email: 'old@example.test' } };
+  const account = new Account(auth, {
+    loadProfile: () => auth.currentUser.uid === 'old'
+      ? new Promise(resolve => { resolveOld = resolve; markStarted(); })
+      : Promise.resolve({ fullName: 'New Customer' })
+  }, { loadProfilePhoto: async () => 'new-photo' }, {}, {}, {});
+  const oldRequest = account.ionViewWillEnter();
+  await started;
+  auth.currentUser = { uid: 'new', email: 'new@example.test' };
+  await account.ionViewWillEnter();
+  resolveOld({ fullName: 'Old Customer' });
+  await oldRequest;
+  assert.equal(account.profile.fullName, 'New Customer');
+  assert.equal(account.profile.email, 'new@example.test');
+  assert.equal(account.profilePhoto, 'new-photo');
 });

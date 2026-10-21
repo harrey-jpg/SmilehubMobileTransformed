@@ -15,6 +15,7 @@ import {
 import {
   doc,
   getDoc,
+  runTransaction,
   serverTimestamp,
   setDoc
 } from 'firebase/firestore';
@@ -162,18 +163,19 @@ export class AuthService {
      EMAIL SIGN IN
      ========================= */
 
-  signIn(
+  async signIn(
     email: string,
     password: string
   ) {
 
 
-    return signInWithEmailAndPassword(
+    const credential = await signInWithEmailAndPassword(
       firebaseAuth,
       email.trim().toLowerCase(),
       password
     );
-
+    await this.requireMobileCustomer(credential.user);
+    return credential;
   }
 
 
@@ -203,6 +205,7 @@ export class AuthService {
       );
 
 
+    await this.requireMobileCustomer(credential.user, true);
     await this.ensureGoogleUserProfile(
       credential.user
     );
@@ -333,56 +336,50 @@ export class AuthService {
     }
 
 
-    if (
-      cleanEmail
-    ) {
-
-
-      try {
-
-
-        await setDoc(
-          doc(
-            firestore,
-            'accounts',
-            cleanEmail
-          ),
-          {
-
-            name:
-              cleanName,
-
-            email:
-              cleanEmail,
-
-            role:
-              'customer',
-
-            status:
-              'active',
-
-            authProvider:
-              'google'
-
-          },
-          {
-            merge: true
-          }
-        );
-
-
-      } catch (_) {
-
-        // Non-fatal mirror.
-
-      }
-
-
+    // Existing account records belong to the web role-management flow.
+    if (cleanEmail) {
+      const accountRef = doc(firestore, 'accounts', cleanEmail);
+      await runTransaction(firestore, async tx => {
+        const existingAccount = await tx.get(accountRef);
+        if (!existingAccount.exists()) {
+          tx.set(accountRef, {
+            name: cleanName, email: cleanEmail, role: 'customer',
+            status: 'active', authProvider: 'google'
+          });
+        }
+      });
     }
 
   }
 
 
+
+  async requireMobileCustomer(user: User, allowNew = false): Promise<void> {
+    try {
+      const email = String(user.email || '').trim().toLowerCase();
+      const [profile, account, token] = await Promise.all([
+        getDoc(doc(firestore, 'users', user.uid)),
+        email ? getDoc(doc(firestore, 'accounts', email)) : Promise.resolve(null),
+        user.getIdTokenResult()
+      ]);
+      const roles = [profile.data()?.['role'], account?.data()?.['role'], token.claims['role']]
+        .filter(value => value != null && value !== '')
+        .map(value => String(value).trim().toLowerCase());
+      const privileged = ['admin', 'staff', 'superadmin'].some(role => token.claims[role] === true);
+      const newCustomer = allowNew && !profile.exists() && !account?.exists();
+      if (privileged || roles.some(role => role !== 'customer') || (!roles.length && !newCustomer)) {
+        throw Object.assign(new Error('Staff and administrators must use the SmileHub web portal.'), {
+          code: 'auth/mobile-customer-only'
+        });
+      }
+    } catch (error: any) {
+      await signOut(firebaseAuth);
+      if (error?.code === 'auth/mobile-customer-only') throw error;
+      throw Object.assign(new Error('Unable to verify mobile access. Please try again.'), {
+        code: 'auth/mobile-access-unavailable'
+      });
+    }
+  }
 
   /* =========================
      RESET PASSWORD

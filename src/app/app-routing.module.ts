@@ -26,6 +26,7 @@ import { NotificationsPage } from './pages/notifications.page';
 import { ChatbotPage } from './pages/chatbot.page';
 import { AboutPage } from './pages/about.page';
 import { DevelopersPage } from './pages/developers.page';
+import { mobileAccessGuard } from './services/mobile-access.guard';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
@@ -60,7 +61,10 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes.map(route =>
+    route.component && !['login', 'signup'].includes(route.path || '')
+      ? { ...route, canActivate: [mobileAccessGuard] } : route
+  ))],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

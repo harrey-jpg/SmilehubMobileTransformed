@@ -13,11 +13,11 @@ import { IonicModule } from '@ionic/angular';
   ],
   styles: [`
 
-    .about-copy { margin: 0; font-size: 13px; line-height: 1.7; }
-    .about-copy + .about-copy { margin-top: 12px; }
+    .about-copy { margin: 0; max-width: 65ch; font-size: 16px; font-weight: 400; line-height: 1.6; }
+    .about-copy + .about-copy { margin-top: 16px; }
     .product-guide { display: grid; gap: 12px; }
-    .product-guide h3 { margin: 0 0 6px; font-size: 14px; }
-    .product-guide p { margin: 0; font-size: 12px; line-height: 1.65; }
+    .product-guide h3 { margin: 0 0 8px; font-size: 18px; font-weight: 600; line-height: 1.35; }
+    .product-guide p { margin: 0; max-width: 65ch; font-size: 16px; font-weight: 400; line-height: 1.6; }
 
     .about-page {
       padding-bottom: 28px;
@@ -111,9 +111,9 @@ import { IonicModule } from '@ionic/angular';
       position: relative;
       z-index: 1;
       margin: 5px 0 0;
-      font-size: 25px;
+      font-size: 24px;
       line-height: 1.15;
-      font-weight: 950;
+      font-weight: 700;
       letter-spacing: -.4px;
     }
 
@@ -131,15 +131,15 @@ import { IonicModule } from '@ionic/angular';
           .92
         );
 
-      font-size: 11px;
+      font-size: 16px;
       line-height: 1.6;
-      font-weight: 600;
+      font-weight: 400;
     }
 
     .about-section-title {
       margin: 24px 2px 10px;
-      font-size: 15px;
-      font-weight: 900;
+      font-size: 20px;
+      font-weight: 600;
     }
 
     .feature-grid {
@@ -208,8 +208,8 @@ import { IonicModule } from '@ionic/angular';
 
     .feature-name {
       margin-top: 10px;
-      font-size: 11px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 600;
     }
 
     .feature-copy {
@@ -220,8 +220,8 @@ import { IonicModule } from '@ionic/angular';
           --ion-color-medium
         );
 
-      font-size: 9px;
-      line-height: 1.45;
+      font-size: 14px;
+      line-height: 1.6;
     }
 
     .tech-card {
@@ -277,8 +277,8 @@ import { IonicModule } from '@ionic/angular';
     }
 
     .tech-name {
-      font-size: 10px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 600;
     }
 
     .tech-copy {
@@ -289,8 +289,8 @@ import { IonicModule } from '@ionic/angular';
           --ion-color-medium
         );
 
-      font-size: 8.5px;
-      line-height: 1.4;
+      font-size: 14px;
+      line-height: 1.6;
     }
 
     @media (min-width: 720px) {
@@ -365,15 +365,15 @@ import { IonicModule } from '@ionic/angular';
 
         <h2 class="about-section-title">Company History</h2>
         <section class="tech-card" aria-label="Company history">
-          <!-- Replace this general project background with approved company milestones when available. -->
-          <p class="about-copy">SmileHub was developed around a simple goal: to make dental
-            supplies easier to browse and order. The application brings product discovery,
-            shopping lists, delivery information, and order tracking into one place for
-            dental professionals, clinics, students, and healthcare teams.</p>
-          <p class="about-copy">Today, the SmileHub experience includes a searchable catalog,
-            product details, customer accounts, order history, and support for product and
-            purchase questions. Its focus is a straightforward shopping experience from
-            finding supplies to reviewing an order.</p>
+          <p class="about-copy">SmileHub is a startup company specializing in the online
+            distribution of dental supplies and oral healthcare products throughout the
+            Philippines. The company provides quality dental products including toothbrushes,
+            toothpaste, mouthwash, dental instruments, orthodontic products, sterilization
+            materials, and clinic consumables.</p>
+          <p class="about-copy">SmileHub is committed to making dental supplies more
+            accessible by offering a secure, convenient, and affordable online shopping
+            experience. Through modern technology and excellent customer service, the
+            company aims to become one of the country's trusted suppliers of dental products.</p>
         </section>
 
         <h2 class="about-section-title">About Our Products</h2>

@@ -2,8 +2,13 @@ import {
   Component,
   OnInit,
   OnDestroy,
-  NgZone
+  NgZone,
+  ViewChild
 } from '@angular/core';
+import { IonRouterOutlet, NavController, Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
+import { App } from '@capacitor/app';
+import { Subscription } from 'rxjs';
 
 import {
   Router
@@ -782,6 +787,7 @@ implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.backSubscription?.unsubscribe();
     this.stopAuth?.();
     this.stopProfile?.();
     if (this.splashFallbackTimer) clearTimeout(this.splashFallbackTimer);
@@ -818,6 +824,26 @@ implements OnInit, OnDestroy {
   private splashCloseTimer?: ReturnType<typeof setTimeout>;
   private splashRemoveTimer?: ReturnType<typeof setTimeout>;
 
+  @ViewChild(IonRouterOutlet) private outlet?: IonRouterOutlet;
+  private backSubscription?: Subscription;
+  private handlingBack = false;
+
+  private async handlePhoneBack(): Promise<void> {
+    if (this.handlingBack) return;
+    this.handlingBack = true;
+    try {
+      if (this.outlet?.canGoBack()) {
+        await this.outlet.pop();
+      } else if (this.router.url.split(/[?#]/)[0] !== '/home') {
+        await this.nav.navigateRoot('/home');
+      } else {
+        await App.exitApp();
+      }
+    } finally {
+      this.handlingBack = false;
+    }
+  }
+
 
 
   /* =========================
@@ -832,7 +858,9 @@ implements OnInit, OnDestroy {
     private router:
       Router,
 
-    private zone: NgZone
+    private zone: NgZone,
+    private platform: Platform,
+    private nav: NavController
 
   ) {
 
@@ -1108,6 +1136,12 @@ implements OnInit, OnDestroy {
   ngOnInit():
     void {
 
+    if (Capacitor.getPlatform() === 'android') {
+      // Ionic menus (99) and overlays (100) handle Back before page navigation.
+      this.backSubscription = this.platform.backButton.subscribeWithPriority(10,
+        () => this.handlePhoneBack());
+    }
+
 
     /*
      * AppStateService is injected,
@@ -1125,72 +1159,6 @@ implements OnInit, OnDestroy {
 
       user => {
         this.zone.run(() => this.watchMenuProfile(user));
-
-
-        if (
-          user
-        ) {
-
-
-          const url =
-            this.router.url;
-
-
-          if (
-
-            url === '/'
-
-            ||
-
-            url.startsWith(
-              '/login'
-            )
-
-            ||
-
-            url.startsWith(
-              '/signup'
-            )
-
-          ) {
-
-
-            this.router
-              .navigateByUrl(
-
-                '/home',
-
-                {
-                  replaceUrl:
-                    true
-                }
-
-              )
-
-              .then(
-                () => {
-
-                  this.finishSplash();
-
-                }
-              )
-
-              .catch(
-                () => {
-
-                  this.finishSplash();
-
-                }
-              );
-
-
-            return;
-
-
-          }
-
-
-        }
 
 
         this.finishSplash();

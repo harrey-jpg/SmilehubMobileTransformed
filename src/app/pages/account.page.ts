@@ -8,6 +8,7 @@ import {
 
 import { CommonModule } from '@angular/common';
 
+import { firebaseAuth } from '../services/firebase';
 import { AuthService } from '../services/auth.service';
 import { ProfileService } from '../services/profile.service';
 import { ProfilePhotoService } from '../services/profile-photo.service';
@@ -48,7 +49,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
     .ac-kicker {
       color: var(--ion-color-primary);
       font-size:14px;
-      font-weight: 900;
+      font-weight: 600;
       letter-spacing: .8px;
       text-transform: uppercase;
     }
@@ -56,7 +57,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
     .ac-title {
       margin: 4px 0 0;
       font-size: 22px;
-      font-weight: 900;
+      font-weight: 600;
       line-height: 1.2;
     }
 
@@ -164,7 +165,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
         );
 
       font-size: 24px;
-      font-weight: 900;
+      font-weight: 600;
 
       text-transform: uppercase;
     }
@@ -228,7 +229,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       font-size: 18px;
       line-height: 1.25;
 
-      font-weight: 900;
+      font-weight: 600;
 
       white-space: nowrap;
       overflow: hidden;
@@ -273,7 +274,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
         var(--ion-color-primary);
 
       font-size:14px;
-      font-weight: 900;
+      font-weight: 600;
     }
 
     .ac-member-dot {
@@ -324,7 +325,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
         var(--ion-text-color);
 
       font-size:14px;
-      font-weight: 900;
+      font-weight: 600;
     }
 
 
@@ -423,69 +424,6 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       font-size: 20px;
     }
 
-    .ac-icon.orders {
-      background:
-        rgba(
-          31,
-          142,
-          255,
-          .11
-        );
-
-      color: #469cff;
-    }
-
-    .ac-icon.address {
-      background:
-        rgba(
-          0,
-          206,
-          117,
-          .10
-        );
-
-      color:
-        var(--ion-color-success);
-    }
-
-    .ac-icon.payment {
-      background:
-        rgba(
-          112,
-          84,
-          255,
-          .11
-        );
-
-      color: #9a87ff;
-    }
-
-    .ac-icon.wishlist {
-      background:
-        rgba(
-          235,
-          68,
-          90,
-          .10
-        );
-
-      color:
-        var(--ion-color-danger);
-    }
-
-    .ac-icon.support {
-      background:
-        rgba(
-          255,
-          184,
-          0,
-          .10
-        );
-
-      color: #f2ac00;
-    }
-
-
     /* =========================
        MENU CONTENT
        ========================= */
@@ -500,7 +438,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
         var(--ion-text-color);
 
       font-size:14px;
-      font-weight: 900;
+      font-weight: 600;
     }
 
     .ac-item-subtitle {
@@ -510,7 +448,8 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
         var(--ion-color-medium);
 
       font-size:14px;
-      line-height: 1.35;
+      font-weight: 400;
+      line-height: 1.5;
     }
 
     .ac-arrow {
@@ -543,7 +482,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       text-align: center;
 
       font-size:14px;
-      font-weight: 900;
+      font-weight: 600;
     }
 
 
@@ -587,7 +526,7 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
       --border-radius: 14px;
 
       font-size:14px;
-      font-weight: 900;
+      font-weight: 600;
     }
 
     .ac-version {
@@ -653,6 +592,12 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
     }
 
 
+.ac-page { max-width: 820px; }
+    a.ac-profile { text-decoration: none; color: inherit; }
+    .ac-profile-name, .ac-profile-email { overflow-wrap: anywhere; }
+    .ac-profile:focus-visible, .ac-item:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 4px; }
+    .ac-signout { display: flex; justify-content: center; }
+    .ac-guest-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
 button.ac-item { width:100%; text-align:left; font:inherit; color:var(--ion-text-color); background:transparent; border:0; min-height:44px; }
 `],
 
@@ -695,11 +640,7 @@ button.ac-item { width:100%; text-align:left; font:inherit; color:var(--ion-text
     <div class="ac-intro">
 
 
-      <div class="ac-kicker">
 
-        SmileHub Account
-
-      </div>
 
 
       <h1 class="ac-title">
@@ -717,9 +658,10 @@ button.ac-item { width:100%; text-align:left; font:inherit; color:var(--ion-text
          PROFILE
          ========================= -->
 
-    <div
+    <a
       class="ac-profile"
-      routerLink="/personal-information">
+      [routerLink]="auth.currentUser ? '/personal-information' : '/login'"
+      [attr.aria-label]="auth.currentUser ? 'Edit your profile' : 'Sign in to SmileHub'">
 
 
       <div class="ac-avatar-shell">
@@ -791,7 +733,7 @@ button.ac-item { width:100%; text-align:left; font:inherit; color:var(--ion-text
             {{
               profile.fullName
               ||
-              'SmileHub Customer'
+              auth.currentUser?.displayName || (auth.currentUser ? 'SmileHub Customer' : 'Guest')
             }}
 
           </h2>
@@ -804,13 +746,13 @@ button.ac-item { width:100%; text-align:left; font:inherit; color:var(--ion-text
               ||
               auth.currentUser?.email
               ||
-              'Signed in customer'
+              (auth.currentUser ? 'View your profile' : 'Sign in to manage your account')
             }}
 
           </div>
 
 
-          <div class="ac-member-chip">
+          <div class="ac-member-chip" *ngIf="auth.currentUser">
 
 
             <span class="ac-member-dot">
@@ -836,7 +778,7 @@ button.ac-item { width:100%; text-align:left; font:inherit; color:var(--ion-text
       </ion-icon>
 
 
-    </div>
+    </a>
 
 
 
@@ -912,47 +854,7 @@ button.ac-item { width:100%; text-align:left; font:inherit; color:var(--ion-text
 
           <!-- ORDERS -->
 
-          <a
-            class="ac-item"
-            routerLink="/orders">
 
-
-            <div class="ac-icon orders">
-
-              <ion-icon
-                name="receipt-outline">
-              </ion-icon>
-
-            </div>
-
-
-            <div class="ac-item-content">
-
-
-              <div class="ac-item-title">
-
-                My Orders
-
-              </div>
-
-
-              <div class="ac-item-subtitle">
-
-                Track and review your purchases
-
-              </div>
-
-
-            </div>
-
-
-            <ion-icon
-              class="ac-arrow"
-              name="chevron-forward-outline">
-            </ion-icon>
-
-
-          </a>
 
 
 
@@ -1050,6 +952,50 @@ button.ac-item { width:100%; text-align:left; font:inherit; color:var(--ion-text
 
           <!-- WISHLIST -->
 
+</div>
+<h2 class="ac-section-title">Shopping</h2>
+<div class="ac-menu">
+          <a
+            class="ac-item"
+            routerLink="/orders">
+
+
+            <div class="ac-icon orders">
+
+              <ion-icon
+                name="receipt-outline">
+              </ion-icon>
+
+            </div>
+
+
+            <div class="ac-item-content">
+
+
+              <div class="ac-item-title">
+
+                My Orders
+
+              </div>
+
+
+              <div class="ac-item-subtitle">
+
+                Track and review your purchases
+
+              </div>
+
+
+            </div>
+
+
+            <ion-icon
+              class="ac-arrow"
+              name="chevron-forward-outline">
+            </ion-icon>
+
+
+          </a>
           <a
             class="ac-item"
             routerLink="/wishlist">
@@ -1299,12 +1245,12 @@ button.ac-item { width:100%; text-align:left; font:inherit; color:var(--ion-text
          SIGN OUT
          ========================= -->
 
-    <div class="ac-signout">
+    <div class="ac-signout" *ngIf="auth.currentUser; else guestActions">
 
 
       <ion-button
         expand="block"
-        fill="outline"
+        fill="clear"
         color="danger"
         [disabled]="loggingOut"
         (click)="logout()">
@@ -1335,6 +1281,13 @@ button.ac-item { width:100%; text-align:left; font:inherit; color:var(--ion-text
 
 
     </div>
+
+    <ng-template #guestActions>
+      <div class="ac-guest-actions">
+        <ion-button routerLink="/login">Sign In</ion-button>
+        <ion-button fill="outline" routerLink="/signup">Create Account</ion-button>
+      </div>
+    </ng-template>
 
 
     <div class="ac-version">
@@ -1413,93 +1366,38 @@ export class AccountPage {
      LOAD PROFILE
      ========================= */
 
-  async ionViewWillEnter():
-    Promise<void> {
+  private profileRequest = 0;
 
-
-    this.loadingProfile =
-      true;
-
-
+  async ionViewWillEnter(): Promise<void> {
+    const request = ++this.profileRequest;
+    this.loadingProfile = true;
+    this.profile = {};
+    this.profilePhoto = '';
+    await firebaseAuth.authStateReady();
+    const user = this.auth.currentUser;
+    const isCurrent = () => request === this.profileRequest
+      && this.auth.currentUser?.uid === user?.uid;
     try {
-
-
-      this.profile =
-        await this.profiles
-          .loadProfile();
-
-
-      if (
-        !this.profile
-      ) {
-
-
-        this.profile =
-          {};
-
-
-      }
-
-
-      if (
-        !this.profile.email
-      ) {
-
-
-        this.profile.email =
-          this.auth.currentUser
-            ?.email
-          ||
-          '';
-
-
-      }
-
-
-      this.profilePhoto =
-        await this.profilePhotos
-          .loadProfilePhoto();
-
-
-    } catch (
-      error
-    ) {
-
-
-      console.error(
-        'Unable to load profile:',
-        error
-      );
-
-
+      if (!user) return;
+      const profile = await this.profiles.loadProfile();
+      if (!isCurrent()) return;
       this.profile = {
-
-        email:
-          this.auth.currentUser
-            ?.email
-          ||
-          ''
-
+        ...profile,
+        fullName: profile?.fullName || user.displayName || '',
+        email: user.email || profile?.email || ''
       };
-
-
-      this.profilePhoto =
-        '';
-
-
+      const photo = await this.profilePhotos.loadProfilePhoto();
+      if (isCurrent()) this.profilePhoto = photo || '';
+    } catch (error) {
+      console.error('Unable to load profile:', error);
+      if (isCurrent()) {
+        this.profile = { fullName: user?.displayName || '', email: user?.email || '' };
+        this.profilePhoto = '';
+      }
     } finally {
-
-
-      this.loadingProfile =
-        false;
-
-
+      if (request === this.profileRequest) this.loadingProfile = false;
     }
-
-
   }
-
-
 
   /* =========================
      INITIALS
@@ -1527,7 +1425,7 @@ export class AccountPage {
       const parts =
         fullName
           .split(
-            /\\s+/
+            /\s+/
           )
           .filter(
             Boolean
