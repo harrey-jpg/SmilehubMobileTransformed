@@ -103,7 +103,7 @@ import {
         var(--ion-color-primary);
 
       font-size:14px;
-      font-weight: 900;
+      font-weight: 700;
 
       letter-spacing: .8px;
       text-transform: uppercase;
@@ -116,7 +116,7 @@ import {
       font-size: 22px;
       line-height: 1.2;
 
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -187,7 +187,7 @@ import {
       color: #ffffff;
 
       font-size:14px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -238,7 +238,7 @@ import {
       margin: 0;
 
       font-size: 14px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -326,7 +326,7 @@ import {
 
     .address-label {
       font-size:14px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -334,7 +334,7 @@ import {
       margin-top: 13px;
 
       font-size:14px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -369,7 +369,7 @@ import {
 
     .address-empty-title {
       font-size:14px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -476,7 +476,7 @@ import {
 
     .delivery-name {
       font-size:14px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -495,7 +495,7 @@ import {
         var(--ion-color-primary);
 
       font-size:14px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -575,7 +575,7 @@ import {
 
     .payment-name {
       font-size:14px;
-      font-weight: 900;
+      font-weight: 700;
 
       white-space: nowrap;
       overflow: hidden;
@@ -587,7 +587,7 @@ import {
       margin-top: 3px;
 
       font-size:14px;
-      line-height: 1.4;
+      line-height: 1.5;
 
       color:
         var(--ion-color-medium);
@@ -628,7 +628,7 @@ import {
         var(--ion-color-success);
 
       font-size:14px;
-      font-weight: 900;
+      font-weight: 700;
 
       white-space: nowrap;
     }
@@ -730,7 +730,7 @@ import {
         var(--ion-color-primary);
 
       font-size:14px;
-      font-weight: 900;
+      font-weight: 700;
 
       text-transform: uppercase;
     }
@@ -738,9 +738,9 @@ import {
 
     .checkout-item-name {
       font-size:14px;
-      line-height: 1.35;
+      line-height: 1.5;
 
-      font-weight: 900;
+      font-weight: 700;
 
       overflow: hidden;
 
@@ -770,7 +770,7 @@ import {
         var(--ion-color-primary);
 
       font-size:14px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -789,7 +789,7 @@ import {
       margin-bottom: 13px;
 
       font-size:14px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -851,7 +851,7 @@ import {
 
     .total-label {
       font-size: 14px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -860,7 +860,7 @@ import {
         var(--ion-color-primary);
 
       font-size: 21px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -929,7 +929,7 @@ import {
       --border-radius: 14px;
 
       font-size:14px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -942,7 +942,7 @@ import {
         var(--ion-color-medium);
 
       font-size:14px;
-      line-height: 1.45;
+      line-height: 1.5;
     }
 
 
@@ -1000,7 +1000,7 @@ import {
       margin: 0 0 6px;
 
       font-size: 20px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -1020,7 +1020,7 @@ import {
     .empty-checkout ion-button {
       --border-radius: 13px;
 
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -1135,7 +1135,7 @@ import {
       border-radius: 14px;
       background: rgba(var(--ion-color-primary-rgb), .08);
       border: 1px solid rgba(var(--ion-color-primary-rgb), .16);
-      font-size: 12px;
+      font-size: 14px;
       line-height: 1.5;
     }
     .gcash-checkout-note strong {

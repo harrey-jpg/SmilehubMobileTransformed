@@ -66,8 +66,8 @@ import {
       color:
         var(--ion-color-primary);
 
-      font-size: 9px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
 
       letter-spacing: .8px;
 
@@ -82,14 +82,14 @@ import {
       font-size: 22px;
       line-height: 1.2;
 
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
     .orders-subtitle {
       margin: 0;
 
-      font-size: 11px;
+      font-size: 14px;
       line-height: 1.5;
 
       color:
@@ -175,7 +175,7 @@ import {
       color:
         var(--ion-text-color);
 
-      font-size: 10px;
+      font-size: 14px;
       font-weight: 800;
 
       white-space: nowrap;
@@ -224,8 +224,8 @@ import {
           .12
         );
 
-      font-size: 8px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
     }
 
 
@@ -256,7 +256,7 @@ import {
 
       gap: 10px;
 
-      font-size: 9px;
+      font-size: 14px;
 
       color:
         var(--ion-color-medium);
@@ -277,8 +277,8 @@ import {
       color:
         var(--ion-color-primary);
 
-      font-size: 9px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
 
       cursor: pointer;
     }
@@ -331,7 +331,7 @@ import {
     .order-number-label {
       margin-bottom: 3px;
 
-      font-size: 8px;
+      font-size: 14px;
 
       color:
         var(--ion-color-medium);
@@ -342,8 +342,8 @@ import {
       color:
         var(--ion-text-color);
 
-      font-size: 13px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
 
       word-break: break-word;
     }
@@ -352,7 +352,7 @@ import {
     .order-date {
       margin-top: 4px;
 
-      font-size: 9px;
+      font-size: 14px;
 
       color:
         var(--ion-color-medium);
@@ -371,8 +371,8 @@ import {
 
       border-radius: 999px;
 
-      font-size: 8px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
 
       text-transform: capitalize;
     }
@@ -527,18 +527,18 @@ import {
       color:
         var(--ion-color-primary);
 
-      font-size: 8px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
 
       text-transform: uppercase;
     }
 
 
     .order-product-name {
-      font-size: 11px;
-      line-height: 1.35;
+      font-size: 14px;
+      line-height: 1.5;
 
-      font-weight: 900;
+      font-weight: 700;
 
       overflow: hidden;
 
@@ -552,7 +552,7 @@ import {
     .order-product-meta {
       margin-top: 5px;
 
-      font-size: 9px;
+      font-size: 14px;
 
       color:
         var(--ion-color-medium);
@@ -578,8 +578,8 @@ import {
       color:
         var(--ion-color-primary);
 
-      font-size: 8px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
     }
 
 
@@ -607,7 +607,7 @@ import {
 
 
     .item-count {
-      font-size: 10px;
+      font-size: 14px;
       font-weight: 800;
     }
 
@@ -615,7 +615,7 @@ import {
     .delivery-method {
       margin-top: 4px;
 
-      font-size: 9px;
+      font-size: 14px;
 
       color:
         var(--ion-color-medium);
@@ -630,7 +630,7 @@ import {
 
 
     .order-total-label {
-      font-size: 8px;
+      font-size: 14px;
 
       color:
         var(--ion-color-medium);
@@ -644,7 +644,7 @@ import {
         var(--ion-color-primary);
 
       font-size: 17px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -661,13 +661,13 @@ import {
       color:
         var(--ion-color-medium);
 
-      font-size: 8px;
+      font-size: 14px;
       font-weight: 800;
     }
 
 
     .view-order ion-icon {
-      font-size: 13px;
+      font-size: 14px;
     }
 
 
@@ -718,7 +718,7 @@ import {
         0 0 6px;
 
       font-size: 19px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -731,7 +731,7 @@ import {
       color:
         var(--ion-color-medium);
 
-      font-size: 11px;
+      font-size: 14px;
       line-height: 1.5;
     }
 
@@ -739,7 +739,7 @@ import {
     .orders-empty ion-button {
       --border-radius: 13px;
 
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -766,7 +766,7 @@ import {
       color:
         var(--ion-color-medium);
 
-      font-size: 10px;
+      font-size: 14px;
     }
 
 

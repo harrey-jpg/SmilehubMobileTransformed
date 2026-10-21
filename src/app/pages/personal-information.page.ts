@@ -51,8 +51,8 @@ import {
     .pi-kicker {
       color: var(--ion-color-primary);
 
-      font-size: 9px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
       letter-spacing: .8px;
 
       text-transform: uppercase;
@@ -65,7 +65,7 @@ import {
 
       font-size: 22px;
       line-height: 1.2;
-      font-weight: 900;
+      font-weight: 700;
     }
 
     .pi-subtitle {
@@ -75,7 +75,7 @@ import {
 
       color: var(--ion-color-medium);
 
-      font-size: 10px;
+      font-size: 14px;
       line-height: 1.5;
     }
 
@@ -175,7 +175,7 @@ import {
         );
 
       font-size: 25px;
-      font-weight: 900;
+      font-weight: 700;
 
       text-transform: uppercase;
     }
@@ -212,7 +212,7 @@ import {
         3px solid
         var(--ion-background-color);
 
-      font-size: 13px;
+      font-size: 14px;
     }
 
     .pi-photo-content {
@@ -226,8 +226,8 @@ import {
     .pi-photo-title {
       color: var(--ion-text-color);
 
-      font-size: 13px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
     }
 
     .pi-photo-note {
@@ -235,8 +235,8 @@ import {
 
       color: var(--ion-color-medium);
 
-      font-size: 9px;
-      line-height: 1.45;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
     .pi-photo-actions {
@@ -255,8 +255,8 @@ import {
 
       --border-radius: 10px;
 
-      font-size: 8px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
     }
 
     .pi-hidden-input {
@@ -321,8 +321,8 @@ import {
     .pi-section-title {
       color: var(--ion-text-color);
 
-      font-size: 12px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
     }
 
     .pi-section-subtitle {
@@ -330,8 +330,8 @@ import {
 
       color: var(--ion-color-medium);
 
-      font-size: 8px;
-      line-height: 1.35;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
 
@@ -416,7 +416,7 @@ import {
     .pi-field ion-select {
       color: var(--ion-text-color);
 
-      font-size: 11px;
+      font-size: 14px;
     }
 
     .pi-readonly {
@@ -437,8 +437,8 @@ import {
 
       color: var(--ion-color-medium);
 
-      font-size: 8px;
-      line-height: 1.45;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
 
@@ -461,8 +461,8 @@ import {
 
       color: var(--ion-color-medium);
 
-      font-size: 8px;
-      line-height: 1.4;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
     .pi-verified {
@@ -485,8 +485,8 @@ import {
 
       color: var(--ion-color-success);
 
-      font-size: 8px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
     }
 
     .pi-verified ion-icon {
@@ -502,8 +502,8 @@ import {
 
       --border-radius: 10px;
 
-      font-size: 8px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
     }
 
 
@@ -531,8 +531,8 @@ import {
 
       color: var(--ion-color-medium);
 
-      font-size: 8px;
-      line-height: 1.45;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
     .pi-info-box ion-icon {
@@ -561,8 +561,8 @@ import {
 
       --border-radius: 14px;
 
-      font-size: 10px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
     }
 
     .pi-save-note {
@@ -572,8 +572,8 @@ import {
 
       text-align: center;
 
-      font-size: 8px;
-      line-height: 1.4;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
 
@@ -655,7 +655,7 @@ import {
       }
 
       .pi-photo-actions ion-button {
-        font-size: 7px;
+        font-size: 14px;
       }
 
     }

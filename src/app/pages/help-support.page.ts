@@ -53,7 +53,7 @@ import { CommonModule } from '@angular/common';
       margin: 0;
 
       font-size: 21px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
     .help-hero p {
@@ -63,7 +63,7 @@ import { CommonModule } from '@angular/common';
         7px auto
         16px;
 
-      font-size: 12px;
+      font-size: 14px;
       line-height: 1.5;
 
       color:
@@ -87,7 +87,7 @@ import { CommonModule } from '@angular/common';
         10px;
 
       font-size: 15px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
     .quick-grid {
@@ -134,15 +134,15 @@ import { CommonModule } from '@angular/common';
     .quick-title {
       margin-top: 10px;
 
-      font-size: 12px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
     }
 
     .quick-subtitle {
       margin-top: 3px;
 
-      font-size: 9px;
-      line-height: 1.35;
+      font-size: 14px;
+      line-height: 1.5;
 
       color:
         var(--ion-color-medium);
@@ -175,7 +175,7 @@ import { CommonModule } from '@angular/common';
     }
 
     .faq-question {
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 800;
     }
 
@@ -184,7 +184,7 @@ import { CommonModule } from '@angular/common';
         4px 16px
         16px;
 
-      font-size: 11px;
+      font-size: 14px;
       line-height: 1.55;
 
       color:
@@ -208,7 +208,7 @@ import { CommonModule } from '@angular/common';
       margin: 0;
 
       font-size: 15px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
     .still-need-help p {
@@ -216,8 +216,8 @@ import { CommonModule } from '@angular/common';
         5px 0
         12px;
 
-      font-size: 11px;
-      line-height: 1.45;
+      font-size: 14px;
+      line-height: 1.5;
 
       color:
         var(--ion-color-medium);

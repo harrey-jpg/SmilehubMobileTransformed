@@ -110,8 +110,8 @@ import {
       color:
         var(--ion-color-medium);
 
-      font-size: 8px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
 
       letter-spacing: .6px;
 
@@ -133,7 +133,7 @@ import {
       font-size: 18px;
       line-height: 1.25;
 
-      font-weight: 900;
+      font-weight: 700;
 
       word-break: break-word;
 
@@ -150,7 +150,7 @@ import {
       color:
         var(--ion-color-medium);
 
-      font-size: 9px;
+      font-size: 14px;
 
       opacity: 1;
       visibility: visible;
@@ -176,8 +176,8 @@ import {
 
       border-radius: 999px;
 
-      font-size: 9px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
 
       opacity: 1;
       visibility: visible;
@@ -269,7 +269,7 @@ import {
       color:
         var(--ion-color-success);
 
-      font-size: 10px;
+      font-size: 14px;
       line-height: 1.5;
 
       font-weight: 700;
@@ -290,8 +290,8 @@ import {
 
       --border-radius: 12px;
 
-      font-size: 10px !important;
-      font-weight: 900;
+      font-size: 14px !important;
+      font-weight: 700;
     }
 
 
@@ -301,8 +301,8 @@ import {
       color:
         var(--ion-color-medium);
 
-      font-size: 8px;
-      line-height: 1.45;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
 
@@ -338,8 +338,8 @@ import {
       color:
         var(--ion-text-color);
 
-      font-size: 11px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
 
       opacity: 1;
       visibility: visible;
@@ -354,7 +354,7 @@ import {
       color:
         var(--ion-color-medium);
 
-      font-size: 9px;
+      font-size: 14px;
       line-height: 1.5;
 
       opacity: 1;
@@ -382,8 +382,8 @@ import {
 
       --background: transparent;
 
-      font-size: 10px !important;
-      font-weight: 900 !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
 
       opacity: 1 !important;
       visibility: visible !important;
@@ -393,8 +393,8 @@ import {
     .od-button-label {
       display: inline !important;
 
-      font-size: 10px !important;
-      font-weight: 900 !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
 
       opacity: 1 !important;
       visibility: visible !important;
@@ -417,7 +417,7 @@ import {
       color:
         var(--ion-color-danger);
 
-      font-size: 10px;
+      font-size: 14px;
       line-height: 1.5;
 
       font-weight: 700;
@@ -459,7 +459,7 @@ import {
         var(--ion-text-color);
 
       font-size: 14px;
-      font-weight: 900;
+      font-weight: 700;
 
       opacity: 1;
       visibility: visible;
@@ -472,7 +472,7 @@ import {
       color:
         var(--ion-color-medium);
 
-      font-size: 9px;
+      font-size: 14px;
 
       opacity: 1;
       visibility: visible;
@@ -630,10 +630,10 @@ import {
       color:
         var(--ion-text-color) !important;
 
-      font-size: 12px !important;
+      font-size: 14px !important;
       line-height: 1.25;
 
-      font-weight: 900 !important;
+      font-weight: 700 !important;
 
       opacity: 1 !important;
       visibility: visible !important;
@@ -648,8 +648,8 @@ import {
       color:
         var(--ion-color-medium) !important;
 
-      font-size: 9px !important;
-      line-height: 1.45;
+      font-size: 14px !important;
+      line-height: 1.5;
 
       opacity: 1 !important;
       visibility: visible !important;
@@ -756,8 +756,8 @@ import {
       color:
         var(--ion-color-primary) !important;
 
-      font-size: 8px !important;
-      font-weight: 900 !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
 
       text-transform: uppercase;
 
@@ -772,10 +772,10 @@ import {
       color:
         var(--ion-text-color) !important;
 
-      font-size: 11px !important;
-      line-height: 1.35;
+      font-size: 14px !important;
+      line-height: 1.5;
 
-      font-weight: 900 !important;
+      font-weight: 700 !important;
 
       overflow: hidden;
 
@@ -792,8 +792,8 @@ import {
       color:
         var(--ion-color-medium) !important;
 
-      font-size: 9px !important;
-      line-height: 1.4;
+      font-size: 14px !important;
+      line-height: 1.5;
 
       opacity: 1 !important;
       visibility: visible !important;
@@ -812,8 +812,8 @@ import {
       color:
         var(--ion-color-primary) !important;
 
-      font-size: 12px !important;
-      font-weight: 900 !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
 
       white-space: nowrap;
 
@@ -852,8 +852,8 @@ import {
       color:
         var(--ion-color-success);
 
-      font-size: 10px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
     }
 
 
@@ -879,7 +879,7 @@ import {
 
       --border-radius: 11px;
 
-      font-size: 9px !important;
+      font-size: 14px !important;
       font-weight: 800;
     }
 
@@ -891,8 +891,8 @@ import {
 
       --border-radius: 11px;
 
-      font-size: 10px !important;
-      font-weight: 900;
+      font-size: 14px !important;
+      font-weight: 700;
     }
 
 
@@ -919,8 +919,8 @@ import {
       color:
         var(--ion-text-color);
 
-      font-size: 12px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
     }
 
 
@@ -930,8 +930,8 @@ import {
       color:
         var(--ion-color-medium);
 
-      font-size: 9px;
-      line-height: 1.45;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
 
@@ -969,7 +969,7 @@ import {
       color:
         var(--ion-color-medium);
 
-      font-size: 9px;
+      font-size: 14px;
       font-weight: 800;
     }
 
@@ -998,7 +998,7 @@ import {
       --padding-top: 10px;
       --padding-bottom: 10px;
 
-      font-size: 11px;
+      font-size: 14px;
     }
 
 
@@ -1010,7 +1010,7 @@ import {
       color:
         var(--ion-color-medium);
 
-      font-size: 8px;
+      font-size: 14px;
     }
 
 
@@ -1036,8 +1036,8 @@ import {
 
       --border-radius: 11px;
 
-      font-size: 9px !important;
-      font-weight: 900;
+      font-size: 14px !important;
+      font-weight: 700;
     }
 
 
@@ -1098,8 +1098,8 @@ import {
       color:
         var(--ion-text-color) !important;
 
-      font-size: 11px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
 
       opacity: 1;
     }
@@ -1113,7 +1113,7 @@ import {
       color:
         var(--ion-color-medium) !important;
 
-      font-size: 9px;
+      font-size: 14px;
 
       opacity: 1;
     }
@@ -1140,7 +1140,7 @@ import {
       color:
         var(--ion-color-medium) !important;
 
-      font-size: 10px;
+      font-size: 14px;
       line-height: 1.5;
 
       opacity: 1;
@@ -1168,7 +1168,7 @@ import {
           .10
         );
 
-      font-size: 10px;
+      font-size: 14px;
     }
 
 
@@ -1184,7 +1184,7 @@ import {
 
       text-align: right;
 
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -1209,7 +1209,7 @@ import {
 
       gap: 14px;
 
-      font-size: 10px;
+      font-size: 14px;
 
       opacity: 1;
       visibility: visible;
@@ -1271,8 +1271,8 @@ import {
       color:
         var(--ion-text-color) !important;
 
-      font-size: 13px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 700;
     }
 
 
@@ -1281,7 +1281,7 @@ import {
         var(--ion-color-primary) !important;
 
       font-size: 20px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -1336,7 +1336,7 @@ import {
         var(--ion-text-color);
 
       font-size: 18px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
 
@@ -1348,7 +1348,7 @@ import {
       color:
         var(--ion-color-medium);
 
-      font-size: 10px;
+      font-size: 14px;
       line-height: 1.5;
     }
 
@@ -1411,7 +1411,7 @@ import {
 
 
       .od-item-total {
-        font-size: 10px !important;
+        font-size: 14px !important;
       }
 
     }
