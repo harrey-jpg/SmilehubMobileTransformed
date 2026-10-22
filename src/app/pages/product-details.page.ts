@@ -51,6 +51,12 @@ import {
 
 
   styles: [`
+    .delivery-guidance { font-size: 14px; line-height: 1.5; color: var(--ion-color-medium); }
+    .delivery-guidance p { margin: 0 0 6px; }
+    .delivery-guidance a { color: var(--ion-color-primary); display: inline-flex; align-items: center; min-height: 44px; }
+    .delivery-guidance a:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 3px; }
+    .purchase-delivery-note { margin: 0; font-size: 14px; line-height: 1.4; color: var(--ion-color-medium); width: 100%; }
+
     .firmness-card { margin: 16px 0; }
     .firmness-card h2 { margin: 0 0 12px; font-size: 15px; }
     .firmness-options { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -1468,6 +1474,13 @@ button.related-card { font:inherit; color:var(--ion-text-color); text-align:left
          ACTIONS
          ========================= -->
 
+    <div class="delivery-guidance">
+      <p>Standard delivery: {{ money(120) }}; free for orders of {{ money(3000) }} or more.
+        Express delivery: {{ money(220) }}.</p>
+      <p>Your final delivery fee is shown at checkout before you place the order.</p>
+      <a routerLink="/contact-us" [queryParams]="{ concern: 'Product inquiry' }">Ask about delivery or returns</a>
+    </div>
+
     <div class="product-actions desktop-purchase-action">
 
 
@@ -2024,6 +2037,8 @@ button.related-card { font:inherit; color:var(--ion-text-color); text-align:left
 <ion-footer class="mobile-purchase-footer ion-no-border" *ngIf="product as p">
     <div class="purchase-bar product-purchase-bar">
       <div class="purchase-total"><span>Subtotal</span><strong>{{ money(p.price * quantity) }}</strong></div>
+      <p class="purchase-delivery-note">Standard delivery {{ money(120) }} · Free from {{ money(3000) }}.
+        Final fee at checkout.</p>
       <div class="purchase-buttons">
         <ion-button fill="outline" [disabled]="isOutOfStock || !canAddSelectedQuantity" (click)="add()">{{ addedToCart ? 'Added!' : 'Add to Cart' }}</ion-button>
         <ion-button class="primary-btn" [disabled]="isOutOfStock || !canBuySelectedQuantity" (click)="buyNow()">{{ isOutOfStock ? 'Out of Stock' : 'Buy Now' }}</ion-button>

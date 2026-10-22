@@ -33,6 +33,17 @@ import { BottomNavComponent } from '../shared/bottom-nav.component';
   ],
 
   styles: [`
+    .home-toolbar { --padding-start: 4px; --padding-end: 4px; }
+    .home-toolbar ion-title { padding-inline: 4px; }
+    .home-toolbar .logo { gap: 6px; font-size: 20px; font-weight: 700; white-space: nowrap; }
+    .home-toolbar .logo-mark { width: 28px; height: 28px; flex-basis: 28px; }
+    .home-toolbar .header-actions { gap: 0; margin: 0; }
+    .home-toolbar .header-actions ion-button.icon-btn {
+      width: 44px; min-width: 44px; height: 44px; min-height: 44px; margin: 0;
+      --padding-start: 0; --padding-end: 0; --padding-top: 0; --padding-bottom: 0;
+    }
+    .home-toolbar .icon-btn::part(native) { width: 44px; height: 44px; min-height: 44px; }
+
 
     /* =========================
        SEARCH
@@ -596,7 +607,7 @@ button.category-bubble, button.see-all-search { font:inherit; color:var(--ion-te
 
 <ion-header>
 
-  <ion-toolbar>
+  <ion-toolbar class="home-toolbar">
 
     <ion-buttons slot="start">
 
@@ -631,6 +642,7 @@ button.category-bubble, button.see-all-search { font:inherit; color:var(--ion-te
 
       <ion-button
         routerLink="/notifications"
+        [attr.aria-label]="'Notifications, ' + unreadNotificationCount + ' unread'"
         class="icon-btn">
 
         <ion-icon
@@ -653,6 +665,7 @@ button.category-bubble, button.see-all-search { font:inherit; color:var(--ion-te
 
       <ion-button
         routerLink="/wishlist"
+        [attr.aria-label]="'Wishlist, ' + state.wishlist.size + ' saved items'"
         class="icon-btn">
 
         <ion-icon
@@ -675,6 +688,7 @@ button.category-bubble, button.see-all-search { font:inherit; color:var(--ion-te
 
       <ion-button
         routerLink="/cart"
+        [attr.aria-label]="'Cart, ' + state.cartCount + ' items'"
         class="icon-btn">
 
         <ion-icon

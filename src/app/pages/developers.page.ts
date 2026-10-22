@@ -30,23 +30,13 @@ interface DeveloperInfo {
       margin-bottom: 18px;
     }
 
-    .dev-kicker {
-      color:
-        var(
-          --ion-color-primary
-        );
 
-      font-size: 9px;
-      font-weight: 900;
-      letter-spacing: .8px;
-      text-transform: uppercase;
-    }
 
     .dev-title {
       margin: 4px 0 0;
       font-size: 24px;
       line-height: 1.15;
-      font-weight: 950;
+      font-weight: 700;
       letter-spacing: -.35px;
     }
 
@@ -59,7 +49,7 @@ interface DeveloperInfo {
           --ion-color-medium
         );
 
-      font-size: 10px;
+      font-size: 16px;
       line-height: 1.55;
     }
 
@@ -148,7 +138,7 @@ interface DeveloperInfo {
         );
 
       font-size: 18px;
-      font-weight: 950;
+      font-weight: 700;
     }
 
     .developer-avatar img {
@@ -167,9 +157,9 @@ interface DeveloperInfo {
 
     .developer-name {
       margin: 0;
-      font-size: 15px;
-      line-height: 1.2;
-      font-weight: 950;
+      font-size: 16px;
+      line-height: 1.4;
+      font-weight: 700;
     }
 
     .developer-role {
@@ -180,12 +170,16 @@ interface DeveloperInfo {
           --ion-color-primary
         );
 
-      font-size: 9px;
-      line-height: 1.35;
-      font-weight: 850;
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 600;
     }
 
     .developer-contact {
+      min-height: 44px;
+      min-width: 44px;
+      padding-block: 6px;
+      line-height: 1.5;
       display: inline-flex;
       align-items: center;
       gap: 5px;
@@ -197,7 +191,7 @@ interface DeveloperInfo {
           --ion-color-medium
         );
 
-      font-size: 9px;
+      font-size: 14px;
       text-decoration: none;
     }
 
@@ -207,9 +201,13 @@ interface DeveloperInfo {
     }
 
     .developer-contact span {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+    .developer-contact:focus-visible {
+      outline: 2px solid var(--ion-color-primary);
+      outline-offset: 3px;
+      border-radius: 4px;
     }
 
     .team-note {
@@ -228,7 +226,7 @@ interface DeveloperInfo {
           --ion-color-medium
         );
 
-      font-size: 9px;
+      font-size: 14px;
       line-height: 1.5;
     }
 
@@ -279,9 +277,7 @@ interface DeveloperInfo {
 
         <div class="dev-intro">
 
-          <div class="dev-kicker">
-            SmileHub Team
-          </div>
+
 
           <h1 class="dev-title">
             Meet the Developers
@@ -322,7 +318,8 @@ interface DeveloperInfo {
 
               <a
                 class="developer-contact"
-                [href]="'mailto:' + developer.email">
+                [href]="'mailto:' + developer.email"
+                [attr.aria-label]="'Email ' + developer.name">
 
                 <ion-icon name="mail-outline"></ion-icon>
 

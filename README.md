@@ -1,5 +1,9 @@
 # SmileHub - Ionic Angular Conversion
 
+[![Download SmileHub APK](https://img.shields.io/badge/Download-SmileHub_APK-087e95?style=for-the-badge&logo=android&logoColor=white)](https://github.com/harrey-jpg/SmilehubMobileTransformed/releases/download/v1.0.0-debug/smilehub.apk)
+
+Android debug build for demonstration and evaluation. Download `smilehub.apk`, open it on your Android phone, and allow installation from your browser or file manager if prompted. Requires Android 6.0 or later. Functional testing of this build is pending.
+
 This folder is an Ionic Angular rebuild of the supplied Flutter SmileHub app.
 It reuses the same Firebase project (`smilehub-ecommerce`) and preserves the main customer flow.
 

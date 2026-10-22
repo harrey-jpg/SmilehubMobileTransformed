@@ -46,6 +46,23 @@ import {
 
 
   styles: [`
+    .coupon-card summary { min-height: 44px; cursor: pointer; }
+    .coupon-card summary:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 4px; }
+    .coupon-card[open] summary { margin-bottom: 12px; }
+    .cart-purchase-bar { display: none; }
+    @media (max-width: 759px) {
+      .desktop-checkout { display: none; }
+      .cart-purchase-bar {
+        display: flex; align-items: center; gap: 12px;
+        padding: 12px max(16px, env(safe-area-inset-right)) 12px max(16px, env(safe-area-inset-left));
+        background: var(--ion-card-background); border-top: 1px solid var(--ion-border-color);
+      }
+      .cart-purchase-total { flex: 1; min-width: 0; display: grid; gap: 4px; }
+      .cart-purchase-total span { font-size: 14px; line-height: 1.4; }
+      .cart-purchase-total strong { font-size: 20px; font-weight: 700; overflow-wrap: anywhere; }
+      .cart-purchase-bar ion-button { min-height: 48px; margin: 0; font-weight: 600; }
+    }
+
 
     /* =========================
        PAGE
@@ -1320,29 +1337,10 @@ import {
                COUPON
                ========================= -->
 
-          <div class="section-title first-side-title">
-
-            Promo Code
-
-          </div>
-
-
-          <div class="app-card coupon-card">
-
-
-            <div class="coupon-heading">
-
-
-              <ion-icon
-                name="pricetag-outline">
-              </ion-icon>
-
-
-              Have a coupon?
-
-            </div>
-
-
+          <details class="app-card coupon-card">
+            <summary class="coupon-heading">
+              {{ state.couponApplied ? 'Promo code applied' : 'Add promo code' }}
+            </summary>
 
             <div class="coupon-row">
 
@@ -1404,7 +1402,7 @@ import {
             </div>
 
 
-          </div>
+          </details>
 
 
 
@@ -1568,7 +1566,7 @@ import {
 
               class="
                 primary-btn
-                checkout-btn
+                checkout-btn desktop-checkout
               "
 
               [disabled]="
@@ -1592,7 +1590,7 @@ import {
             </ion-button>
 
 
-            <div class="checkout-note">
+            <div class="checkout-note desktop-checkout">
 
               Review your delivery and
               payment details on the
@@ -1625,6 +1623,16 @@ import {
      ========================= -->
 
 <ion-footer>
+  <div class="cart-purchase-bar" *ngIf="items.length > 0">
+    <div class="cart-purchase-total">
+      <span>Selected total · {{ selectedItemCount }} item{{ selectedItemCount === 1 ? '' : 's' }}</span>
+      <strong>{{ money(selectedTotal) }}</strong>
+      <span>{{ selectedItemCount === 0 ? 'Select items to continue' : 'Includes shipping' }}</span>
+    </div>
+    <ion-button [disabled]="selectedItemCount === 0" (click)="proceedToCheckout()">
+      Checkout
+    </ion-button>
+  </div>
 
 
   <app-bottom-nav

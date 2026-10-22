@@ -1023,7 +1023,7 @@ interface ProductRatingSummary {
 
 
 </ion-content>
-<ion-footer class="ion-no-border"><app-bottom-nav active="categories"></app-bottom-nav></ion-footer>
+<ion-footer class="ion-no-border"><app-bottom-nav></app-bottom-nav></ion-footer>
 
 `
 
